@@ -1,0 +1,14 @@
+"use strict";
+exports.__esModule = true;
+var vue_1 = require("vue");
+var App_vue_1 = require("./App.vue");
+var router_1 = require("./router");
+require("./index.css");
+require("bulma/css/bulma.css");
+var lodash_1 = require("lodash");
+console.log("test", lodash_1.debounce);
+var locutus_1 = require("locutus");
+console.log("test", locutus_1.php);
+var app = vue_1.createApp(App_vue_1["default"]);
+app.use(router_1["default"]);
+app.mount("#app");

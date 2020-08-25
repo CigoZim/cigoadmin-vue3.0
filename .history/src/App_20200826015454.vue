@@ -1,11 +1,8 @@
 <template>
-<div class="app-page">
+<div>
     <router-view />
 </div>
 </template>
 
 <style lang="scss">
-.app-pege {
-    display: flex;
-}
 </style>
