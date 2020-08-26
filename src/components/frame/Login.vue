@@ -8,7 +8,17 @@
 import {
     defineComponent
 } from "vue";
-export default defineComponent({});
+
+import {
+    Domain
+} from "@/common/http";
+
+export default defineComponent({
+    name: "Login",
+    setup(props) {
+        console.log("domain:", Domain.cdnOpen);
+    }
+});
 </script>
 
 <style lang="scss">

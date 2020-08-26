@@ -6,6 +6,7 @@ import { php } from "locutus";
 export const enum Domain {
 	apiDomain = "http://api.cigoadmin.com",
 	cdnOpen = "http://cdn-open.cigoadmin.com",
+	cdnOpenIcon = "http://cdn-open.cigoadmin.com/icon/",
 }
 
 /**
@@ -72,6 +73,6 @@ export function apiSign(params: Object) {
 		"Cigo-Device-Type": "mpWeixin",
 		"Cigo-Timestamp": Date.parse(new Date().toString()) / 1000,
 		"Cigo-Sign": sign,
-		"Cigo-Token": store.state.token,
+		// "Cigo-Token": store.state.token,
 	};
 }

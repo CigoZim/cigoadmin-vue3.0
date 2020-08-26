@@ -15,8 +15,7 @@ function apiSign(params) {
     return {
         "Cigo-Device-Type": "mpWeixin",
         "Cigo-Timestamp": Date.parse(new Date().toString()) / 1000,
-        "Cigo-Sign": sign,
-        "Cigo-Token": store.state.token
+        "Cigo-Sign": sign
     };
 }
 exports.apiSign = apiSign;

@@ -2,7 +2,7 @@
 <div class="top-bar-content">
     <div class="top-bar-top">
         <div class="top-bar-top-left">
-            <image class="left-menu-toggle-icon" src />
+            <img class="left-menu-toggle-icon" @click="toggleMenu()" :src="cdnOpenIcon+'/menu-close.png'" />
             <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
         </div>
         <div class="top-bar-top-right">
@@ -24,14 +24,41 @@ import ToolsBar from "./topBar/ToolsBar.vue";
 import ManagerIcon from "./topBar/ManagerIcon.vue";
 import OpenPages from "./OpenPages.vue";
 
+import {
+    Domain
+} from "@/common/http";
+import {
+    systemStore
+} from "@/store/index";
+
 export default defineComponent({
     name: "TopBar",
     components: {
         BreadCrumb,
         ToolsBar,
         ManagerIcon,
-        OpenPages,
+        OpenPages
     },
+    setup(props) {
+        const toggleMenu = () => {
+            console.log(
+                "111:",
+                systemStore.getState().systemState.sideMenuOpen
+            );
+
+            systemStore.toggleMenu();
+
+            console.log(
+                "222:",
+                systemStore.getState().systemState.sideMenuOpen
+            );
+        };
+
+        return {
+            cdnOpenIcon: Domain.cdnOpenIcon,
+            toggleMenu
+        };
+    }
 });
 </script>
 
@@ -39,7 +66,7 @@ export default defineComponent({
 .top-bar-content {
     display: flex;
     flex-direction: column;
-    background-color: green;
+    padding: 15px 12px 0px;
 
     .top-bar-top {
         display: flex;
@@ -51,6 +78,12 @@ export default defineComponent({
             display: flex;
             flex-direction: row;
             align-items: center;
+
+            .left-menu-toggle-icon {
+                width: 30px;
+                height: 30px;
+                padding: 5px 10px 5px 5px;
+            }
         }
 
         .top-bar-top-right {
