@@ -19,6 +19,10 @@ import TopBar from "./TopBar.vue";
 import MainContent from "./MainContent.vue";
 import RightPanel from "./RightPanel.vue";
 
+import {
+    Domain
+} from "@/common/http";
+
 export default defineComponent({
     name: "App",
     components: {

@@ -10,7 +10,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "LogoArea",
+    name: "LogoArea"
 });
 </script>
 
