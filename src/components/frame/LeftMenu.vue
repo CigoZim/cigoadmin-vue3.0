@@ -1,5 +1,5 @@
 <template>
-<div class="left-menu-content" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '0px')}">
+<div class="left-menu-content" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
     <div class="left-menu-list">菜单列表</div>
 </div>
@@ -38,6 +38,12 @@ export default defineComponent({
     background-color: #304156;
     display: flex;
     flex-direction: column;
+    -moz-transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    transition-delay: 10ms;
 
     .left-menu-list {
         display: flex;

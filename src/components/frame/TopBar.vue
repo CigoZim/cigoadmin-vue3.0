@@ -2,7 +2,7 @@
 <div class="top-bar-content">
     <div class="top-bar-top">
         <div class="top-bar-top-left">
-            <img class="left-menu-toggle-icon" @click="toggleMenu()" :src="cdnOpenIcon+'/menu-close.png'" />
+            <img class="left-menu-toggle-icon" :class="[sideMenuOpen?'open':'close']" @click="systemStore.toggleMenu()" :src="cdnOpenIcon + '/menu-close.png'" />
             <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
         </div>
         <div class="top-bar-top-right">
@@ -16,7 +16,8 @@
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    toRefs
 } from "vue";
 
 import BreadCrumb from "./BreadCrumb.vue";
@@ -40,23 +41,10 @@ export default defineComponent({
         OpenPages
     },
     setup(props) {
-        const toggleMenu = () => {
-            console.log(
-                "111:",
-                systemStore.getState().systemState.sideMenuOpen
-            );
-
-            systemStore.toggleMenu();
-
-            console.log(
-                "222:",
-                systemStore.getState().systemState.sideMenuOpen
-            );
-        };
-
         return {
             cdnOpenIcon: Domain.cdnOpenIcon,
-            toggleMenu
+            systemStore,
+            ...toRefs(systemStore.getState().systemState)
         };
     }
 });
@@ -80,9 +68,23 @@ export default defineComponent({
             align-items: center;
 
             .left-menu-toggle-icon {
-                width: 30px;
-                height: 30px;
+                width: 35px;
+                height: 35px;
                 padding: 5px 10px 5px 5px;
+                cursor: pointer;
+                -moz-transition: all 1s ease-in-out;
+                -webkit-transition: all 1s ease-in-out;
+                -o-transition: all 1s ease-in-out;
+                -ms-transition: all 1s ease-in-out;
+                transition: all 1s ease-in-out;
+            }
+
+            .left-menu-toggle-icon.close {
+                -moz-transform: rotate(540deg);
+                -webkit-transform: rotate(540deg);
+                -o-transform: rotate(540deg);
+                -ms-transform: rotate(540deg);
+                transform: rotate(540deg);
             }
         }
 
