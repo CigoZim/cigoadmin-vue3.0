@@ -1,7 +1,14 @@
 "use strict";
 exports.__esModule = true;
-exports.apiSign = void 0;
+exports.apiSign = exports.apiRequest = void 0;
 var locutus_1 = require("locutus");
+var axios_1 = require("axios");
+// 网络请求
+exports.apiRequest = {
+    v1: axios_1["default"].create({
+        baseURL: "http://api-admin.cigoadmin.com" /* apiDomain */ + "/v1"
+    })
+};
 /**
  * 接口签名
  * @param params 请求参数

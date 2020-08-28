@@ -1,13 +1,21 @@
 import { php } from "locutus";
+import Axios from "axios";
 
 /**
  * 相关域名
  */
 export const enum Domain {
-	apiDomain = "http://api.cigoadmin.com",
+	apiDomain = "http://api-admin.cigoadmin.com",
 	cdnOpen = "http://cdn-open.cigoadmin.com",
 	cdnOpenIcon = "http://cdn-open.cigoadmin.com/icon/",
 }
+
+// 网络请求
+export const apiRequest = {
+	v1: Axios.create({
+		baseURL: Domain.apiDomain + "/v1",
+	}),
+};
 
 /**
  * 网络请求错误码
