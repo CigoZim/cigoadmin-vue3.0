@@ -1,4 +1,5 @@
 import { reactive } from "vue";
+import router from "@/router/index";
 import { SystemState, LoginUserInfo } from "@/types/index";
 
 interface State {
@@ -18,6 +19,16 @@ class Store {
 
 	public toggleMenu(): void {
 		this.state.systemState.sideMenuOpen = !this.state.systemState.sideMenuOpen;
+	}
+
+	public saveUserInfo(userInfo: LoginUserInfo): void {
+		this.state.userInfo = userInfo;
+
+		console.log(userInfo);
+
+		console.log(this.state.userInfo);
+
+		router.push("/");
 	}
 }
 

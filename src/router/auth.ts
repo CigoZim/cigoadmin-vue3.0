@@ -21,6 +21,10 @@ class Auth {
 		if (this.guard.name === "Login") {
 			return false;
 		}
+		console.log("1111");
+
+		console.log(systemStore.getState().userInfo);
+
 		//是否登录状态
 		if (!systemStore.getState().userInfo.isLogin) {
 			console.log("尚未登录，跳转登录页面...");

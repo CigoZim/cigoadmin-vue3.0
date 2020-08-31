@@ -20,7 +20,6 @@ const router = createRouter({
 });
 
 router.beforeEach((guard) => {
-	console.log("beforeEach:", guard);
 	let continueFlag: boolean = authInstance.init(guard).checkLogin(router);
 	if (!continueFlag) {
 		return;

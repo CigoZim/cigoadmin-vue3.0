@@ -47,16 +47,27 @@ import {
 import {
     Domain,
     apiRequest,
-    apiSign
+    apiSign,
+    apiErrorCatch
 } from "@/common/http";
+import {
+    string
+} from "locutus/python";
+import {
+    LoginUserInfo
+} from "@/types/index";
+import {
+    systemStore
+} from "@/store/index";
 
 export default defineComponent({
     name: "Login",
     setup(props) {
         // 表单数据
         const formData = reactive({
-            username: "zim",
-            password: "123456"
+            username: "admin",
+            password: "123456",
+            module: "admin"
         });
 
         // 登录函数
@@ -65,9 +76,27 @@ export default defineComponent({
             console.log(formData);
 
             let params = toRaw(formData);
-            const res = apiRequest.v1.post("/login", params, {
-                headers: apiSign(params)
-            });
+            const res = apiRequest.v1
+                .post("/login", params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    console.log("response:", response);
+                    let userInfo: LoginUserInfo = {
+                        isLogin: true,
+                        id: response.data.data.id,
+                        token: response.data.data.token,
+                        username: response.data.data.username,
+                        phone: response.data.data.phone,
+                        nickname: response.data.data.nickname,
+                        real_name: response.data.data.real_name,
+                        email: response.data.data.email,
+                        role_flag: response.data.data.role_flag
+                    };
+
+                    systemStore.saveUserInfo(userInfo);
+                })
+                .catch(apiErrorCatch.v1);
 
             console.log("res:", res);
         };

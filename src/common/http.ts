@@ -16,6 +16,15 @@ export const apiRequest = {
 		baseURL: Domain.apiDomain + "/v1",
 	}),
 };
+export const apiErrorCatch = {
+	v1: (error: any) => {
+		console.log(500 % 400, 501 % 400, 400 % 400, 405 % 400, 101 % 400);
+
+		console.log("apiError-v1:", error.response.status);
+		console.log("apiError-v1:", error.response.status % 400);
+		console.log("apiError-v1:", error.response);
+	},
+};
 
 /**
  * 网络请求错误码

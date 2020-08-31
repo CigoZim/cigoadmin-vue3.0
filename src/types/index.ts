@@ -11,8 +11,11 @@ export interface SystemState {
 export interface LoginUserInfo {
 	isLogin: boolean;
 	id?: number;
-	username?: string;
-	nickname?: string;
-	realname?: string;
+	token?: string;
 	phone?: string;
+	username?: string;
+	real_name?: string;
+	nickname?: string;
+	email?: string;
+	role_flag?: number;
 }
