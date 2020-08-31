@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { authInstance } from "./auth";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -16,6 +17,15 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes,
+});
+
+router.beforeEach((guard) => {
+	console.log("beforeEach:", guard);
+	let continueFlag: boolean = authInstance.init(guard).checkLogin(router);
+	if (!continueFlag) {
+		return;
+	}
+	authInstance.checkAuth(router);
 });
 
 export default router;
