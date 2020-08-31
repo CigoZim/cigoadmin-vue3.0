@@ -28,7 +28,13 @@ class Auth {
 		//是否登录状态
 		if (!systemStore.getState().userInfo.isLogin) {
 			console.log("尚未登录，跳转登录页面...");
-			router.push("/login");
+			if (this.guard.name === "Gone") {
+				setTimeout(() => {
+					router.push("/login");
+				}, 3000);
+			} else {
+				router.push("/login");
+			}
 
 			return false;
 		}

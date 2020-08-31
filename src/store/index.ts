@@ -30,6 +30,11 @@ class Store {
 
 		router.push("/");
 	}
+
+	public logout(): void {
+		this.state.userInfo = initialLoginUserInfo();
+		router.push("/gone");
+	}
 }
 
 const initialState = (): State => ({
