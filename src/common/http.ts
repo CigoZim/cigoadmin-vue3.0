@@ -33,7 +33,7 @@ export const apiErrorCatch = {
 				break;
 		}
 
-		cigoLayer.msg("我是消息提醒");
+		cigoLayer.msg("我是消息提醒1");
 	},
 };
 

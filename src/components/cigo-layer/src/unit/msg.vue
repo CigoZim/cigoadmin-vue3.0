@@ -1,44 +1,95 @@
 <template>
-<div class="cigo-layer-item cigo-layer-msg">
-    <cigo-mask></cigo-mask>
+<div class="cigo-layer-msg" :class="[showFlag]">
     <div class="cigo-layer-msg-content">
-        <span>我是消息弹框</span>
+        <span>{{msg+':'+layerIndex}}</span>
     </div>
 </div>
 </template>
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    ref,
+    onMounted
 } from "vue";
 
 import CigoMask from "./mask.vue";
 
+import cigoLayer from "@/components/cigo-layer/index";
+
 export default defineComponent({
     name: "CigoLayerMsg",
+    props: {
+        msg: {
+            type: String,
+            default: ""
+        },
+        layerIndex: {
+            type: Number,
+            default: ""
+        }
+    },
     components: {
         CigoMask
     },
-    setup() {}
+    setup(props) {
+        let showFlag = ref("");
+
+        onMounted(() => {
+            delayShow();
+        });
+
+        const delayShow = () => {
+            setTimeout(() => {
+                showFlag.value = "show";
+                delayHide();
+            }, 50);
+        };
+
+        const delayHide = () => {
+            setTimeout(() => {
+                showFlag.value = "hide";
+
+                cigoLayer.close(props.layerIndex);
+            }, 2000);
+        };
+
+        return {
+            showFlag
+        };
+    }
 });
 </script>
 
 <style lang="scss">
 .cigo-layer-msg {
-    width: 100vw;
-    height: 100vh;
+    z-index: 1000000;
+    position: absolute;
+    top: -10%;
+    left: 45%;
     display: flex;
-    flex-direction: row;
-    //TODO 需完善为按照配置进行定位
-    justify-content: center;
-    align-items: center;
+    -moz-transition: all 0.8s ease-in-out;
+    -webkit-transition: all 0.8s ease-in-out;
+    -o-transition: all 0.8s ease-in-out;
+    -ms-transition: all 0.8s ease-in-out;
+    transition: all 0.8s ease-in-out;
 
     .cigo-layer-msg-content {
-        min-width: 300px;
         background: white;
         border-radius: 8px;
-        border: 1px solid #666;
-        position: absolute;
+        background-color: #555;
+        padding: 8px 10px;
+        color: white;
+        opacity: 0.9;
     }
+}
+
+.cigo-layer-msg.show {
+    top: 55%;
+}
+
+.cigo-layer-msg.hide {
+    left: -100%;
+    top: 55%;
 }
 </style>

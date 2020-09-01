@@ -16,15 +16,18 @@ class CigoLayer {
 	/**
 	 * 打开新layer
 	 */
-	private open(newInstance: any) {
+	private open(layerType: any, options?: any) {
 		//节点ID
-		let nodeId = "cigo-layer-item-" + this.countFlag;
+		let nodeId: string = "cigo-layer-item-" + this.countFlag;
 		//添加节点
 		let body = document.body || document.documentElement;
 		let root = document.createElement("div");
 		root.setAttribute("id", nodeId);
 		body.appendChild(root);
-		//渲染vue实例
+		//实例化并绑定渲染vue组件实例
+		options = options || {};
+		options.layerIndex = this.countFlag;
+		let newInstance = createApp(layerType, options);
 		newInstance.mount("#" + nodeId);
 		//记录节点
 		this.layerInstances.set(this.countFlag, newInstance);
@@ -42,8 +45,19 @@ class CigoLayer {
 	/**
 	 * 关闭指定layer
 	 */
-	public close() {
-		console.log("close layer");
+	public close(layerIndex: number) {
+		//解绑vue
+		this.layerInstances.get(layerIndex).unmount();
+		this.layerInstances.delete(layerIndex);
+
+		//节点ID
+		let nodeId: string = "cigo-layer-item-" + layerIndex;
+		//移除节点
+		let body = document.body || document.documentElement;
+		let node = document.getElementById(nodeId);
+		if (node) {
+			body.removeChild(node);
+		}
 	}
 
 	/**
@@ -58,16 +72,14 @@ class CigoLayer {
 	 */
 	public alert() {
 		console.log("show alert");
-		let instance = createApp(Alert);
-		this.open(instance);
+		this.open(Alert);
 	}
 	/**
 	 * 消息
 	 */
 	public msg(msg: string) {
 		console.log("show msg:", msg);
-		let instance = createApp(Msg);
-		this.open(instance);
+		this.open(Msg, { msg: msg });
 	}
 }
 
