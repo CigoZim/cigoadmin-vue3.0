@@ -19,21 +19,22 @@ export const apiRequest = {
 };
 export const apiErrorCatch = {
 	v1: (error: any) => {
-		console.log("apiError-v1:", error.response.status / 100);
+		console.log("error:", error.response);
+
 		let responseStatus = Math.floor(error.response.status / 100);
 		switch (responseStatus) {
 			case 3: //重定向
-				break;
 			case 4: //客户端错误
+				cigoLayer.msg(error.response.data.msg);
 				break;
 			case 5: //服务器错误
+				cigoLayer.msg("服务器内部错误");
 				break;
 			default:
 				//其它错误
+				cigoLayer.msg("未知错误");
 				break;
 		}
-
-		cigoLayer.msg("我是消息提醒1");
 	},
 };
 

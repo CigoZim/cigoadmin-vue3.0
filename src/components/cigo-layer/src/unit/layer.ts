@@ -46,18 +46,20 @@ class CigoLayer {
 	 * 关闭指定layer
 	 */
 	public close(layerIndex: number) {
-		//解绑vue
-		this.layerInstances.get(layerIndex).unmount();
-		this.layerInstances.delete(layerIndex);
+		setTimeout(() => {
+			//解绑vue
+			this.layerInstances.get(layerIndex).unmount();
+			this.layerInstances.delete(layerIndex);
 
-		//节点ID
-		let nodeId: string = "cigo-layer-item-" + layerIndex;
-		//移除节点
-		let body = document.body || document.documentElement;
-		let node = document.getElementById(nodeId);
-		if (node) {
-			body.removeChild(node);
-		}
+			//节点ID
+			let nodeId: string = "cigo-layer-item-" + layerIndex;
+			//移除节点
+			let body = document.body || document.documentElement;
+			let node = document.getElementById(nodeId);
+			if (node) {
+				body.removeChild(node);
+			}
+		}, 500);
 	}
 
 	/**
