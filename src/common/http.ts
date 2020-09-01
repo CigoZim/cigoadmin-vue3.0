@@ -1,5 +1,6 @@
 import { php } from "locutus";
 import Axios from "axios";
+import cigoLayer from "@/components/cigo-layer/index";
 
 /**
  * 相关域名
@@ -18,11 +19,21 @@ export const apiRequest = {
 };
 export const apiErrorCatch = {
 	v1: (error: any) => {
-		console.log(500 % 400, 501 % 400, 400 % 400, 405 % 400, 101 % 400);
+		console.log("apiError-v1:", error.response.status / 100);
+		let responseStatus = Math.floor(error.response.status / 100);
+		switch (responseStatus) {
+			case 3: //重定向
+				break;
+			case 4: //客户端错误
+				break;
+			case 5: //服务器错误
+				break;
+			default:
+				//其它错误
+				break;
+		}
 
-		console.log("apiError-v1:", error.response.status);
-		console.log("apiError-v1:", error.response.status % 400);
-		console.log("apiError-v1:", error.response);
+		cigoLayer.msg("我是消息提醒");
 	},
 };
 

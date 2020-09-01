@@ -66,8 +66,8 @@ export default defineComponent({
         // 表单数据
         const formData = reactive({
             username: "admin",
-            password: "123456",
-            module: "admin"
+            password: "123456"
+            // module: "admin"
         });
 
         // 登录函数
