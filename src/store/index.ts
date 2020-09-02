@@ -22,8 +22,6 @@ class Store {
 	}
 
 	public recoverStore() {
-		console.log("recoverStore");
-
 		let systemState = localStorage.getItem("systemState");
 		if (systemState) {
 			this.state.systemState = JSON.parse(systemState);

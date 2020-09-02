@@ -6,10 +6,16 @@
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    onMounted
 } from "vue";
 
 export default defineComponent({
-    name: "Dashboard"
+    name: "Dashboard",
+    setup() {
+        onMounted(() => {
+            console.log("dashboard mounted");
+        });
+    }
 });
 </script>

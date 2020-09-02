@@ -6,10 +6,16 @@
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    onMounted
 } from "vue";
 
 export default defineComponent({
     name: "index",
+    setup() {
+        onMounted(() => {
+            console.log("index mounted");
+        });
+    }
 });
 </script>
