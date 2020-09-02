@@ -4,8 +4,8 @@ import { authInstance } from "./auth";
 const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/",
-		name: "Home",
-		component: () => import("@/components/frame/Home.vue"),
+		name: "Frame",
+		component: () => import("@/components/frame/Frame.vue"),
 	},
 	{
 		path: "/login",

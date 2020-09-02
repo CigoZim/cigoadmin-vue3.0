@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="cigo-content-left-menu">
     <span>主体内容左侧菜单</span>
 </div>
 </template>
@@ -10,6 +10,12 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "ContentLeftMenu",
+    name: "ContentLeftMenu"
 });
 </script>
+
+<style lang="scss">
+.cigo-content-left-menu {
+    width: 50px;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-<div class="left-menu-content" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
+<div class="cigo-left-menu" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
     <div class="left-menu-list">菜单列表</div>
 </div>
@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.left-menu-content {
+.cigo-left-menu {
     width: var(--menuWidth);
     height: 100vh;
     background-color: #304156;

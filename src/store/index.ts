@@ -34,8 +34,14 @@ class Store {
 		}
 	}
 
-	public toggleMenu(): void {
+	public toggleSideMenu(): void {
 		this.state.systemState.sideMenuOpen = !this.state.systemState.sideMenuOpen;
+		this.saveToStorage("systemState", toRaw(this.state.systemState));
+	}
+
+	public toggleRightPanel() {
+		this.state.systemState.rightPanelOpen = !this.state.systemState
+			.rightPanelOpen;
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
 
@@ -69,6 +75,7 @@ const initialState = (): State => {
 
 const initialSystemState = (): SystemState => ({
 	sideMenuOpen: false,
+	rightPanelOpen: false,
 });
 const initialLoginUserInfo = (): LoginUserInfo => ({
 	isLogin: false,

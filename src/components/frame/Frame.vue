@@ -1,11 +1,11 @@
 <template>
-<div id="app" class="home-page">
-    <left-menu class="home-left-menu"></left-menu>
-    <div class="home-right">
-        <top-bar class="home-top-bar"></top-bar>
-        <main-content class="home-main-content" />
+<div id="app" class="cigo-frame">
+    <left-menu class="frame-left-menu"></left-menu>
+    <div class="frame-right">
+        <top-bar class="frame-top-bar"></top-bar>
+        <main-content class="frame-main-content" />
     </div>
-    <right-panel class="home-right-panel"></right-panel>
+    <right-panel class="frame-right-panel"></right-panel>
 </div>
 </template>
 
@@ -34,18 +34,18 @@ export default defineComponent({
     },
     setup() {
         onMounted(() => {
-            console.log("home mounted");
+            console.log("frame mounted");
         });
     }
 });
 </script>
 
 <style lang="scss">
-.home-page {
+.cigo-frame {
     display: flex;
     flex-direction: row;
 
-    .home-right {
+    .frame-right {
         display: flex;
         background-color: #fff;
         flex: 1;

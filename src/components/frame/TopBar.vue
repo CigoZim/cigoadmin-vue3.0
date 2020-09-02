@@ -1,8 +1,8 @@
 <template>
-<div class="top-bar-content">
+<div class="cigo-top-bar">
     <div class="top-bar-top">
         <div class="top-bar-top-left">
-            <img class="left-menu-toggle-icon" :class="[sideMenuOpen?'open':'close']" @click="systemStore.toggleMenu()" :src="cdnOpenIcon + '/menu-close.png'" />
+            <img class="left-menu-toggle-icon" :class="[sideMenuOpen?'open':'close']" @click="systemStore.toggleSideMenu()" :src="cdnOpenIcon + '/menu-close.png'" />
             <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
         </div>
         <div class="top-bar-top-right">
@@ -51,7 +51,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.top-bar-content {
+.cigo-top-bar {
     display: flex;
     flex-direction: column;
     padding: 15px 12px 0px;

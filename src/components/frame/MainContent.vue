@@ -1,9 +1,11 @@
 <template>
 <div class="main-content">
-    <div class="main-content-top">
-        <content-left-menu class="main-content-left-menu"></content-left-menu>
-        <div class="main-content-body">页面内容主体</div>
-    </div>
+    <transition name="fade-transform" mode="out-in">
+        <div class="main-content-top">
+            <content-left-menu class="main-content-left-menu"></content-left-menu>
+            <div class="main-content-body">页面内容主体</div>
+        </div>
+    </transition>
     <bottom-panel class="main-content-bottom"></bottom-panel>
 </div>
 </template>
@@ -20,8 +22,8 @@ export default defineComponent({
     name: "MainContent",
     components: {
         ContentLeftMenu,
-        BottomPanel,
-    },
+        BottomPanel
+    }
 });
 </script>
 

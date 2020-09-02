@@ -14,15 +14,21 @@ var Store = /** @class */ (function () {
     };
     return Store;
 }());
-var initialState = function () { return ({
-    systemState: initialSystemState(),
-    userInfo: initialLoginUserInfo()
-}); };
-var initialSystemState = function () { return ({
-    sideMenuOpen: false
-}); };
-var initialLoginUserInfo = function () { return ({
-    isLogin: false
-}); };
+var initialState = function () {
+    return ({
+        systemState: initialSystemState(),
+        userInfo: initialLoginUserInfo()
+    });
+};
+var initialSystemState = function () {
+    return ({
+        sideMenuOpen: false
+    });
+};
+var initialLoginUserInfo = function () {
+    return ({
+        isLogin: false
+    });
+};
 var systemStore = new Store(initialState());
 exports.systemStore = systemStore;
