@@ -22,10 +22,11 @@ export const apiErrorCatch = {
 		console.log("error:", error.response);
 
 		let responseStatus = Math.floor(error.response.status / 100);
+
 		switch (responseStatus) {
 			case 3: //重定向
 			case 4: //客户端错误
-				cigoLayer.msg(error.response.data.msg);
+				cigoLayer.msg(error.response.data.msg || error.response.data.message);
 				break;
 			case 5: //服务器错误
 				cigoLayer.msg("服务器内部错误");

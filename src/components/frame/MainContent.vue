@@ -3,6 +3,7 @@
     <div class="main-content-top">
         <content-left-menu class="main-content-left-menu"></content-left-menu>
         <div class="main-content-body">
+            <!-- 知识点——动态组件：https://cn.vuejs.org/v2/guide/components.html#%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6 -->
             <router-view v-slot="{ Component }">
                 <transition name="fade-transform" mode="out-in">
                     <keep-alive>

@@ -60,7 +60,7 @@ import {
 } from "@/common/http";
 import {
     LoginUserInfo
-} from "@/types/index";
+} from "./types/index";
 import {
     systemStore
 } from "@/store/index";
@@ -84,7 +84,7 @@ export default defineComponent({
             console.log(formData);
 
             let params = toRaw(formData);
-            const res = apiRequest.v1
+            apiRequest.v1
                 .post("/login", params, {
                     headers: apiSign(params)
                 })
@@ -105,8 +105,6 @@ export default defineComponent({
                     systemStore.saveUserInfo(userInfo);
                 })
                 .catch(apiErrorCatch.v1);
-
-            console.log("res:", res);
         };
 
         onMounted(() => {

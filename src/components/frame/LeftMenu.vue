@@ -1,11 +1,8 @@
 <template>
 <div class="cigo-left-menu" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
-    <div class="left-menu-list">
-        <ul>
-            <li class="menu-item" @click.stop="showPage('/')">数据面板</li>
-            <li class="menu-item" @click.stop="showPage('/pages/index')">首页</li>
-        </ul>
+    <div class="left-menu">
+        <menu-list :menuList="menuListRef"></menu-list>
     </div>
 </div>
 </template>
@@ -15,34 +12,62 @@ import {
     defineComponent,
     isReactive,
     toRefs,
-    onBeforeMount
+    onBeforeMount,
+    ref
 } from "vue";
 import {
     useRouter,
     useRoute
 } from "vue-router";
-
 import LogoArea from "./leftMenu/LogoArea.vue";
-
+import MenuList from "./leftMenu/MenuList.vue";
 import {
     systemStore
 } from "@/store/index";
+import {
+    apiRequest,
+    apiSign,
+    apiErrorCatch
+} from "@/common/http";
+import {
+    Menu
+} from "@/components/frame/types/index";
 
 export default defineComponent({
     name: "LeftMenu",
     components: {
-        LogoArea
+        LogoArea,
+        MenuList
     },
     setup(props, context) {
         const router = useRouter();
+        let menuList: Menu[] = [];
+        let menuListRef = ref(menuList);
 
+        onBeforeMount(() => {
+            getMenuList();
+        });
+
+        // 加载页面
         const showPage = (path: string) => {
             router.push(path);
+        };
+        // 获取菜单数据
+        const getMenuList = () => {
+            apiRequest.v1
+                .get("/menu", {
+                    headers: apiSign({})
+                })
+                .then(response => {
+                    menuListRef.value = response.data.data;
+                })
+                .catch(apiErrorCatch.v1);
         };
 
         return {
             ...toRefs(systemStore.getState().systemState),
-            showPage
+            showPage,
+            menuListRef
         };
     }
 });
@@ -52,7 +77,6 @@ export default defineComponent({
 .cigo-left-menu {
     width: var(--menuWidth);
     height: 100vh;
-    background-color: #304156;
     display: flex;
     flex-direction: column;
     -moz-transition: all 0.5s ease-in-out;
@@ -62,13 +86,20 @@ export default defineComponent({
     transition: all 0.5s ease-in-out;
     transition-delay: 10ms;
 
-    .left-menu-list {
+    .left-menu {
         display: flex;
         flex: 1;
         background-color: yellow;
 
-        .menu-item {
-            cursor: pointer;
+        .menu-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .menu-item {
+                display: flex;
+                cursor: pointer;
+            }
         }
     }
 }

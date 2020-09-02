@@ -1,6 +1,6 @@
 import { reactive, toRaw } from "vue";
 import router from "@/router/index";
-import { SystemState, LoginUserInfo } from "@/types/index";
+import { SystemState, LoginUserInfo } from "@/components/frame/types";
 
 interface State {
 	systemState: SystemState;
