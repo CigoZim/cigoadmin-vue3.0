@@ -45,6 +45,11 @@ class Store {
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
 
+	public closeRightPanel() {
+		this.state.systemState.rightPanelOpen = false;
+		this.saveToStorage("systemState", toRaw(this.state.systemState));
+	}
+
 	public saveUserInfo(userInfo: LoginUserInfo): void {
 		this.state.userInfo = userInfo;
 		this.saveToStorage("userInfo", toRaw(this.state.userInfo));

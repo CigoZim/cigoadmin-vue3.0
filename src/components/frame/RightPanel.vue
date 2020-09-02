@@ -1,9 +1,9 @@
 <template>
 <div class="cigo-right-panel" :class="[openClass]">
-    <div class="right-panel-bg"></div>
+    <div class="right-panel-bg" @click.stop="systemStore.closeRightPanel()"></div>
     <div class="right-panel">
         <span>我是右侧面板</span>
-        <div class="right-panel-toggle" @click="systemStore.toggleRightPanel()">
+        <div class="right-panel-toggle" @click.stop="systemStore.toggleRightPanel()">
             <img class="right-panel-toggle-icon" :src="cdnOpenIcon + '/setting.png'" />
         </div>
     </div>
