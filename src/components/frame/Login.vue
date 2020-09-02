@@ -3,7 +3,12 @@
     <div class="login-page-form">
         <div class="form-layer shadow three"></div>
         <div class="form-layer shadow two"></div>
-        <div class="form-layer shadow one"></div>
+        <div class="form-layer shadow one">
+            <div class="adv-content">
+                <p class="title">CigoAdmin：西谷后台</p>
+                <p class="sub-title">——西谷开源出品</p>
+            </div>
+        </div>
         <div class="form-layer content">
             <div class="logo">
                 <span>C</span>
@@ -41,7 +46,8 @@ import {
     toRefs,
     onMounted,
     readonly,
-    toRaw
+    toRaw,
+    onUnmounted
 } from "vue";
 
 import {
@@ -51,14 +57,14 @@ import {
     apiErrorCatch
 } from "@/common/http";
 import {
-    string
-} from "locutus/python";
-import {
     LoginUserInfo
 } from "@/types/index";
 import {
     systemStore
 } from "@/store/index";
+import {
+    TweenMax
+} from "gsap";
 
 export default defineComponent({
     name: "Login",
@@ -66,8 +72,8 @@ export default defineComponent({
         // 表单数据
         const formData = reactive({
             username: "admin",
-            password: "123456"
-            // module: "admin"
+            password: "123456",
+            module: "admin"
         });
 
         // 登录函数
@@ -101,6 +107,17 @@ export default defineComponent({
             console.log("res:", res);
         };
 
+        onMounted(() => {
+            console.log("login mouted");
+
+            TweenMax.to(".login-page-form", 1, {
+                top: "30%",
+                right: "10%",
+                opacity: 1,
+                delay: 0.8
+            });
+        });
+
         return {
             doLogin,
             ...toRefs(formData)
@@ -116,16 +133,15 @@ export default defineComponent({
     height: 100vh;
     flex: 1;
     flex-direction: row;
-    justify-content: center;
+    position: relative;
 
     .login-page-form {
-        align-self: center;
-        width: 800px;
+        width: 880px;
         height: 300px;
-        display: flex;
-        margin-top: -100px;
-        margin-left: 100px;
-        position: relative;
+        position: absolute;
+        right: 50px;
+        bottom: 50px;
+        opacity: 0;
 
         .form-layer {
             border-radius: 5px;
@@ -158,6 +174,30 @@ export default defineComponent({
             background-color: #6b9afa;
             z-index: 3;
             opacity: 0.8;
+
+            .adv-content {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-left: 40px;
+
+                .title {
+                    font-size: 35px;
+                    font-style: italic;
+                    color: #fff;
+                    font-weight: 700;
+                    -webkit-box-reflect: below 8px -webkit-linear-gradient(transparent, transparent 40%, rgba(255, 255, 255, 0.3));
+                }
+
+                .sub-title {
+                    font-size: 14px;
+                    color: #fff;
+                    font-weight: 500;
+                    margin-left: 280px;
+                    margin-top: 30px;
+                }
+            }
         }
 
         .form-layer.content {
@@ -182,6 +222,9 @@ export default defineComponent({
                 justify-content: center;
                 align-items: center;
                 font-weight: 900;
+                font-style: italic;
+                padding-top: 5px;
+                padding-right: 6px;
             }
 
             .form-item.field {

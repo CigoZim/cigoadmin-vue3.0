@@ -11,7 +11,8 @@
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    onMounted
 } from "vue";
 
 import LeftMenu from "./LeftMenu.vue";
@@ -30,6 +31,11 @@ export default defineComponent({
         TopBar,
         MainContent,
         RightPanel
+    },
+    setup() {
+        onMounted(() => {
+            console.log("home mounted");
+        });
     }
 });
 </script>
