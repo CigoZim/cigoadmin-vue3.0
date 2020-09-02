@@ -1,17 +1,27 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { authInstance } from "./auth";
+import { authInstance } from "@/auth";
+import pagesRouter from "./pages";
 
 const routes: Array<RouteRecordRaw> = [
-	{
-		path: "/",
-		name: "Frame",
-		component: () => import("@/components/frame/Frame.vue"),
-	},
 	{
 		path: "/login",
 		name: "Login",
 		component: () => import("@/components/frame/Login.vue"),
 	},
+	{
+		path: "/",
+		name: "FramePages",
+		component: () => import("@/components/frame/Frame.vue"),
+		redirect: "noRedirect",
+		children: [
+			{
+				path: "",
+				name: "Dashboard",
+				component: () => import("@/components/frame/Dashboard.vue"),
+			},
+		],
+	},
+	pagesRouter,
 	{
 		path: "/gone",
 		name: "Gone",

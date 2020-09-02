@@ -3,8 +3,8 @@
     <div class="right-panel-bg" @click.stop="systemStore.closeRightPanel()"></div>
     <div class="right-panel">
         <span>我是右侧面板</span>
-        <div class="right-panel-toggle" @click.stop="systemStore.toggleRightPanel()">
-            <img class="right-panel-toggle-icon" :src="cdnOpenIcon + '/setting.png'" />
+        <div class="right-panel-toggle" :class="[panelOpenFlag ? 'open' : 'close']" @click.stop="systemStore.toggleRightPanel()">
+            <img class="right-panel-toggle-icon" :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'" />
         </div>
     </div>
 </div>
@@ -72,7 +72,8 @@ export default defineComponent({
         return {
             cdnOpenIcon: Domain.cdnOpenIcon,
             systemStore,
-            openClass
+            openClass,
+            panelOpenFlag
         };
     }
 });
@@ -106,26 +107,30 @@ export default defineComponent({
 
         .right-panel-toggle {
             cursor: pointer;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 46px;
             position: absolute;
             align-self: center;
             display: flex;
-            left: -25px;
-            background: #fff;
-            border-top-left-radius: 20px;
-            border-bottom-left-radius: 20px;
+            left: -35px;
+            background: #6b9afa;
+            border-top-left-radius: 23px;
+            border-bottom-left-radius: 23px;
 
             .right-panel-toggle-icon {
-                width: 20px;
-                height: 20px;
+                width: 25px;
+                height: 25px;
                 align-self: center;
-                margin-left: 5px;
+                margin-left: 8px;
             }
         }
 
         .right-panel-toggle:hover {
             opacity: 1 !important;
+        }
+
+        .right-panel-toggle.open {
+            background-color: #fff;
         }
     }
 }

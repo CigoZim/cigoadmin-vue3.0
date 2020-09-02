@@ -1,7 +1,12 @@
 <template>
 <div class="cigo-left-menu" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
-    <div class="left-menu-list">菜单列表</div>
+    <div class="left-menu-list">
+        <ul>
+            <li class="menu-item" @click.stop="showPage('/')">数据面板</li>
+            <li class="menu-item" @click.stop="showPage('/pages/index')">首页</li>
+        </ul>
+    </div>
 </div>
 </template>
 
@@ -12,6 +17,10 @@ import {
     toRefs,
     onBeforeMount
 } from "vue";
+import {
+    useRouter,
+    useRoute
+} from "vue-router";
 
 import LogoArea from "./leftMenu/LogoArea.vue";
 
@@ -24,9 +33,16 @@ export default defineComponent({
     components: {
         LogoArea
     },
-    setup(props) {
+    setup(props, context) {
+        const router = useRouter();
+
+        const showPage = (path: string) => {
+            router.push(path);
+        };
+
         return {
-            ...toRefs(systemStore.getState().systemState)
+            ...toRefs(systemStore.getState().systemState),
+            showPage
         };
     }
 });
@@ -50,6 +66,10 @@ export default defineComponent({
         display: flex;
         flex: 1;
         background-color: yellow;
+
+        .menu-item {
+            cursor: pointer;
+        }
     }
 }
 </style>

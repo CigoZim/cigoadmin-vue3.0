@@ -1,11 +1,17 @@
 <template>
 <div class="main-content">
-    <transition name="fade-transform" mode="out-in">
-        <div class="main-content-top">
-            <content-left-menu class="main-content-left-menu"></content-left-menu>
-            <div class="main-content-body">页面内容主体</div>
+    <div class="main-content-top">
+        <content-left-menu class="main-content-left-menu"></content-left-menu>
+        <div class="main-content-body">
+            <router-view v-slot="{ Component }">
+                <transition name="fade-transform" mode="out-in">
+                    <keep-alive>
+                        <component class="view" :is="Component" />
+                    </keep-alive>
+                </transition>
+            </router-view>
         </div>
-    </transition>
+    </div>
     <bottom-panel class="main-content-bottom"></bottom-panel>
 </div>
 </template>
@@ -46,7 +52,7 @@ export default defineComponent({
         .main-content-body {
             display: flex;
             flex: 1;
-            background-color: pink;
+            background-color: #f5f5f5;
         }
     }
 

@@ -28,11 +28,13 @@
 
             <div class="form-item btns field is-grouped">
                 <div class="control">
-                    <button class="button is-link" @click="doLogin">登 录</button>
+                    <button class="button is-link login-btn" @click="doLogin">登 录</button>
                 </div>
+                <!--
                 <div class="control">
                     <button class="button is-link is-light">取 消</button>
                 </div>
+                    -->
             </div>
         </div>
     </div>
@@ -236,6 +238,10 @@ export default defineComponent({
 
             .form-item.btns {
                 padding-top: 20px;
+
+                .login-btn {
+                    width: 264px;
+                }
             }
         }
     }
