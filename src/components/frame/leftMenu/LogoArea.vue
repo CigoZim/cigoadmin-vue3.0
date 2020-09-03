@@ -61,8 +61,9 @@ export default defineComponent({
     align-items: center;
     width: 100%;
     height: 60px;
-    background-color: #6b9afa;
+    background-color: #1d272b;
     position: relative;
+    border-bottom: 2px solid #2d373b;
 
     .short-title {
         color: #fff;

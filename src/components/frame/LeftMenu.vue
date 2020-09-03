@@ -2,7 +2,7 @@
 <div class="cigo-left-menu" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
     <div class="left-menu">
-        <menu-list :menuList="menuListRef" :level="1"></menu-list>
+        <menu-list :menuList="menuListRef" :level="0"></menu-list>
     </div>
 </div>
 </template>
@@ -90,7 +90,6 @@ export default defineComponent({
         width: 100%;
         display: flex;
         flex: 1;
-        background-color: yellow;
     }
 }
 </style>
