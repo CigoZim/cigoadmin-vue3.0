@@ -25,7 +25,7 @@ import {
 } from "@/common/http";
 
 export default defineComponent({
-    name: "App",
+    name: "Frame",
     components: {
         LeftMenu,
         TopBar,
