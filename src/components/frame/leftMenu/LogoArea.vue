@@ -37,13 +37,15 @@ export default defineComponent({
         });
 
         const menuChange = (openFlag: boolean) => {
-            TweenMax.to(".short-title", openFlag ? 1 : 0.3, {
+            /** 隐藏者立即执行，显示者延迟200ms，以便隐藏到一定程度才显示 */
+            /** 因为显示周期长于隐藏周期 */
+            TweenMax.to(".short-title", openFlag ? 0.5 : 0.8, {
                 opacity: openFlag ? 0 : 1,
-                delay: openFlag ? 0.5 : 0
+                delay: openFlag ? 0 : 0.2
             });
-            TweenMax.to(".full-title", openFlag ? 1 : 0.3, {
+            TweenMax.to(".full-title", openFlag ? 0.8 : 0.5, {
                 opacity: openFlag ? 1 : 0,
-                delay: openFlag ? 0.5 : 0
+                delay: openFlag ? 0.2 : 0
             });
         };
 
