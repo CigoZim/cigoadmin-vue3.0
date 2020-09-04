@@ -1,7 +1,7 @@
 <template>
 <div class="cigo-left-menu" :style="{'--menuWidth':(sideMenuOpen ? '200px' : '54px')}">
     <logo-area class="left-menu-logo-area"></logo-area>
-    <div class="left-menu">
+    <div class="left-menu-list">
         <menu-list :menuList="menuListRef" :level="0"></menu-list>
     </div>
 </div>
@@ -86,10 +86,17 @@ export default defineComponent({
     transition: all 0.5s ease-in-out;
     transition-delay: 10ms;
 
-    .left-menu {
+    .left-menu-list {
         width: 100%;
         display: flex;
         flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .left-menu-list::-webkit-scrollbar {
+        //TipsFlag 滚动但不显示滚动条
+        width: 0px;
     }
 }
 </style>

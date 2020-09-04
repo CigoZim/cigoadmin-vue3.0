@@ -1,14 +1,18 @@
 <template>
 <div class="cigo-menu-list">
-    <div class="menu-item" v-for="(item, index) in menuList" :class="[level==0 && !item.group_flag  ? 'first-level' : '', item.id == openMenuId ? 'expand' : 'close', item.group_flag ? 'group' : '']" :key="index" @click.stop="clickMenu(item)">
-        <div class="item-header">
-            <i v-if="level == 0 && !item.group_flag" class="item-line"></i>
-            <icon-font v-if="!item.group_flag" class="item-icon" :iconFlag="item.icon"></icon-font>
-            <span class="item-title">{{item.title}}</span>
-            <label class="item-label" :class="[item.label_class]">2</label>
-            <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
+    <div class="menu-container" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)">
+        <div class="menu-common" :class="makeMenuItemClass(item)">
+            <div class="item-left">
+                <i class="item-line" v-if="!item.group_flag"></i>
+                <icon-font class="item-icon" v-if="!item.group_flag" :iconFlag="item.icon"></icon-font>
+            </div>
+            <div class="item-right">
+                <span class="item-title">{{item.title}}</span>
+                <label class="item-label" :class="[item.label_class]">2</label>
+                <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
+            </div>
         </div>
-        <menu-list class="item-sublist" :style="[item.subList && item.subList.length ? {height: item.subList.length * 35 + 'px'} : {}]" v-if="item.subList && item.subList.length" :menuList="item.subList" :level="level+1"></menu-list>
+        <menu-list class="item-sublist" v-if="item.subList && item.subList.length" :style="level == 0 ? makeSecondLevelListHeight(item) : []" :menuList="item.subList" :level="level+1"></menu-list>
     </div>
 </div>
 </template>
@@ -17,9 +21,13 @@
 import {
     defineComponent,
     onMounted,
-    ref
+    ref,
+    computed
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
+import {
+    systemStore
+} from "@/store/index";
 import {
     Menu
 } from "@/components/frame/types";
@@ -41,7 +49,34 @@ export default defineComponent({
     },
     setup(props) {
         let openMenuId = ref(0);
+        let systemState = systemStore.getState().systemState;
 
+        /** 获取菜单项Class */
+        const makeMenuItemClass = (item: Menu) => {
+            let classes: string[] = [];
+            classes.push(systemState.sideMenuOpen ? "menu-open" : "menu-close");
+            classes.push(props.level == 0 ? "first-level" : "");
+            if (item.group_flag) {
+                classes.push("menu-group");
+            } else {
+                classes.push("menu-item");
+                classes.push(item.id == openMenuId.value ? "expand" : "close");
+            }
+            return classes;
+        };
+
+        /** 获取子列表项样式 */
+        const makeSecondLevelListHeight = (item: Menu) => {
+            let style = [];
+            if (item.subList && item.subList.length) {
+                style.push({
+                    height: item.subList.length * 35 + "px"
+                });
+            }
+            return style;
+        };
+
+        /** 点击菜单项事件处理 */
         const clickMenu = (item: Menu) => {
             // 无子菜单直接跳转
             if (!item.subList || item.subList.length == 0) {
@@ -66,6 +101,8 @@ export default defineComponent({
 
         return {
             openMenuId,
+            makeMenuItemClass,
+            makeSecondLevelListHeight,
             clickMenu
         };
     }
@@ -73,52 +110,51 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+$menu-list-color-bg: #424d52;
+$menu-list-color-bg-group: #1a2419;
+$menu-list-color-bg-firstlevel: #2c363a;
+$menu-list-color-bg-sublist: #625d62;
+$menu-list-color-item-highlight: #1d272b;
+$menu-list-color-item-line: #3c8dbc;
+$menu-list-color-item-title-common: #b8c7ce;
+$menu-list-color-item-title-group: #5f7c83;
+$menu-list-color-item-title-highlight: #fff;
+
 .cigo-menu-list {
     width: 100%;
-    background-color: #424d52;
-
+    background-color: $menu-list-color-bg;
     display: flex;
     flex-direction: column;
 
-    .menu-item {
-        position: relative;
-        border-bottom: 1px solid #1d272b;
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+    }
 
-        .item-header {
+    /*****************************************/
+    /** 菜单公共 */
+    .menu-common {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1px solid $menu-list-color-item-highlight;
+
+        .item-right {
             display: flex;
+            flex: 1;
             flex-direction: row;
             align-items: center;
-            cursor: pointer;
-            height: 45px;
-            background-color: #2c363a;
-
-            .item-line {
-                width: 3px;
-                height: 100%;
-                background-color: transparent;
-                margin-right: 5px;
-            }
-
-            .item-icon {
-                width: 16px;
-                height: 18px;
-                font-size: 16px;
-                margin-right: 5px;
-            }
+            height: 100%;
 
             .item-title {
-                color: #b8c7ce;
                 display: flex;
-                font-size: 16px;
                 flex: 1;
-                font-weight: 700;
             }
 
             .item-more {
                 margin: 0px 5px;
                 width: 30px;
                 height: 30px;
-                font-weight: 400;
                 visibility: hidden;
 
                 -moz-transition: all 0.8s ease-in-out;
@@ -132,98 +168,171 @@ export default defineComponent({
                 visibility: visible;
             }
         }
+    }
 
-        .item-header:hover {
-            background-color: #1d272b !important;
+    /*****************************************/
+    /** 菜单分组 */
+    .menu-group {
+        background-color: $menu-list-color-bg-group;
+        padding-left: 11px;
+        height: 30px;
+
+        .item-left {
+            width: 0px;
+        }
+
+        .item-right {
+            .item-title {
+                font-size: 12px;
+                color: $menu-list-color-item-title-group;
+            }
+        }
+    }
+
+    .menu-close.menu-group.first-level {
+        display: none;
+    }
+
+    /*****************************************/
+    /** 菜单常规属性 */
+    .menu-item {
+        position: relative;
+        cursor: pointer;
+        height: 45px;
+
+        .item-left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 30px;
+            height: 100%;
 
             .item-line {
-                background-color: #3c8dbc;
+                width: 3px;
+                height: 100%;
+                background-color: transparent;
+                margin-right: 5px;
+            }
+
+            .item-icon {
+                width: 16px;
+                height: 18px;
+                font-size: 16px;
             }
         }
-    }
 
-    .menu-item.first-level.expand>.item-header>.item-more {
-        -moz-transform: rotate(-540deg);
-        -webkit-transform: rotate(-540deg);
-        -o-transform: rotate(-540deg);
-        -ms-transform: rotate(-540deg);
-        transform: rotate(-540deg);
-    }
-
-    .menu-item.first-level>.item-sublist {
-        display: flex;
-        -moz-transition: all 0.5s ease-in-out;
-        -webkit-transition: all 0.5s ease-in-out;
-        -o-transition: all 0.5s ease-in-out;
-        -ms-transition: all 0.5s ease-in-out;
-        transition: all 0.5s ease-in-out;
-    }
-
-    .menu-item.first-level.close>.item-sublist {
-        height: 0px !important;
-    }
-
-    .menu-item.group {
-        .item-header {
-            background-color: #1a2419;
-            padding-left: 11px;
-            height: 30px;
+        .item-right {
+            widows: 170px;
 
             .item-title {
-                color: #5f7c83;
-                font-size: 12px;
+                font-size: 16px;
+                font-weight: 700;
+                color: $menu-list-color-item-title-common;
             }
         }
     }
 
-    .menu-item>.item-sublist {
-        .item-header {
-            background-color: transparent;
-            padding-left: 20px;
-            height: 35px;
-
-            .item-title {
-                font-size: 14px;
-                font-weight: 400;
-            }
-
-            .item-more {
-                -moz-transform: rotate(-90deg);
-                -webkit-transform: rotate(-90deg);
-                -o-transform: rotate(-90deg);
-                -ms-transform: rotate(-90deg);
-                transform: rotate(-90deg);
-            }
-        }
+    .menu-item:hover {
+        background-color: $menu-list-color-item-highlight !important;
     }
 
-    .menu-item>.item-sublist>.menu-item>.item-sublist {
-        display: none;
-        position: absolute;
-        left: 200px;
-        top: 0px;
-        background-color: #625d62;
-
-        .item-header {
-            padding-left: 5px;
-            padding-right: 5px;
-
-            .item-title {
-                color: #fff;
-            }
-        }
+    .menu-item:last-child {
+        border-bottom: 0px;
     }
 
-    .menu-item>.item-sublist>.menu-item:hover>.item-header>.item-more {
-        -moz-transform: rotate(-630deg);
-        -webkit-transform: rotate(-630deg);
-        -o-transform: rotate(-630deg);
-        -ms-transform: rotate(-630deg);
-        transform: rotate(-630deg);
+    /*****************************************/
+    /** 一级菜单属性 */
+
+    .menu-item.first-level {
+        background-color: $menu-list-color-bg-firstlevel;
     }
 
-    .menu-item>.item-sublist>.menu-item:hover>.item-sublist {
-        display: block;
+    .menu-item.first-level:hover>.item-right>.item-line {
+        background-color: $menu-list-color-item-line;
     }
+
+    // .menu-item.first-level + .item-sublist {
+    //     -moz-transition: all 0.5s ease-in-out;
+    //     -webkit-transition: all 0.5s ease-in-out;
+    //     -o-transition: all 0.5s ease-in-out;
+    //     -ms-transition: all 0.5s ease-in-out;
+    //     transition: all 0.5s ease-in-out;
+    // }
+
+    // .menu-item.first-level.expand>.item-header>.item-right>.item-more {
+    //     -moz-transform: rotate(-540deg);
+    //     -webkit-transform: rotate(-540deg);
+    //     -o-transform: rotate(-540deg);
+    //     -ms-transform: rotate(-540deg);
+    //     transform: rotate(-540deg);
+    // }
+
+    // .menu-item.menu-open.first-level.close>.item-sublist {
+    //     height: 0px !important;
+    // }
+
+    // .menu-item.menu-open.first-level.close>.item-sublist>.menu-item {
+    //     border-bottom: 0px;
+    // }
+
+    // .menu-item.menu-close.first-level>.item-header>.item-right {
+    //     display: none;
+    // }
+
+    /*****************************************/
+    /** 二级菜单悬浮属性 */
+    // .menu-item>.item-sublist {
+    //     .item-header {
+    //         background-color: transparent;
+    //         padding-left: 20px;
+    //         height: 35px;
+
+    //         .item-title {
+    //             font-size: 14px;
+    //             font-weight: 400;
+    //         }
+
+    //         .item-more {
+    //             -moz-transform: rotate(-90deg);
+    //             -webkit-transform: rotate(-90deg);
+    //             -o-transform: rotate(-90deg);
+    //             -ms-transform: rotate(-90deg);
+    //             transform: rotate(-90deg);
+    //         }
+    //     }
+    // }
+
+    // .menu-item.menu-close.first-level>.item-sublist,
+    // .menu-item>.item-sublist>.menu-item>.item-sublist {
+    //     display: none;
+    //     position: absolute;
+    //     left: 200px;
+    //     top: 0px;
+    //     background-color: $menu-list-color-bg-sublist;
+
+    //     .item-header {
+    //         padding-left: 5px;
+    //         padding-right: 5px;
+
+    //         .item-title {
+    //             color: $menu-list-color-item-title-highlight;
+    //         }
+    //     }
+    // }
+
+    // .menu-item>.item-sublist>.menu-item:hover>.item-header>.item-right>.item-more {
+    //     -moz-transform: rotate(-630deg);
+    //     -webkit-transform: rotate(-630deg);
+    //     -o-transform: rotate(-630deg);
+    //     -ms-transform: rotate(-630deg);
+    //     transform: rotate(-630deg);
+    // }
+
+    // .menu-item.menu-open.first-level:hover>.item-sublist,
+    // .menu-item>.item-sublist>.menu-item:hover>.item-sublist {
+    //     display: block;
+    // }
+
+    /*****************************************/
 }
 </style>
