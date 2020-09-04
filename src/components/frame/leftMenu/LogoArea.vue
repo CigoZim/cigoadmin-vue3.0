@@ -45,12 +45,9 @@ export default defineComponent({
             });
             TweenMax.to(".full-title", openFlag ? 0.8 : 0.5, {
                 opacity: openFlag ? 1 : 0,
+                width: openFlag ? "182px" : "0px",
                 delay: openFlag ? 0.2 : 0
             });
-        };
-
-        return {
-            menuOpenFlag
         };
     }
 });
@@ -76,7 +73,6 @@ export default defineComponent({
     }
 
     .full-title {
-        // width: "200px";
         font-size: 1.15em;
         font-style: italic;
         color: #fff;
@@ -84,6 +80,8 @@ export default defineComponent({
         padding-left: 5px;
         overflow: hidden;
         position: absolute;
+        white-space: nowrap;
+        overflow: hidden;
     }
 }
 </style>

@@ -7,7 +7,7 @@
                 <icon-font class="item-icon" v-if="!item.group_flag" :style="{'--itemIconColor':makeRandomColor(1)}" :iconFlag="item.icon"></icon-font>
             </div>
             <div class="item-right">
-                <span class="item-title">{{item.title}}</span>
+                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
                 <label class="item-label" :class="[item.label_class]" :style="{'--itemLabelColor':makeRandomColor(0.5)}">22</label>
                 <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
             </div>
@@ -22,7 +22,9 @@ import {
     defineComponent,
     onMounted,
     ref,
-    computed
+    computed,
+    toRef,
+    watch
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
@@ -31,6 +33,9 @@ import {
 import {
     Menu
 } from "@/components/frame/types";
+import {
+    TweenMax
+} from "gsap";
 
 export default defineComponent({
     name: "MenuList",
@@ -49,12 +54,39 @@ export default defineComponent({
     },
     setup(props) {
         let openMenuId = ref(0);
-        let systemState = systemStore.getState().systemState;
+        let menuOpenFlag = toRef(
+            systemStore.getState().systemState,
+            "sideMenuOpen"
+        );
+        let titleGoneFlag = ref(false);
+
+        watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
+            menuChange(openFlag);
+        });
+
+        onMounted(() => {
+            menuChange(menuOpenFlag.value);
+        });
+
+        /** 监听菜单变化 */
+        const menuChange = (openFlag: boolean) => {
+            TweenMax.to(".menu-item.first-level>.item-right>.item-title", 0.8, {
+                opacity: openFlag ? 1 : 0,
+                delay: 0
+            });
+            if (!openFlag) {
+                setTimeout(() => {
+                    titleGoneFlag.value = true;
+                }, 800);
+            } else {
+                titleGoneFlag.value = false;
+            }
+        };
 
         /** 获取菜单项Class */
         const makeMenuItemClass = (item: Menu) => {
             let classes: string[] = [];
-            classes.push(systemState.sideMenuOpen ? "menu-open" : "menu-close");
+            classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
             classes.push(props.level == 0 ? "first-level" : "");
             if (item.group_flag) {
                 classes.push("menu-group");
@@ -119,7 +151,8 @@ export default defineComponent({
             makeMenuItemClass,
             makeSecondLevelListHeight,
             makeRandomColor,
-            clickMenu
+            clickMenu,
+            titleGoneFlag
         };
     }
 });
@@ -141,6 +174,7 @@ $menu-list-dimen-width-close: 103px;
 .cigo-menu-list {
     background-color: $menu-list-color-bg;
     display: flex;
+    width: 100%;
     flex-direction: column;
 
     .menu-container {
@@ -154,22 +188,22 @@ $menu-list-dimen-width-close: 103px;
     .menu-common {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid $menu-list-color-item-highlight;
 
         .item-right {
             display: flex;
+            flex: 1;
             flex-direction: row;
+            justify-content: flex-end;
             align-items: center;
             height: 100%;
-            -moz-transition: all 0.8s ease-in-out;
-            -webkit-transition: all 0.8s ease-in-out;
-            -o-transition: all 0.8s ease-in-out;
-            -ms-transition: all 0.8s ease-in-out;
-            transition: all 0.8s ease-in-out;
 
             .item-title {
                 display: flex;
+                flex: 1;
+                padding-right: 5px;
             }
 
             .item-label {
@@ -214,9 +248,14 @@ $menu-list-dimen-width-close: 103px;
             display: none;
         }
 
-        .item-title {
-            font-size: 12px;
-            color: $menu-list-color-item-title-group;
+        .item-right {
+            display: flex;
+            flex: 1;
+
+            .item-title {
+                font-size: 12px;
+                color: $menu-list-color-item-title-group;
+            }
         }
     }
 
@@ -283,16 +322,28 @@ $menu-list-dimen-width-close: 103px;
         }
 
         .item-right {
-            width: 199px;
+            position: relative;
+
+            .item-title {
+                width: 137px !important;
+                flex: none;
+                position: absolute;
+                left: 0px;
+            }
+
+            .item-label {
+                position: absolute;
+                right: 40px;
+            }
+
+            .item-more {
+                position: absolute;
+            }
         }
     }
 
-    .menu-close.menu-item.first-level>.item-right {
-        width: 62px;
-
-        .item-title {
-            visibility: hidden;
-        }
+    .menu-item.first-level>.item-right>.item-title.gone {
+        display: none;
     }
 
     /*****************************************/
@@ -302,6 +353,7 @@ $menu-list-dimen-width-close: 103px;
         position: absolute;
         top: 0px;
         left: $menu-list-dimen-width-open;
+        display: none;
     }
 
     .menu-close.menu-item.first-level+.item-sublist {

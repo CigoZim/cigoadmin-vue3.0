@@ -11,9 +11,11 @@
 import {
     defineComponent,
     isReactive,
-    toRefs,
     onBeforeMount,
-    ref
+    ref,
+    toRef,
+    watch,
+    onMounted
 } from "vue";
 import {
     useRouter,
@@ -22,6 +24,9 @@ import {
 import LogoArea from "./leftMenu/LogoArea.vue";
 import MenuList from "./leftMenu/MenuList.vue";
 import {
+    systemStore
+} from "@/store/index";
+import {
     apiRequest,
     apiSign,
     apiErrorCatch
@@ -29,6 +34,9 @@ import {
 import {
     Menu
 } from "@/components/frame/types/index";
+import {
+    TweenMax
+} from "gsap";
 
 export default defineComponent({
     name: "LeftMenu",
@@ -40,10 +48,28 @@ export default defineComponent({
         const router = useRouter();
         let menuList: Menu[] = [];
         let menuListRef = ref(menuList);
+        let menuOpenFlag = toRef(
+            systemStore.getState().systemState,
+            "sideMenuOpen"
+        );
 
         onBeforeMount(() => {
             getMenuList();
         });
+        watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
+            menuChange(openFlag);
+        });
+
+        onMounted(() => {
+            menuChange(menuOpenFlag.value);
+        });
+
+        const menuChange = (openFlag: boolean) => {
+            TweenMax.to(".cigo-left-menu", 0.8, {
+                width: openFlag ? "240px" : "103px",
+                delay: 0
+            });
+        };
 
         // 加载页面
         const showPage = (path: string) => {
@@ -71,6 +97,7 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-left-menu {
+    width: 240px;
     height: 100vh;
     display: flex;
     flex-direction: column;
