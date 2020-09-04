@@ -61,7 +61,6 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
     height: 60px;
     background-color: #1d272b;
     position: relative;

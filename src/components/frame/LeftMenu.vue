@@ -76,7 +76,6 @@ export default defineComponent({
     flex-direction: column;
 
     .left-menu-list {
-        width: 100%;
         display: flex;
         flex: 1;
         // overflow-y: auto;
@@ -84,7 +83,7 @@ export default defineComponent({
     }
 
     .left-menu-list::-webkit-scrollbar {
-        //TipsFlag 滚动但不显示滚动条
+        /** 滚动但不显示滚动条 */
         width: 0px;
     }
 }

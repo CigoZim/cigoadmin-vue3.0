@@ -136,7 +136,7 @@ $menu-list-color-item-title-common: #b8c7ce;
 $menu-list-color-item-title-group: #5f7c83;
 $menu-list-color-item-title-highlight: #fff;
 $menu-list-dimen-width-open: 240px;
-$menu-list-dimen-width-close: 103px;
+$menu-list-dimen-width-close: 90px;
 
 .cigo-menu-list {
     background-color: $menu-list-color-bg;
@@ -152,6 +152,7 @@ $menu-list-dimen-width-close: 103px;
     /*****************************************/
     /** 菜单公共 */
     .menu-common {
+        width: $menu-list-dimen-width-open;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -159,17 +160,19 @@ $menu-list-dimen-width-close: 103px;
 
         .item-right {
             display: flex;
+            flex: 1;
             flex-direction: row;
             align-items: center;
             height: 100%;
-            -moz-transition: all 0.8s ease-in-out;
-            -webkit-transition: all 0.8s ease-in-out;
-            -o-transition: all 0.8s ease-in-out;
-            -ms-transition: all 0.8s ease-in-out;
-            transition: all 0.8s ease-in-out;
 
             .item-title {
                 display: flex;
+                flex: 1;
+                -moz-transition: all 0.8s ease-in-out;
+                -webkit-transition: all 0.8s ease-in-out;
+                -o-transition: all 0.8s ease-in-out;
+                -ms-transition: all 0.8s ease-in-out;
+                transition: all 0.8s ease-in-out;
             }
 
             .item-label {
@@ -287,18 +290,49 @@ $menu-list-dimen-width-close: 103px;
         }
     }
 
+    .menu-close.menu-item.first-level {
+        width: $menu-list-dimen-width-close;
+    }
+
     .menu-close.menu-item.first-level>.item-right {
-        width: 62px;
+        width: 0px;
 
         .item-title {
-            visibility: hidden;
+            display: none;
         }
     }
+
+    // .menu-item.first-level + .item-sublist {
+    //     -moz-transition: all 0.5s ease-in-out;
+    //     -webkit-transition: all 0.5s ease-in-out;
+    //     -o-transition: all 0.5s ease-in-out;
+    //     -ms-transition: all 0.5s ease-in-out;
+    //     transition: all 0.5s ease-in-out;
+    // }
+
+    // .menu-item.first-level.expand>.item-header>.item-right>.item-more {
+    //     -moz-transform: rotate(-540deg);
+    //     -webkit-transform: rotate(-540deg);
+    //     -o-transform: rotate(-540deg);
+    //     -ms-transform: rotate(-540deg);
+    //     transform: rotate(-540deg);
+    // }
+
+    // .menu-item.menu-open.first-level.close>.item-sublist {
+    //     height: 0px !important;
+    // }
+
+    // .menu-item.menu-open.first-level.close>.item-sublist>.menu-item {
+    //     border-bottom: 0px;
+    // }
+
+    // .menu-item.menu-close.first-level>.item-header>.item-right {
+    //     display: none;
+    // }
 
     /*****************************************/
     /** 二级菜单悬浮属性 */
     .menu-item+.item-sublist {
-        width: $menu-list-dimen-width-open;
         position: absolute;
         top: 0px;
         left: $menu-list-dimen-width-open;
@@ -307,6 +341,56 @@ $menu-list-dimen-width-close: 103px;
     .menu-close.menu-item.first-level+.item-sublist {
         left: $menu-list-dimen-width-close;
     }
+
+    // .menu-item>.item-sublist {
+    //     .item-header {
+    //         background-color: transparent;
+    //         padding-left: 20px;
+    //         height: 35px;
+
+    //         .item-title {
+    //             font-size: 14px;
+    //             font-weight: 400;
+    //         }
+
+    //         .item-more {
+    //             -moz-transform: rotate(-90deg);
+    //             -webkit-transform: rotate(-90deg);
+    //             -o-transform: rotate(-90deg);
+    //             -ms-transform: rotate(-90deg);
+    //             transform: rotate(-90deg);
+    //         }
+    //     }
+    // }
+
+    // .menu-item.menu-close.first-level>.item-sublist,
+    // .menu-item>.item-sublist>.menu-item>.item-sublist {
+    //     display: none;
+    //     top: 0px;
+    //     background-color: $menu-list-color-bg-sublist;
+
+    //     .item-header {
+    //         padding-left: 5px;
+    //         padding-right: 5px;
+
+    //         .item-title {
+    //             color: $menu-list-color-item-title-highlight;
+    //         }
+    //     }
+    // }
+
+    // .menu-item>.item-sublist>.menu-item:hover>.item-header>.item-right>.item-more {
+    //     -moz-transform: rotate(-630deg);
+    //     -webkit-transform: rotate(-630deg);
+    //     -o-transform: rotate(-630deg);
+    //     -ms-transform: rotate(-630deg);
+    //     transform: rotate(-630deg);
+    // }
+
+    // .menu-item.menu-open.first-level:hover>.item-sublist,
+    // .menu-item>.item-sublist>.menu-item:hover>.item-sublist {
+    //     display: block;
+    // }
 
     /*****************************************/
 }
