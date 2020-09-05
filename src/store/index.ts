@@ -62,14 +62,7 @@ class Store {
 	}
 }
 
-// const initialState = (): State => ({
-// 	systemState: initialSystemState(),
-// 	userInfo: initialLoginUserInfo(),
-// });
-
 const initialState = (): State => {
-	console.log("initialState");
-
 	return {
 		systemState: initialSystemState(),
 		userInfo: initialLoginUserInfo(),

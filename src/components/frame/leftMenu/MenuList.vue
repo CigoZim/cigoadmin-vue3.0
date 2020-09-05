@@ -82,15 +82,19 @@ export default defineComponent({
             });
             TweenMax.to(".first-level>.menu-group", 0.8, {
                 height: openFlag ? "35px" : "0px",
-                delay: 0
+                opacity: openFlag ? 1 : 0,
+                delay: 0,
+                onStart: () => {
+                    if (openFlag) {
+                        titleGoneFlag.value = false;
+                    }
+                },
+                onComplete: () => {
+                    if (!openFlag) {
+                        titleGoneFlag.value = true;
+                    }
+                }
             });
-            if (!openFlag) {
-                setTimeout(() => {
-                    titleGoneFlag.value = true;
-                }, 800);
-            } else {
-                titleGoneFlag.value = false;
-            }
             //如果关闭左侧菜单，则关闭当前正展开的一级菜单
             if (!openFlag && clickOpenMenuRef.value.id) {
                 recordClickMenu(clickOpenMenuRef.value); // 清空当前菜单
@@ -244,6 +248,8 @@ $menu-list-color-menu-sub: #1a2419;
                 display: flex;
                 flex: 1;
                 padding-right: 5px;
+                white-space: nowrap;
+                overflow: hidden;
             }
 
             .item-label {

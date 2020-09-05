@@ -69,8 +69,7 @@ export default defineComponent({
 
         const menuChange = (openFlag: boolean) => {
             TweenMax.to(".cigo-left-menu", 0.8, {
-                width: openFlag ? "240px" : "103px",
-                delay: 0
+                width: openFlag ? "240px" : "103px"
             });
         };
 
