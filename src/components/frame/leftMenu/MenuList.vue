@@ -55,7 +55,11 @@ export default defineComponent({
         }
     },
     setup(props) {
-        let openMenuId = ref(0);
+        let clickOpenMenu: Menu = {
+            id: 0,
+            title: ""
+        };
+        let clickOpenMenuRef = ref(clickOpenMenu);
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
@@ -87,6 +91,10 @@ export default defineComponent({
             } else {
                 titleGoneFlag.value = false;
             }
+            //如果关闭左侧菜单，则关闭当前正展开的一级菜单
+            if (!openFlag && clickOpenMenuRef.value.id) {
+                recordClickMenu(clickOpenMenuRef.value); // 清空当前菜单
+            }
         };
 
         /** 获取菜单项容器Class */
@@ -95,7 +103,9 @@ export default defineComponent({
             classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
             classes.push(props.level == 0 ? "first-level" : "");
             if (!item.group_flag) {
-                classes.push(item.id == openMenuId.value ? "expand" : "close");
+                classes.push(
+                    clickOpenMenuRef.value.id == item.id ? "expand" : "close"
+                );
             }
             return classes;
         };
@@ -118,7 +128,13 @@ export default defineComponent({
         const clickMenu = (item: Menu) => {
             // 无子菜单直接跳转
             if (!item.subList || item.subList.length == 0) {
-                //TODO 执行跳转
+                //TODO 执行跳转,过滤类型
+                return;
+            }
+
+            /** 下面为非跳转情况 */
+            // 左侧菜单非开启状态无动作
+            if (!menuOpenFlag.value) {
                 return;
             }
             // 非一级菜单无动作
@@ -129,26 +145,56 @@ export default defineComponent({
             if (item.group_flag) {
                 return;
             }
+            //记录有效点击菜单
+            recordClickMenu(item);
+        };
 
-            openMenuId.value = item.id ?
-                item.id == openMenuId.value ?
-                0 :
-                item.id :
-                0;
+        /** 记录点击菜单项 */
+        const recordClickMenu = (item: Menu) => {
+            // 记录点击菜单项
+            clickOpenMenuRef.value =
+                item.id == clickOpenMenuRef.value.id ?
+                {
+                    id: 0,
+                    title: ""
+                } :
+                item;
         };
 
         /** 鼠标滑入/滑出菜单项 */
         const hoverMenuItem = (item: Menu, inOutFlag: boolean) => {
-            TweenMax.to("#sub-list-" + item.id, 0.8, {
-                width: inOutFlag ? "240px" : "0px",
-                height: inOutFlag ? "100px" : "0px",
-                opacity: inOutFlag ? 1 : 0,
-                display: inOutFlag ? "flex" : "none"
-            });
+            if (props.level == 0 && menuOpenFlag.value) {
+                return;
+            }
+            subMenuListAnimation(item, inOutFlag);
+        };
+        watch(clickOpenMenuRef, (newMenu: Menu, preMenu: Menu) => {
+            subMenuListAnimation(newMenu, true);
+            subMenuListAnimation(preMenu, false);
+        });
+        const subMenuListAnimation = (item: Menu, openFlag: boolean) => {
+            if (!item.subList || !item.subList.length) {
+                return;
+            }
+            let subListHeight = item.subList.length * 40 + "px";
+            let animOptions = {};
+            if (menuOpenFlag.value && props.level == 0) {
+                TweenMax.to("#sub-list-" + item.id, 0.8, {
+                    height: openFlag ? subListHeight : "0px",
+                    opacity: openFlag ? 1 : 0,
+                    display: openFlag ? "flex" : "none"
+                });
+            } else {
+                TweenMax.to("#sub-list-" + item.id, 0.8, {
+                    width: openFlag ? "240px" : "0px",
+                    height: openFlag ? subListHeight : "0px",
+                    opacity: openFlag ? 1 : 0,
+                    display: openFlag ? "flex" : "none"
+                });
+            }
         };
 
         return {
-            openMenuId,
             makeMenuItemContainerClass,
             makeMenuItemClass,
             clickMenu,
@@ -351,6 +397,7 @@ $menu-list-color-menu-sub: #1a2419;
     }
 
     .menu-open.first-level>.item-sublist {
+        width: 240px !important;
         position: relative;
         left: auto;
     }
