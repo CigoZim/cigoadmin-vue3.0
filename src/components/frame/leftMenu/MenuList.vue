@@ -1,13 +1,13 @@
 <template>
 <div class="cigo-menu-list">
-    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)" @mouseenter="mouseenterMenu(item)" @mouseleave="mouseleaveMenu(item)">
+    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)" @mouseenter="hoverMenuItem(item, true)" @mouseleave="hoverMenuItem(item, false)">
         <div class="menu-common" :class="makeMenuItemClass(item)">
             <div class="item-left">
                 <i class="item-line" v-if="!item.group_flag"></i>
                 <icon-font class="item-icon" v-if="!item.group_flag" :style="[item.color ? {color: item.color} : {}]" :iconFlag="item.icon"></icon-font>
             </div>
             <div class="item-right">
-                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title+':'+item.id}}</span>
+                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
                 <label class="item-label" :class="[item.label_class]" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
                 <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
             </div>
@@ -137,33 +137,14 @@ export default defineComponent({
                 0;
         };
 
-        /** 鼠标滑入菜单项 */
-        const mouseenterMenu = (item: Menu) => {
-            console.log("滑入：", item.id);
-            console.log("显示：", item.id);
+        /** 鼠标滑入/滑出菜单项 */
+        const hoverMenuItem = (item: Menu, inOutFlag: boolean) => {
             TweenMax.to("#sub-list-" + item.id, 0.8, {
-                height: "100px",
-                opacity: 1,
-                display: "flex",
-                delay: 0
+                width: inOutFlag ? "240px" : "0px",
+                height: inOutFlag ? "100px" : "0px",
+                opacity: inOutFlag ? 1 : 0,
+                display: inOutFlag ? "flex" : "none"
             });
-
-            return false;
-        };
-
-        /** 鼠标滑出菜单项 */
-        const mouseleaveMenu = (item: Menu) => {
-            console.log("滑出：", item.id);
-            TweenMax.to("#sub-list-" + item.id, 0.8, {
-                height: "0px",
-                opacity: 0,
-                display: "none",
-                delay: 0
-            });
-            setTimeout(() => {
-                console.log("隐藏", item.id);
-            }, 800);
-            return false;
         };
 
         return {
@@ -171,8 +152,7 @@ export default defineComponent({
             makeMenuItemContainerClass,
             makeMenuItemClass,
             clickMenu,
-            mouseenterMenu,
-            mouseleaveMenu,
+            hoverMenuItem,
             titleGoneFlag
         };
     }
@@ -354,7 +334,7 @@ $menu-list-color-menu-sub: #1a2419;
     /*****************************************/
     /** 二级+菜单属性 */
     .menu-item+.item-sublist {
-        width: 240px;
+        width: 0px;
         height: 0px;
         position: absolute;
         top: 0px;
