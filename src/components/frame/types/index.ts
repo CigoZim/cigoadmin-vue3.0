@@ -35,6 +35,8 @@ export interface Menu {
 	target_type?: string;
 	url?: string;
 
+	color?: string;
+
 	// group: ""
 	// group_sort: 100
 	// module: "admin"

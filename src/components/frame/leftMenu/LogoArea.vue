@@ -59,7 +59,7 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     height: 60px;
-    background-color: #1d272b;
+    background-color: #1a2419;
     position: relative;
     border-bottom: 2px solid #2d373b;
 

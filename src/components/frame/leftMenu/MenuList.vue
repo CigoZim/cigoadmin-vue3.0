@@ -1,18 +1,18 @@
 <template>
 <div class="cigo-menu-list">
-    <div class="menu-container" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)">
+    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)">
         <div class="menu-common" :class="makeMenuItemClass(item)">
             <div class="item-left">
                 <i class="item-line" v-if="!item.group_flag"></i>
-                <icon-font class="item-icon" v-if="!item.group_flag" :style="{'--itemIconColor':makeRandomColor(1)}" :iconFlag="item.icon"></icon-font>
+                <icon-font class="item-icon" v-if="!item.group_flag" :style="[item.color ? {color: item.color} : {}]" :iconFlag="item.icon"></icon-font>
             </div>
             <div class="item-right">
                 <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
-                <label class="item-label" :class="[item.label_class]" :style="{'--itemLabelColor':makeRandomColor(0.5)}">22</label>
+                <label class="item-label" :class="[item.label_class]" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
                 <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
             </div>
         </div>
-        <menu-list class="item-sublist" v-if="item.subList && item.subList.length" :style="level == 0 ? makeSecondLevelListHeight(item) : []" :menuList="item.subList" :level="level+1"></menu-list>
+        <menu-list class="item-sublist" v-if="item.subList && item.subList.length" :style="{'--subListHeight': (item.subList && item.subList.length ? item.subList.length * 40 + 'px' : 'auto')}" :menuList="item.subList" :level="level+1"></menu-list>
     </div>
 </div>
 </template>
@@ -24,7 +24,8 @@ import {
     ref,
     computed,
     toRef,
-    watch
+    watch,
+    onBeforeMount
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
@@ -45,7 +46,8 @@ export default defineComponent({
     props: {
         menuList: {
             type: Array as() => Menu[],
-            require: true
+            require: true,
+            default: []
         },
         level: {
             type: Number,
@@ -60,21 +62,21 @@ export default defineComponent({
         );
         let titleGoneFlag = ref(false);
 
-        watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
-            menuChange(openFlag);
-        });
-
         onMounted(() => {
             menuChange(menuOpenFlag.value);
         });
 
+        watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
+            menuChange(openFlag);
+        });
+
         /** 监听菜单变化 */
         const menuChange = (openFlag: boolean) => {
-            TweenMax.to(".menu-item.first-level>.item-right>.item-title", 0.8, {
+            TweenMax.to(".first-level>.menu-item .item-title", 0.8, {
                 opacity: openFlag ? 1 : 0,
                 delay: 0
             });
-            TweenMax.to(".menu-group.first-level", 0.8, {
+            TweenMax.to(".first-level>.menu-group", 0.8, {
                 height: openFlag ? "35px" : "0px",
                 delay: 0
             });
@@ -87,47 +89,29 @@ export default defineComponent({
             }
         };
 
-        /** 获取菜单项Class */
-        const makeMenuItemClass = (item: Menu) => {
+        /** 获取菜单项容器Class */
+        const makeMenuItemContainerClass = (item: Menu) => {
             let classes: string[] = [];
             classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
             classes.push(props.level == 0 ? "first-level" : "");
-            if (item.group_flag) {
-                classes.push("menu-group");
-                classes.push(
-                    props.level == 0 && titleGoneFlag.value ? "gone" : ""
-                );
-            } else {
-                classes.push("menu-item");
+            if (!item.group_flag) {
                 classes.push(item.id == openMenuId.value ? "expand" : "close");
             }
             return classes;
         };
 
-        /** 获取子列表项样式 */
-        const makeSecondLevelListHeight = (item: Menu) => {
-            let style = [];
-            if (item.subList && item.subList.length) {
-                style.push({
-                    height1: item.subList.length * 35 + "px"
-                });
+        /** 获取菜单项Class */
+        const makeMenuItemClass = (item: Menu) => {
+            let classes: string[] = [];
+            if (!item.group_flag) {
+                classes.push("menu-item");
+            } else {
+                classes.push("menu-group");
+                if (props.level == 0 && titleGoneFlag.value) {
+                    classes.push("gone");
+                }
             }
-            return style;
-        };
-
-        /** 创建标签随机颜色 */
-        const makeRandomColor = (opacity: number) => {
-            return (
-                "rgba(" +
-                Math.ceil(Math.random() * 255) +
-                "," +
-                Math.ceil(Math.random() * 255) +
-                "," +
-                Math.ceil(Math.random() * 255) +
-                "," +
-                opacity +
-                ")"
-            );
+            return classes;
         };
 
         /** 点击菜单项事件处理 */
@@ -155,9 +139,8 @@ export default defineComponent({
 
         return {
             openMenuId,
+            makeMenuItemContainerClass,
             makeMenuItemClass,
-            makeSecondLevelListHeight,
-            makeRandomColor,
             clickMenu,
             titleGoneFlag
         };
@@ -166,17 +149,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+$menu-list-color-bg-highlight: #525d62;
 $menu-list-color-bg: #424d52;
-$menu-list-color-bg-group: #1a2419;
-$menu-list-color-bg-firstlevel: #2c363a;
-$menu-list-color-bg-sublist: #625d62;
-$menu-list-color-item-highlight: #1d272b;
-$menu-list-color-item-line: #3c8dbc;
-$menu-list-color-item-title-common: #b8c7ce;
-$menu-list-color-item-title-group: #5f7c83;
-$menu-list-color-item-title-highlight: #fff;
-$menu-list-dimen-width-open: 240px;
-$menu-list-dimen-width-close: 103px;
+$menu-list-color-menu-group: #2f373d;
+$menu-list-color-menu-main: #2a3429;
+$menu-list-color-menu-sub: #1a2419;
 
 .cigo-menu-list {
     background-color: $menu-list-color-bg;
@@ -197,7 +174,6 @@ $menu-list-dimen-width-close: 103px;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid $menu-list-color-item-highlight;
 
         .item-right {
             display: flex;
@@ -214,7 +190,6 @@ $menu-list-dimen-width-close: 103px;
             }
 
             .item-label {
-                background-color: var(--itemLabelColor);
                 border-radius: 11px;
                 font-size: 10px;
                 color: #fff;
@@ -241,7 +216,7 @@ $menu-list-dimen-width-close: 103px;
     /*****************************************/
     /** 菜单分组 */
     .menu-group {
-        background-color: $menu-list-color-bg-group;
+        background-color: $menu-list-color-menu-group;
         padding-left: 11px;
         height: 35px;
 
@@ -254,21 +229,19 @@ $menu-list-dimen-width-close: 103px;
             flex: 1;
 
             .item-title {
-                font-size: 12px;
-                color: $menu-list-color-item-title-group;
+                font-size: 13px;
+                color: #888;
             }
         }
     }
 
-    .menu-close.menu-group.first-level {
-        border-bottom: 0px;
-
+    .menu-close.first-level>.menu-group {
         .item-right {
             display: none;
         }
     }
 
-    .menu-close.menu-group.first-level.gone {
+    .menu-close.first-level>.menu-group.gone {
         display: none;
     }
 
@@ -277,6 +250,7 @@ $menu-list-dimen-width-close: 103px;
     .menu-item {
         cursor: pointer;
         height: 40px;
+        border-bottom: 1px dashed #444;
 
         .item-left {
             display: flex;
@@ -292,9 +266,8 @@ $menu-list-dimen-width-close: 103px;
             }
 
             .item-icon {
-                width: 25px;
-                height: 25px;
-                color: var(--itemIconColor);
+                width: 22px;
+                height: 22px;
                 margin-right: 5px;
             }
         }
@@ -302,7 +275,7 @@ $menu-list-dimen-width-close: 103px;
         .item-title {
             font-size: 16px;
             font-weight: 700;
-            color: $menu-list-color-item-title-common;
+            color: #eee;
         }
     }
 
@@ -313,9 +286,9 @@ $menu-list-dimen-width-close: 103px;
     /*****************************************/
     /** 一级菜单属性 */
 
-    .menu-item.first-level {
+    .first-level>.menu-item {
         height: 45px;
-        background-color: $menu-list-color-bg-firstlevel;
+        background-color: $menu-list-color-menu-main;
 
         .item-icon {
             width: 28px;
@@ -332,6 +305,10 @@ $menu-list-dimen-width-close: 103px;
                 left: 0px;
             }
 
+            .item-title.gone {
+                display: none;
+            }
+
             .item-label {
                 position: absolute;
                 right: 40px;
@@ -343,22 +320,38 @@ $menu-list-dimen-width-close: 103px;
         }
     }
 
-    .menu-item.first-level>.item-right>.item-title.gone {
-        display: none;
-    }
-
     /*****************************************/
-    /** 二级菜单悬浮属性 */
+    /** 二级+菜单属性 */
     .menu-item+.item-sublist {
-        width: $menu-list-dimen-width-open;
+        width: 240px;
+        height: 0px;
         position: absolute;
         top: 0px;
-        left: $menu-list-dimen-width-open;
+        left: 240px;
         // display: none;
+        background-color: $menu-list-color-menu-sub;
+        -moz-transition: all 0.5s ease-in-out;
+        -webkit-transition: all 0.5s ease-in-out;
+        -o-transition: all 0.5s ease-in-out;
+        -ms-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
+
+        .item-title {
+            font-size: 13px;
+        }
     }
 
-    .menu-close.menu-item.first-level+.item-sublist {
-        left: $menu-list-dimen-width-close;
+    .menu-close.first-level>.item-sublist {
+        left: 103px;
+    }
+
+    .menu-open.first-level>.item-sublist {
+        position: relative;
+        left: auto;
+    }
+
+    .menu-open.first-level>.item-sublist>.menu-container>.menu-common {
+        padding-left: 15px;
     }
 
     /*****************************************/
@@ -379,13 +372,27 @@ $menu-list-dimen-width-close: 103px;
         }
     }
 
-    .menu-item:hover {
-        background-color: $menu-list-color-item-highlight !important;
+    .menu-container.menu-open.first-level>.menu-item {
+        .item-more.show {
+            -moz-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+    }
+
+    .menu-container.menu-open.first-level.expand>.menu-item,
+    .menu-container:hover>.menu-item {
+        background-color: $menu-list-color-bg-highlight !important;
 
         .item-line {
-            background-color: $menu-list-color-item-line;
+            background-color: #3c8dbc;
         }
+    }
 
+    .menu-container.menu-open:hover:not(.first-level)>.menu-item,
+    .menu-container.menu-close:hover>.menu-item {
         .item-more.show {
             -moz-transform: rotate(90deg);
             -webkit-transform: rotate(90deg);
@@ -393,6 +400,23 @@ $menu-list-dimen-width-close: 103px;
             -ms-transform: rotate(90deg);
             transform: rotate(90deg);
         }
+    }
+
+    .menu-container.menu-open.first-level.expand>.menu-item {
+        .item-more.show {
+            -moz-transform: rotate(540deg);
+            -webkit-transform: rotate(540deg);
+            -o-transform: rotate(540deg);
+            -ms-transform: rotate(540deg);
+            transform: rotate(540deg);
+        }
+    }
+
+    .menu-container.menu-close:hover>.menu-item+.item-sublist,
+    .menu-container.menu-open:not(.first-level):hover>.menu-item+.item-sublist,
+    .menu-container.menu-open.first-level.expand>.menu-item+.item-sublist {
+        height: var(--subListHeight);
+        // display: flex;
     }
 
     /*****************************************/

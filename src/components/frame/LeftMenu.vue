@@ -37,6 +37,9 @@ import {
 import {
     TweenMax
 } from "gsap";
+import {
+    makeRandomColor
+} from "@/components/frame/utils/common";
 
 export default defineComponent({
     name: "LeftMenu",
@@ -83,8 +86,19 @@ export default defineComponent({
                 })
                 .then(response => {
                     menuListRef.value = response.data.data;
+                    initMenuItemColor(menuListRef.value);
                 })
                 .catch(apiErrorCatch.v1);
+        };
+
+        const initMenuItemColor = (list: Menu[]) => {
+            list.every((val: Menu, index: number, arr) => {
+                val.color = makeRandomColor(1, 100, 250);
+                if (val.subList && val.subList.length) {
+                    initMenuItemColor(val.subList);
+                }
+                return true;
+            });
         };
 
         return {
