@@ -1,18 +1,18 @@
 <template>
 <div class="cigo-menu-list">
-    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)">
+    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)" @mouseenter="mouseenterMenu(item)" @mouseleave="mouseleaveMenu(item)">
         <div class="menu-common" :class="makeMenuItemClass(item)">
             <div class="item-left">
                 <i class="item-line" v-if="!item.group_flag"></i>
                 <icon-font class="item-icon" v-if="!item.group_flag" :style="[item.color ? {color: item.color} : {}]" :iconFlag="item.icon"></icon-font>
             </div>
             <div class="item-right">
-                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
+                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title+':'+item.id}}</span>
                 <label class="item-label" :class="[item.label_class]" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
                 <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
             </div>
         </div>
-        <menu-list class="item-sublist" v-if="item.subList && item.subList.length" :style="{'--subListHeight': (item.subList && item.subList.length ? item.subList.length * 40 + 'px' : 'auto')}" :menuList="item.subList" :level="level+1"></menu-list>
+        <menu-list :id="'sub-list-' + item.id" class="item-sublist" v-if="item.subList && item.subList.length" :menuList="item.subList" :level="level+1"></menu-list>
     </div>
 </div>
 </template>
@@ -137,11 +137,42 @@ export default defineComponent({
                 0;
         };
 
+        /** 鼠标滑入菜单项 */
+        const mouseenterMenu = (item: Menu) => {
+            console.log("滑入：", item.id);
+            console.log("显示：", item.id);
+            TweenMax.to("#sub-list-" + item.id, 0.8, {
+                height: "100px",
+                opacity: 1,
+                display: "flex",
+                delay: 0
+            });
+
+            return false;
+        };
+
+        /** 鼠标滑出菜单项 */
+        const mouseleaveMenu = (item: Menu) => {
+            console.log("滑出：", item.id);
+            TweenMax.to("#sub-list-" + item.id, 0.8, {
+                height: "0px",
+                opacity: 0,
+                display: "none",
+                delay: 0
+            });
+            setTimeout(() => {
+                console.log("隐藏", item.id);
+            }, 800);
+            return false;
+        };
+
         return {
             openMenuId,
             makeMenuItemContainerClass,
             makeMenuItemClass,
             clickMenu,
+            mouseenterMenu,
+            mouseleaveMenu,
             titleGoneFlag
         };
     }
@@ -328,13 +359,7 @@ $menu-list-color-menu-sub: #1a2419;
         position: absolute;
         top: 0px;
         left: 240px;
-        // display: none;
-        background-color: $menu-list-color-menu-sub;
-        -moz-transition: all 0.5s ease-in-out;
-        -webkit-transition: all 0.5s ease-in-out;
-        -o-transition: all 0.5s ease-in-out;
-        -ms-transition: all 0.5s ease-in-out;
-        transition: all 0.5s ease-in-out;
+        display: none;
 
         .item-title {
             font-size: 13px;
@@ -410,13 +435,6 @@ $menu-list-color-menu-sub: #1a2419;
             -ms-transform: rotate(540deg);
             transform: rotate(540deg);
         }
-    }
-
-    .menu-container.menu-close:hover>.menu-item+.item-sublist,
-    .menu-container.menu-open:not(.first-level):hover>.menu-item+.item-sublist,
-    .menu-container.menu-open.first-level.expand>.menu-item+.item-sublist {
-        height: var(--subListHeight);
-        // display: flex;
     }
 
     /*****************************************/
