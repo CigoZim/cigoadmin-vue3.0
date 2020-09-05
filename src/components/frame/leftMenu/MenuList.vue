@@ -74,6 +74,10 @@ export default defineComponent({
                 opacity: openFlag ? 1 : 0,
                 delay: 0
             });
+            TweenMax.to(".menu-group.first-level", 0.8, {
+                height: openFlag ? "35px" : "0px",
+                delay: 0
+            });
             if (!openFlag) {
                 setTimeout(() => {
                     titleGoneFlag.value = true;
@@ -90,6 +94,9 @@ export default defineComponent({
             classes.push(props.level == 0 ? "first-level" : "");
             if (item.group_flag) {
                 classes.push("menu-group");
+                classes.push(
+                    props.level == 0 && titleGoneFlag.value ? "gone" : ""
+                );
             } else {
                 classes.push("menu-item");
                 classes.push(item.id == openMenuId.value ? "expand" : "close");
@@ -223,12 +230,6 @@ $menu-list-dimen-width-close: 103px;
                 width: 30px;
                 height: 30px;
                 visibility: hidden;
-
-                -moz-transition: all 0.8s ease-in-out;
-                -webkit-transition: all 0.8s ease-in-out;
-                -o-transition: all 0.8s ease-in-out;
-                -ms-transition: all 0.8s ease-in-out;
-                transition: all 0.8s ease-in-out;
             }
 
             .item-more.show {
@@ -260,6 +261,14 @@ $menu-list-dimen-width-close: 103px;
     }
 
     .menu-close.menu-group.first-level {
+        border-bottom: 0px;
+
+        .item-right {
+            display: none;
+        }
+    }
+
+    .menu-close.menu-group.first-level.gone {
         display: none;
     }
 
@@ -297,15 +306,7 @@ $menu-list-dimen-width-close: 103px;
         }
     }
 
-    .menu-item:hover {
-        background-color: $menu-list-color-item-highlight !important;
-
-        .item-line {
-            background-color: $menu-list-color-item-line;
-        }
-    }
-
-    .menu-item:last-child {
+    .menu-container:last-of-type>.menu-item {
         border-bottom: 0px;
     }
 
@@ -353,11 +354,45 @@ $menu-list-dimen-width-close: 103px;
         position: absolute;
         top: 0px;
         left: $menu-list-dimen-width-open;
-        display: none;
+        // display: none;
     }
 
     .menu-close.menu-item.first-level+.item-sublist {
         left: $menu-list-dimen-width-close;
+    }
+
+    /*****************************************/
+    /** 动画效果 */
+    .menu-item {
+        .item-more.show {
+            -moz-transition: all 0.8s ease-in-out;
+            -webkit-transition: all 0.8s ease-in-out;
+            -o-transition: all 0.8s ease-in-out;
+            -ms-transition: all 0.8s ease-in-out;
+            transition: all 0.8s ease-in-out;
+
+            -moz-transform: rotate(630deg);
+            -webkit-transform: rotate(630deg);
+            -o-transform: rotate(630deg);
+            -ms-transform: rotate(630deg);
+            transform: rotate(630deg);
+        }
+    }
+
+    .menu-item:hover {
+        background-color: $menu-list-color-item-highlight !important;
+
+        .item-line {
+            background-color: $menu-list-color-item-line;
+        }
+
+        .item-more.show {
+            -moz-transform: rotate(90deg);
+            -webkit-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
     }
 
     /*****************************************/
