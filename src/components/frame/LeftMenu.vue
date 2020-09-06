@@ -118,7 +118,7 @@ export default defineComponent({
     .left-menu-list {
         display: flex;
         flex: 1;
-        // overflow-y: auto;
+        // overflow-y: scroll;
         // overflow-x: hidden;
     }
 

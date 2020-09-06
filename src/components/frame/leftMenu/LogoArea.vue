@@ -58,7 +58,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60px;
+    height: 80px;
     background-color: #1a2419;
     position: relative;
     border-bottom: 2px solid #2d373b;

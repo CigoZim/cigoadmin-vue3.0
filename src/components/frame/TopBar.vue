@@ -81,11 +81,11 @@ export default defineComponent({
             }
 
             .left-menu-toggle-icon.close {
-                -moz-transform: rotate(540deg);
-                -webkit-transform: rotate(540deg);
-                -o-transform: rotate(540deg);
-                -ms-transform: rotate(540deg);
-                transform: rotate(540deg);
+                -moz-transform: rotate(900deg);
+                -webkit-transform: rotate(900deg);
+                -o-transform: rotate(900deg);
+                -ms-transform: rotate(900deg);
+                transform: rotate(900deg);
             }
         }
 

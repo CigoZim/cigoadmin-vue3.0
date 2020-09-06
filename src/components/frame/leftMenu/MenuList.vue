@@ -29,14 +29,14 @@ import {
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
+    TweenMax
+} from "gsap";
+import {
     systemStore
 } from "@/store/index";
 import {
     Menu
 } from "@/components/frame/types";
-import {
-    TweenMax
-} from "gsap";
 
 export default defineComponent({
     name: "MenuList",
@@ -76,10 +76,13 @@ export default defineComponent({
 
         /** 监听菜单变化 */
         const menuChange = (openFlag: boolean) => {
-            TweenMax.to(".first-level>.menu-item .item-title", 0.8, {
-                opacity: openFlag ? 1 : 0,
-                delay: 0
-            });
+            TweenMax.to(
+                ".first-level>.menu-item>.item-right>.item-title",
+                0.8, {
+                    opacity: openFlag ? 1 : 0,
+                    delay: 0
+                }
+            );
             TweenMax.to(".first-level>.menu-group", 0.8, {
                 height: openFlag ? "35px" : "0px",
                 opacity: openFlag ? 1 : 0,
@@ -183,18 +186,35 @@ export default defineComponent({
             let subListHeight = item.subList.length * 40 + "px";
             let animOptions = {};
             if (menuOpenFlag.value && props.level == 0) {
-                TweenMax.to("#sub-list-" + item.id, 0.8, {
+                TweenMax.to("#sub-list-" + item.id, 0.5, {
                     height: openFlag ? subListHeight : "0px",
                     opacity: openFlag ? 1 : 0,
                     display: openFlag ? "flex" : "none"
                 });
+
+                TweenMax.to(
+                    "#sub-list-" + item.id + ">.menu-container>.menu-common",
+                    0.5, {
+                        height: openFlag ? "40px" : "0px",
+                        opacity: openFlag ? 1 : 0
+                    }
+                );
             } else {
-                TweenMax.to("#sub-list-" + item.id, 0.8, {
+                TweenMax.to("#sub-list-" + item.id, 0.5, {
                     width: openFlag ? "240px" : "0px",
                     height: openFlag ? subListHeight : "0px",
                     opacity: openFlag ? 1 : 0,
                     display: openFlag ? "flex" : "none"
                 });
+
+                TweenMax.to(
+                    "#sub-list-" + item.id + ">.menu-container>.menu-common",
+                    0.5, {
+                        width: openFlag ? "240px" : "0px",
+                        height: openFlag ? "40px" : "0px",
+                        opacity: openFlag ? 1 : 0
+                    }
+                );
             }
         };
 
@@ -210,7 +230,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$menu-list-color-bg-highlight: #525d62;
+$menu-list-color-bg-highlight: #000;
 $menu-list-color-bg: #424d52;
 $menu-list-color-menu-group: #2f373d;
 $menu-list-color-menu-main: #2a3429;
@@ -292,7 +312,7 @@ $menu-list-color-menu-sub: #1a2419;
             flex: 1;
 
             .item-title {
-                font-size: 13px;
+                font-size: 11px;
                 color: #888;
             }
         }
@@ -312,7 +332,6 @@ $menu-list-color-menu-sub: #1a2419;
     /** 菜单常规属性 */
     .menu-item {
         cursor: pointer;
-        height: 40px;
         border-bottom: 1px dashed #444;
 
         .item-left {
@@ -329,14 +348,11 @@ $menu-list-color-menu-sub: #1a2419;
             }
 
             .item-icon {
-                width: 22px;
-                height: 22px;
                 margin-right: 5px;
             }
         }
 
         .item-title {
-            font-size: 16px;
             font-weight: 700;
             color: #eee;
         }
@@ -354,14 +370,15 @@ $menu-list-color-menu-sub: #1a2419;
         background-color: $menu-list-color-menu-main;
 
         .item-icon {
-            width: 28px;
-            height: 28px;
+            width: 25px;
+            height: 25px;
         }
 
         .item-right {
             position: relative;
 
             .item-title {
+                font-size: 14px;
                 width: 137px !important;
                 flex: none;
                 position: absolute;
@@ -388,14 +405,26 @@ $menu-list-color-menu-sub: #1a2419;
     .menu-item+.item-sublist {
         width: 0px;
         height: 0px;
+        opacity: 0;
+        display: none;
         position: absolute;
         top: 0px;
         left: 240px;
-        display: none;
+
+        .item-icon {
+            width: 22px;
+            height: 22px;
+        }
 
         .item-title {
-            font-size: 13px;
+            font-size: 12px;
         }
+    }
+
+    .menu-item+.item-sublist>.menu-container>.menu-common {
+        width: 0px;
+        height: 0px;
+        opacity: 0px;
     }
 
     .menu-close.first-level>.item-sublist {
@@ -406,6 +435,10 @@ $menu-list-color-menu-sub: #1a2419;
         width: 240px !important;
         position: relative;
         left: auto;
+    }
+
+    .menu-open.first-level>.item-sublist>.menu-container>.menu-item {
+        width: 240px !important;
     }
 
     .menu-open.first-level>.item-sublist>.menu-container>.menu-common {
@@ -446,6 +479,15 @@ $menu-list-color-menu-sub: #1a2419;
 
         .item-line {
             background-color: #3c8dbc;
+        }
+    }
+
+    .menu-container.menu-open.first-level.expand>.item-sublist>.menu-container:hover>.menu-item {
+        background-color: transparent !important;
+
+        .item-left,
+        .item-right {
+            background-color: $menu-list-color-bg-highlight !important;
         }
     }
 
