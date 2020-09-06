@@ -300,7 +300,7 @@ $menu-list-color-menu-sub: #1a2419;
     /** 菜单分组 */
     .menu-group {
         background-color: $menu-list-color-menu-group;
-        padding-left: 11px;
+        padding-left: 10px;
         height: 35px;
 
         .item-left {
@@ -437,12 +437,16 @@ $menu-list-color-menu-sub: #1a2419;
         left: auto;
     }
 
-    .menu-open.first-level>.item-sublist>.menu-container>.menu-item {
+    .menu-open.first-level>.item-sublist>.menu-container>.menu-common {
         width: 240px !important;
     }
 
-    .menu-open.first-level>.item-sublist>.menu-container>.menu-common {
+    .menu-open.first-level>.item-sublist>.menu-container>.menu-item {
         padding-left: 15px;
+    }
+
+    .menu-open.first-level>.item-sublist>.menu-container>.menu-group {
+        padding-left: 25px;
     }
 
     /*****************************************/
