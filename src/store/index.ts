@@ -47,8 +47,6 @@ class Store {
 	}
 
 	public setLeftMenuContainerWidth(width: string) {
-		console.log("new width:", width);
-
 		this.state.systemState.leftMenuContainerWidth = width;
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
@@ -84,7 +82,7 @@ const initialState = (): State => {
 const initialSystemState = (): SystemState => ({
 	sideMenuOpen: false,
 	rightPanelOpen: false,
-	leftMenuContainerWidth: "103px",
+	leftMenuContainerWidth: "113px",
 });
 const initialLoginUserInfo = (): LoginUserInfo => ({
 	isLogin: false,

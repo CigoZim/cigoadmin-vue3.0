@@ -82,9 +82,18 @@ export default defineComponent({
 
         const menuChange = (openFlag: boolean) => {
             TweenMax.to([".cigo-left-menu", ".left-menu-list"], 0.8, {
-                width: openFlag ? "240px" : "103px"
+                width: openFlag ? "240px" : "103px",
+                onStart: () => {
+                    if (openFlag) {
+                        systemStore.setLeftMenuContainerWidth("250px");
+                    }
+                },
+                onComplete: () => {
+                    if (!openFlag) {
+                        systemStore.setLeftMenuContainerWidth("113px");
+                    }
+                }
             });
-            systemStore.setLeftMenuContainerWidth(openFlag ? "240px" : "103px");
         };
 
         // 加载页面
@@ -133,7 +142,7 @@ export default defineComponent({
     background-color: blue;
 
     .left-menu-list-container {
-        background-color: green;
+        // background-color: green;
         position: absolute;
         width: var(--leftMenuContainerWidth);
         top: 100px;
@@ -141,6 +150,11 @@ export default defineComponent({
         height: 400px;
         overflow-y: scroll;
         overflow-x: hidden;
+        -moz-transition: all 0.5s ease-in-out;
+        -webkit-transition: all 0.5s ease-in-out;
+        -o-transition: all 0.5s ease-in-out;
+        -ms-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
 
         .left-menu-list {
             width: 0px;

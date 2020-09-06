@@ -222,7 +222,7 @@ export default defineComponent({
         };
 
         const updateLeftMenuListWidth = (openFLag: boolean) => {
-            let newWidth = menuOpenFlag.value ? 240 : 103;
+            let newWidth = menuOpenFlag.value ? 250 : 113;
             let num = 0;
             if (menuOpenFlag.value) {
                 num = openFLag ? props.level : props.level - 1;
