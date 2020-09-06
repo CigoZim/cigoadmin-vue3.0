@@ -18,8 +18,6 @@ export default {
     setup() {
         onMounted(() => {
             console.log("app mounted");
-
-            systemStore.recoverStore();
         });
     }
 };

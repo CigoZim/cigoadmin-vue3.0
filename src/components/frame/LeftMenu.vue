@@ -1,8 +1,10 @@
 <template>
 <div class="cigo-left-menu">
     <logo-area class="left-menu-logo-area"></logo-area>
-    <div class="left-menu-list">
-        <menu-list :menuList="menuListRef" :level="0"></menu-list>
+    <div class="left-menu-list-container" :style="{'--leftMenuContainerWidth': leftMenuContainerWidth}">
+        <div class="left-menu-list">
+            <menu-list :menuList="menuListRef" :level="0"></menu-list>
+        </div>
     </div>
 </div>
 </template>
@@ -15,7 +17,9 @@ import {
     ref,
     toRef,
     watch,
-    onMounted
+    onMounted,
+    provide,
+    toRefs
 } from "vue";
 import {
     useRouter,
@@ -55,8 +59,17 @@ export default defineComponent({
             systemStore.getState().systemState,
             "sideMenuOpen"
         );
+        let leftMenuContainerWidth = toRef(
+            systemStore.getState().systemState,
+            "leftMenuContainerWidth"
+        );
+        watch(leftMenuContainerWidth, (newWidth: string, preWidth: string) => {
+            console.log("leftMenuContainerWidthChange", newWidth, preWidth);
+        });
 
         onBeforeMount(() => {
+            console.log(systemStore.getState().systemState);
+
             getMenuList();
         });
         watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
@@ -68,9 +81,10 @@ export default defineComponent({
         });
 
         const menuChange = (openFlag: boolean) => {
-            TweenMax.to(".cigo-left-menu", 0.8, {
+            TweenMax.to([".cigo-left-menu", ".left-menu-list"], 0.8, {
                 width: openFlag ? "240px" : "103px"
             });
+            systemStore.setLeftMenuContainerWidth(openFlag ? "240px" : "103px");
         };
 
         // 加载页面
@@ -101,6 +115,7 @@ export default defineComponent({
         };
 
         return {
+            leftMenuContainerWidth,
             showPage,
             menuListRef
         };
@@ -110,19 +125,32 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-left-menu {
-    width: 240px;
+    widows: 0px;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    background-color: blue;
 
-    .left-menu-list {
+    .left-menu-list-container {
+        background-color: green;
+        position: absolute;
+        width: var(--leftMenuContainerWidth);
+        top: 100px;
         display: flex;
-        flex: 1;
-        // overflow-y: scroll;
-        // overflow-x: hidden;
+        height: 400px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        .left-menu-list {
+            width: 0px;
+            display: flex;
+            height: 100%;
+            position: relative;
+        }
     }
 
-    .left-menu-list::-webkit-scrollbar {
+    .left-menu-list-container::-webkit-scrollbar {
         /** 滚动但不显示滚动条 */
         width: 0px;
     }

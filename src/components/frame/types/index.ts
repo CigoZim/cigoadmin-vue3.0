@@ -4,6 +4,7 @@
 export interface SystemState {
 	sideMenuOpen: boolean;
 	rightPanelOpen: boolean;
+	leftMenuContainerWidth: string;
 }
 
 /**

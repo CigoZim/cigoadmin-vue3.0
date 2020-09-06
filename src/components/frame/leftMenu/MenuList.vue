@@ -25,7 +25,8 @@ import {
     computed,
     toRef,
     watch,
-    onBeforeMount
+    onBeforeMount,
+    inject
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
@@ -199,6 +200,7 @@ export default defineComponent({
                         opacity: openFlag ? 1 : 0
                     }
                 );
+                updateLeftMenuListWidth(openFlag);
             } else {
                 TweenMax.to("#sub-list-" + item.id, 0.5, {
                     width: openFlag ? "240px" : "0px",
@@ -215,7 +217,22 @@ export default defineComponent({
                         opacity: openFlag ? 1 : 0
                     }
                 );
+                updateLeftMenuListWidth(openFlag);
             }
+        };
+
+        const updateLeftMenuListWidth = (openFLag: boolean) => {
+            let newWidth = menuOpenFlag.value ? 240 : 103;
+            let num = 0;
+            if (menuOpenFlag.value) {
+                num = openFLag ? props.level : props.level - 1;
+            } else {
+                num = openFLag ? props.level + 1 : props.level;
+            }
+            num = num > 0 ? num : 0;
+            newWidth += num * 240;
+
+            systemStore.setLeftMenuContainerWidth(newWidth + "px");
         };
 
         return {

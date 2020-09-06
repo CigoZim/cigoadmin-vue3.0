@@ -10,7 +10,21 @@ class Store {
 	protected state: State;
 
 	constructor(initialState: State) {
+		let systemState = localStorage.getItem("systemState");
+		console.log("recoverStore", systemState);
+
 		this.state = reactive(initialState);
+		if (systemState) {
+			this.state.systemState = JSON.parse(systemState);
+		} else {
+			this.saveToStorage("systemState", initialState.systemState);
+		}
+		let userInfo = localStorage.getItem("userInfo");
+		if (userInfo) {
+			this.state.userInfo = JSON.parse(userInfo);
+		} else {
+			this.saveToStorage("userInfo", initialState.userInfo);
+		}
 	}
 
 	public getState(): State {
@@ -21,17 +35,6 @@ class Store {
 		localStorage.setItem(itemFlag, JSON.stringify(toRaw(item)));
 	}
 
-	public recoverStore() {
-		let systemState = localStorage.getItem("systemState");
-		if (systemState) {
-			this.state.systemState = JSON.parse(systemState);
-		}
-		let userInfo = localStorage.getItem("userInfo");
-		if (userInfo) {
-			this.state.userInfo = JSON.parse(userInfo);
-		}
-	}
-
 	public toggleSideMenu(): void {
 		this.state.systemState.sideMenuOpen = !this.state.systemState.sideMenuOpen;
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
@@ -40,6 +43,13 @@ class Store {
 	public toggleRightPanel() {
 		this.state.systemState.rightPanelOpen = !this.state.systemState
 			.rightPanelOpen;
+		this.saveToStorage("systemState", toRaw(this.state.systemState));
+	}
+
+	public setLeftMenuContainerWidth(width: string) {
+		console.log("new width:", width);
+
+		this.state.systemState.leftMenuContainerWidth = width;
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
 
@@ -63,15 +73,18 @@ class Store {
 }
 
 const initialState = (): State => {
+	let systemState = initialSystemState();
+	let userInfo = initialLoginUserInfo();
 	return {
-		systemState: initialSystemState(),
-		userInfo: initialLoginUserInfo(),
+		systemState: systemState,
+		userInfo: userInfo,
 	};
 };
 
 const initialSystemState = (): SystemState => ({
 	sideMenuOpen: false,
 	rightPanelOpen: false,
+	leftMenuContainerWidth: "103px",
 });
 const initialLoginUserInfo = (): LoginUserInfo => ({
 	isLogin: false,
