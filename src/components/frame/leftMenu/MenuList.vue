@@ -38,6 +38,9 @@ import {
 import {
     Menu
 } from "@/components/frame/types";
+import {
+    useRouter
+} from "vue-router";
 
 export default defineComponent({
     name: "MenuList",
@@ -133,28 +136,55 @@ export default defineComponent({
         };
 
         /** 点击菜单项事件处理 */
+        const router = useRouter();
         const clickMenu = (item: Menu) => {
-            // 无子菜单直接跳转
-            if (!item.subList || item.subList.length == 0) {
-                //TODO 执行跳转,过滤类型
-                return;
-            }
-
-            /** 下面为非跳转情况 */
-            // 左侧菜单非开启状态无动作
-            if (!menuOpenFlag.value) {
-                return;
-            }
-            // 非一级菜单无动作
-            if (props.level > 0) {
-                return;
-            }
             // 分组项无动作
             if (item.group_flag) {
                 return;
             }
+            // 无子菜单直接跳转
+            if (!item.subList || item.subList.length == 0) {
+                showPage(item);
+                return;
+            }
+
+            /** 上面是菜单跳转判断 */
+            /*************************************** */
+            /** 下面是一级菜单展开判断 */
+
+            // 非一级菜单无动作
+            if (props.level > 0) {
+                return;
+            }
+            // 左侧菜单非开启状态无动作
+            if (!menuOpenFlag.value) {
+                return;
+            }
+
             //记录有效点击菜单
             recordClickMenu(item);
+        };
+
+        const showPage = (item: Menu) => {
+            if (!item.url) {
+                return;
+            }
+            //TODO 执行跳转,过滤类型
+            switch (item.target_type) {
+                case "content-page":
+                    router.push(item.url);
+                    break;
+                case "layer-win":
+                    break;
+                case "_blank":
+                default: {
+                    let blankRouter = router.resolve({
+                        path: item.url
+                    });
+                    window.open(blankRouter.href, "_blank");
+                }
+                break;
+            }
         };
 
         /** 记录点击菜单项 */

@@ -24,10 +24,6 @@ import {
     provide,
     toRefs
 } from "vue";
-import {
-    useRouter,
-    useRoute
-} from "vue-router";
 import LogoArea from "./leftMenu/LogoArea.vue";
 import MenuList from "./leftMenu/MenuList.vue";
 import {
@@ -55,7 +51,6 @@ export default defineComponent({
         MenuList
     },
     setup(props, context) {
-        const router = useRouter();
         let menuList: Menu[] = [];
         let menuListRef = ref(menuList);
         let menuOpenFlag = toRef(
@@ -93,10 +88,6 @@ export default defineComponent({
             );
         };
 
-        // 加载页面
-        const showPage = (path: string) => {
-            router.push(path);
-        };
         // 获取菜单数据
         const getMenuList = () => {
             apiRequest.v1
@@ -122,7 +113,6 @@ export default defineComponent({
 
         return {
             ...toRefs(systemStore.getState().systemState),
-            showPage,
             menuListRef
         };
     }
