@@ -6,6 +6,9 @@
             <menu-list :menuList="menuListRef" :level="0"></menu-list>
         </div>
     </div>
+    <div class="copy-right">
+        <span>@西谷开源 出品</span>
+    </div>
 </div>
 </template>
 
@@ -72,19 +75,22 @@ export default defineComponent({
         });
 
         const menuChange = (openFlag: boolean) => {
-            TweenMax.to([".cigo-left-menu", ".left-menu-list"], 0.8, {
-                width: openFlag ? "240px" : "103px",
-                onStart: () => {
-                    if (openFlag) {
-                        systemStore.setLeftMenuContainerWidth("250px");
-                    }
-                },
-                onComplete: () => {
-                    if (!openFlag) {
-                        systemStore.setLeftMenuContainerWidth("113px");
+            TweenMax.to(
+                [".cigo-left-menu", ".left-menu-list", ".copy-right"],
+                0.8, {
+                    width: openFlag ? "240px" : "103px",
+                    onStart: () => {
+                        if (openFlag) {
+                            systemStore.setLeftMenuContainerWidth("250px");
+                        }
+                    },
+                    onComplete: () => {
+                        if (!openFlag) {
+                            systemStore.setLeftMenuContainerWidth("113px");
+                        }
                     }
                 }
-            });
+            );
         };
 
         // 加载页面
@@ -138,7 +144,7 @@ export default defineComponent({
         width: var(--leftMenuContainerWidth);
         top: 10vh;
         display: flex;
-        height: 90vh;
+        height: 85vh;
         overflow-y: scroll;
         overflow-x: hidden;
         //TODO 待解决，因transition导致的TweenMax动画卡顿问题
@@ -159,6 +165,21 @@ export default defineComponent({
     .left-menu-list-container::-webkit-scrollbar {
         /** 滚动但不显示滚动条 */
         width: 0px;
+    }
+
+    .copy-right {
+        position: absolute;
+        bottom: 0px;
+        width: 0px;
+        height: 5vh;
+        color: #f5f5f5;
+        font-size: 10px;
+        border-top: 1px solid #555;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: row;
+        padding-top: 10px;
     }
 }
 </style>

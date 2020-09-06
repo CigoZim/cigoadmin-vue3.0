@@ -290,7 +290,7 @@ $menu-list-color-menu-sub: #1a2419;
             }
 
             .item-label {
-                border-radius: 11px;
+                border-radius: 5px;
                 font-size: 10px;
                 color: #fff;
                 min-width: 22px;
