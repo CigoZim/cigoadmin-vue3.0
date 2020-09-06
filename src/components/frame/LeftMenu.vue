@@ -130,7 +130,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     position: relative;
-    background-color: blue;
+    background-color: #424d52;
 
     .left-menu-list-container {
         background-color: transparent;
@@ -141,6 +141,7 @@ export default defineComponent({
         height: 90vh;
         overflow-y: scroll;
         overflow-x: hidden;
+        //TODO 待解决，因transition导致的TweenMax动画卡顿问题
         -moz-transition: all 0.5s ease-in-out;
         -webkit-transition: all 0.5s ease-in-out;
         -o-transition: all 0.5s ease-in-out;
