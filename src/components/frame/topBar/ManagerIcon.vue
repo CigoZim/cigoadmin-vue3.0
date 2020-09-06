@@ -18,8 +18,6 @@ export default defineComponent({
     name: "ManagerIcon",
     setup() {
         const logout = () => {
-            console.log("5555");
-
             systemStore.logout();
         };
 

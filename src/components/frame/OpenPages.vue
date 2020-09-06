@@ -38,9 +38,7 @@ export default defineComponent({
             }
         ];
 
-        const testClick = () => {
-            console.log("111111");
-        };
+        const testClick = () => {};
 
         return {
             pages,

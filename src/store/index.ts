@@ -11,7 +11,6 @@ class Store {
 
 	constructor(initialState: State) {
 		let systemState = localStorage.getItem("systemState");
-		console.log("recoverStore", systemState);
 
 		this.state = reactive(initialState);
 		if (systemState) {

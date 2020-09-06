@@ -59,17 +59,8 @@ export default defineComponent({
             systemStore.getState().systemState,
             "sideMenuOpen"
         );
-        let leftMenuContainerWidth = toRef(
-            systemStore.getState().systemState,
-            "leftMenuContainerWidth"
-        );
-        watch(leftMenuContainerWidth, (newWidth: string, preWidth: string) => {
-            console.log("leftMenuContainerWidthChange", newWidth, preWidth);
-        });
 
         onBeforeMount(() => {
-            console.log(systemStore.getState().systemState);
-
             getMenuList();
         });
         watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
@@ -124,7 +115,7 @@ export default defineComponent({
         };
 
         return {
-            leftMenuContainerWidth,
+            ...toRefs(systemStore.getState().systemState),
             showPage,
             menuListRef
         };
@@ -142,12 +133,12 @@ export default defineComponent({
     background-color: blue;
 
     .left-menu-list-container {
-        // background-color: green;
+        background-color: transparent;
         position: absolute;
         width: var(--leftMenuContainerWidth);
-        top: 100px;
+        top: 10vh;
         display: flex;
-        height: 400px;
+        height: 90vh;
         overflow-y: scroll;
         overflow-x: hidden;
         -moz-transition: all 0.5s ease-in-out;
