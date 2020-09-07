@@ -42,8 +42,11 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-frame {
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: row;
+    overflow: hidden;
 
     .frame-right {
         display: flex;

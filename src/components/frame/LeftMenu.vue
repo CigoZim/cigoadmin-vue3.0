@@ -124,6 +124,7 @@ export default defineComponent({
     widows: 0px;
     height: 100vh;
     display: flex;
+    z-index: 8000;
     flex-direction: column;
     position: relative;
     background-color: #424d52;

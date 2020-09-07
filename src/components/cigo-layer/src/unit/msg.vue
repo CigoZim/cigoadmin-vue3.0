@@ -63,7 +63,7 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-layer-msg {
-    z-index: 1000000;
+    z-index: 10000;
     position: absolute;
     top: -10%;
     left: 45%;

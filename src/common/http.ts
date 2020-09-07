@@ -6,7 +6,7 @@ import cigoLayer from "@/components/cigo-layer/index";
  * 相关域名
  */
 export const enum Domain {
-	apiDomain = "http://api-admin.cigoadmin.com",
+	apiDomain = "http://api-admin.cigoos.cn",
 	cdnOpen = "http://cdn-open.cigoadmin.com",
 	cdnOpenIcon = "http://cdn-open.cigoadmin.com/icon/",
 }
@@ -100,7 +100,7 @@ export function apiSign(params: Object) {
 	sign = php.strings.md5(sign);
 	//封装header
 	return {
-		"Cigo-Device-Type": "mpWeixin",
+		"Cigo-Device-Type": "pc",
 		"Cigo-Timestamp": Date.parse(new Date().toString()) / 1000,
 		"Cigo-Sign": sign,
 		// "Cigo-Token": store.state.token,

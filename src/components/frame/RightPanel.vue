@@ -2,8 +2,10 @@
 <div class="cigo-right-panel" :class="[openClass]">
     <div class="right-panel-bg" @click.stop="systemStore.closeRightPanel()"></div>
     <div class="right-panel">
-        <span>我是右侧面板</span>
-        <div class="right-panel-toggle" :class="[panelOpenFlag ? 'open' : 'close']" @click.stop="systemStore.toggleRightPanel()">
+        <div class="right-panel-content">
+            <span>我是右侧面板</span>
+        </div>
+        <div class="right-panel-toggle" :class="[openClass]" @click.stop="systemStore.toggleRightPanel()">
             <img class="right-panel-toggle-icon" :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'" />
         </div>
     </div>
@@ -56,17 +58,30 @@ export default defineComponent({
                 }, 800);
             }
             TweenMax.to(".right-panel-bg", 0.8, {
-                opacity: openFlag ? 0.8 : 0,
-                delay: 0
+                opacity: openFlag ? 0.8 : 0
             });
             TweenMax.to(".right-panel-toggle", 0.8, {
-                opacity: openFlag ? 1 : 0.5,
-                delay: 0
+                opacity: openFlag ? 1 : 0.5
             });
-            TweenMax.to(".right-panel", 0.5, {
-                right: openFlag ? "0px" : "-200px",
-                delay: 0
-            });
+            if (openFlag) {
+                TweenMax.to(".right-panel-content", 0.2, {
+                    width: "200px",
+                    onComplete: () => {
+                        TweenMax.to(".right-panel-content", 0.3, {
+                            opacity: 1
+                        });
+                    }
+                });
+            } else {
+                TweenMax.to(".right-panel-content", 0.3, {
+                    opacity: 0,
+                    onComplete: () => {
+                        TweenMax.to(".right-panel-content", 0.2, {
+                            width: "0px"
+                        });
+                    }
+                });
+            }
         };
 
         return {
@@ -85,7 +100,7 @@ export default defineComponent({
     height: 100vh;
     display: flex;
     position: absolute;
-    z-index: 9999;
+    z-index: 10000;
     right: 0px;
 
     .right-panel-bg {
@@ -98,12 +113,19 @@ export default defineComponent({
     }
 
     .right-panel {
-        width: 200px;
+        width: auto;
         height: 100%;
         display: flex;
         position: absolute;
         background-color: #fff;
-        right: -200px;
+        right: 0px;
+
+        .right-panel-content {
+            width: 0px;
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
 
         .right-panel-toggle {
             cursor: pointer;

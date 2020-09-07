@@ -331,7 +331,6 @@ $menu-list-color-menu-sub: #1a2419;
             }
 
             .item-more {
-                margin: 0px 5px;
                 width: 30px;
                 height: 30px;
                 visibility: hidden;
@@ -426,7 +425,7 @@ $menu-list-color-menu-sub: #1a2419;
 
             .item-title {
                 font-size: 14px;
-                width: 137px !important;
+                width: 150px !important;
                 flex: none;
                 position: absolute;
                 left: 0px;
@@ -438,7 +437,7 @@ $menu-list-color-menu-sub: #1a2419;
 
             .item-label {
                 position: absolute;
-                right: 40px;
+                right: 30px;
             }
 
             .item-more {

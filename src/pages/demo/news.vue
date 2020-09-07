@@ -14,7 +14,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "PagesNews",
+    name: "DemoNews",
     setup() {
         onMounted(() => {
             console.log("news mounted");
