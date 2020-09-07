@@ -1,6 +1,6 @@
 <template>
-<div class="page-index">
-    <h1>我是首页面</h1>
+<div class="page-news">
+    <h1>我是新闻页面</h1>
 </div>
 </template>
 
@@ -14,19 +14,19 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "PagesIndex",
+    name: "PagesNews",
     setup() {
         onMounted(() => {
-            console.log("index mounted");
+            console.log("news mounted");
         });
         onActivated(() => {
-            console.log("index onActivated");
+            console.log("news onActivated");
         });
         onDeactivated(() => {
-            console.log("index onDeactivated");
+            console.log("news onDeactivated");
         });
         onUnmounted(() => {
-            console.log("index unmounted");
+            console.log("news unmounted");
         });
     }
 });
@@ -34,7 +34,7 @@ export default defineComponent({
 
 <style lang="scss">
 .page-index {
-    background-color: aqua;
+    background-color: darkorange;
     display: flex;
     flex: 1;
 }

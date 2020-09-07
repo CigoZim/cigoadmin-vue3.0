@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="cigo-dashboard">
     <span>数据中心面板</span>
 </div>
 </template>
@@ -7,15 +7,41 @@
 <script lang="ts">
 import {
     defineComponent,
-    onMounted
+    onMounted,
+    onUnmounted,
+    onActivated,
+    onDeactivated
 } from "vue";
 
 export default defineComponent({
     name: "Dashboard",
+    activated() {
+        console.log("dashboard activated");
+    },
+    deactivated() {
+        console.log("dashboard deactivated");
+    },
     setup() {
         onMounted(() => {
             console.log("dashboard mounted");
         });
+        onActivated(() => {
+            console.log("dashboard onActivated");
+        });
+        onDeactivated(() => {
+            console.log("dashboard onDeactivated");
+        });
+        onUnmounted(() => {
+            console.log("dashboard unmounted");
+        });
     }
 });
 </script>
+
+<style lang="scss">
+.cigo-dashboard {
+    background-color: green;
+    display: flex;
+    flex: 1;
+}
+</style>

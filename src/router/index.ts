@@ -21,7 +21,10 @@ const routes: Array<RouteRecordRaw> = [
 			},
 		],
 	},
+	/*-----------------------*/
+	/* 内页router */
 	pagesRouter,
+	/*-----------------------*/
 	{
 		path: "/gone",
 		name: "Gone",

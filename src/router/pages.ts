@@ -10,6 +10,11 @@ const pages = {
 			name: "Index",
 			component: () => import("@/pages/index.vue"),
 		},
+		{
+			path: "news",
+			name: "News",
+			component: () => import("@/pages/news.vue"),
+		},
 		/******************************= 自定义页面结束 =********************************/
 	],
 };
