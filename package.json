@@ -12,6 +12,7 @@
     "@types/gsap": "^1.20.2",
     "@types/locutus": "^0.0.6",
     "@types/lodash": "^4.14.160",
+    "ant-design-vue": "^2.0.0-beta.6",
     "axios": "^0.20.0",
     "bulma": "^0.9.0",
     "core-js": "^3.6.5",
