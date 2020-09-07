@@ -1,7 +1,6 @@
 <template>
 <div class="open-pages-content">
     <span>我是打开页面标签列表</span>
-    <button class="modal-close is-large" @click="testClick"></button>
     <p class="panel-tabs">
         <span v-for="(item, index) in pages" :key="index">{{item.label}}</span>
     </p>
@@ -38,11 +37,8 @@ export default defineComponent({
             }
         ];
 
-        const testClick = () => {};
-
         return {
-            pages,
-            testClick
+            pages
         };
     }
 });

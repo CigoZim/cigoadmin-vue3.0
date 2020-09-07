@@ -5,7 +5,6 @@ import router from "./router";
 
 import "ant-design-vue/dist/antd.css";
 import "./index.css";
-import "bulma/css/bulma.css";
 
 const app = createApp(App);
 app.use(Antd);
