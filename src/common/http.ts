@@ -10,6 +10,11 @@ export const enum Domain {
 	cdnOpen = "http://cdn-open.cigoadmin.com",
 	cdnOpenIcon = "http://cdn-open.cigoadmin.com/icon/",
 }
+export const enum bucket {
+	open = "cigoadmin-open",
+	img = "cigoadmin-img",
+	video = "cigoadmin-video",
+}
 
 // 网络请求
 export const apiRequest = {

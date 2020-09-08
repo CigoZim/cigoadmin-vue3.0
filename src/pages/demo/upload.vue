@@ -11,7 +11,7 @@
         <a-button type="primary" :disabled="fileListRef.length === 0" :loading="uploading" style="margin-top: 16px" @click="doUpload">{{ uploading ? '上传中...' : '开始上传' }}</a-button>
         <!-- 进度条 -->
         <a-progress :percent="uploadPhotoPercent" size="small" status="active" v-if="isShowProgress" />
-        <img alt="example" style="width: 100px" :src="previewImage" />
+        <img class="preview-img" v-if="previewImage" alt="example" style="width: 100px" :src="previewImage" />
     </div>
 </div>
 </template>
@@ -31,7 +31,8 @@ import {
 import {
     apiRequest,
     apiSign,
-    apiErrorCatch
+    apiErrorCatch,
+    bucket
 } from "@/common/http";
 import cigoLayer from "@/components/cigo-layer";
 
@@ -64,8 +65,9 @@ export default defineComponent({
             uploading.value = true;
 
             let paramsToken = {
-                bucket: "img"
+                bucket: bucket.img
             };
+            //1. 获取上传凭证Token
             apiRequest.v1
                 .post("/qiniu/token", paramsToken, {
                     headers: apiSign(paramsToken)
@@ -76,11 +78,12 @@ export default defineComponent({
                     console.log("new token:", uploadHost, token);
                     let file = fileListRef.value[0];
 
-                    /************************************************* */
+                    /*********************= //2. 执行上传 =**************************** */
                     var key = file.name; // 上传后文件资源名以设置的 key 为主，如果 key 为 null 或者 undefined，则文件资源名会以 hash 值作为资源名。
                     let config = {
-                        useCdnDomain: true, //表示是否使用 cdn 加速域名，为布尔值，true 表示使用，默认为 false。
-                        region: qiniu.region.z2 // 根据具体提示修改上传地区,当为 null 或 undefined 时，自动分析上传域名区域
+                        uphost: uploadHost,
+                        useCdnDomain: true //表示是否使用 cdn 加速域名，为布尔值，true 表示使用，默认为 false。
+                        // region: qiniu.region.z2 // 根据具体提示修改上传地区,当为 null 或 undefined 时，自动分析上传域名区域
                     };
                     let putExtra = {
                         fname: file.name, //文件原文件名
@@ -107,40 +110,12 @@ export default defineComponent({
                             isShowProgress.value = false;
                         },
                         complete: result => {
-                            qiniu
-                                .getUploadUrl({
-                                        /** 是否开启 cdn 加速 */
-                                        useCdnDomain: true,
-                                        /** 是否对分片进行 md5校验 */
-                                        checkByMD5: true,
-                                        /** 强制直传 */
-                                        forceDirect: true,
-                                        /** 上传失败后重试次数 */
-                                        retryCount: 3,
-                                        /** 自定义上传域名 */
-                                        uphost: "http://cdn-img.cigoadmin.com",
-                                        /** 自定义分片上传并发请求量 */
-                                        concurrentRequestLimit: 100,
-                                        /** 是否禁止静态日志上报 */
-                                        disableStatisticsReport: true,
-                                        /** 分片大小，单位为 MB */
-                                        chunkSize: 100,
-                                        /** 上传域名协议 */
-                                        upprotocol: "http:",
-                                        /** 上传区域 */
-                                        region: "z0"
-                                    },
-                                    token
-                                )
-                                .then(res => {
-                                    cigoLayer.msg("上传成功");
-                                    uploading.value = false;
-                                    isShowProgress.value = false;
+                            console.log("upload res:", result);
 
-                                    console.log("5555", res);
-
-                                    previewImage.value = res;
-                                });
+                            cigoLayer.msg(result.msg);
+                            uploading.value = false;
+                            isShowProgress.value = false;
+                            previewImage.value = result.data.signed_url;
                         }
                     });
 
@@ -175,6 +150,12 @@ export default defineComponent({
 
     .upload-form {
         width: 300px;
+        display: flex;
+        flex-direction: column;
+
+        .preview-img {
+            margin-top: 10px;
+        }
     }
 }
 </style>

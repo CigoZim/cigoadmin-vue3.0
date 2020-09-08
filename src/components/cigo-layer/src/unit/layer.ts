@@ -80,7 +80,6 @@ class CigoLayer {
 	 * 消息
 	 */
 	public msg(msg: string) {
-		console.log("show msg:", msg);
 		this.open(Msg, { msg: msg });
 	}
 }
