@@ -75,6 +75,11 @@ export default defineComponent({
                 }
                 return true;
             });
+
+            //判断是否存在待上传文件
+            if (uploadingNum.value == 0) {
+                cigoLayer.msg("当前无待上传文件！");
+            }
         };
 
         const recordStatus = (
