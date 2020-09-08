@@ -3,7 +3,7 @@
     <h1>上传示例</h1>
 
     <div class="upload-form">
-        <a-upload list-type="picture" :multiple="multiple" :fileList="fileListRef" :remove="removeFile" :beforeUpload="beforeUpload" @preview="showPreview">
+        <a-upload :multiple="multiple" :fileList="fileListRef" :remove="removeFile" :beforeUpload="beforeUpload">
             <a-button>
                 <upload-outlined />选择文件
             </a-button>
@@ -11,17 +11,16 @@
         <a-button type="primary" :disabled="fileListRef.length === 0" :loading="uploadingNum > 0" style="margin-top: 16px" @click="startUpload">{{ uploadingNum > 0 ? '上传中...' : '开始上传' }}</a-button>
         <!-- 进度条 -->
     </div>
-
-    <a-modal :visible="previewShowFlag" :footer="null" @cancel="closePreview">
-        <img alt="example" style="width: 100%" :src="previewImageUrl" />
-    </a-modal>
 </div>
 </template>
 
 <script lang="ts">
 import {
     defineComponent,
-    ref
+    ref,
+    reactive,
+    toRefs,
+    toRaw
 } from "vue";
 import * as qiniu from "qiniu-js";
 import {
@@ -43,52 +42,61 @@ export default defineComponent({
     },
     setup(props, context) {
         let multiple = ref(true);
-        let fileList: any[] = [];
-        let fileListRef = ref(fileList);
+        let fileList: File[] = [];
+        let fileListRef = reactive(fileList);
         let uploadingNum = ref(0);
-        let previewShowFlag = ref(false);
-        let previewImageUrl = ref("");
 
-        const removeFile = (file: any) => {
-            const tmpList = fileListRef.value.slice();
-            tmpList.splice(fileListRef.value.indexOf(file), 1);
-            fileListRef.value = tmpList;
+        const removeFile = (file: File) => {
+            // const index = fileListRef.value.indexOf(file);
+            // const newFileList = fileListRef.value.slice();
+            // newFileList.splice(index, 1);
+            // fileListRef.value = newFileList;
         };
 
         const beforeUpload = (file: any) => {
-            fileListRef.value = [...fileListRef.value, file];
+            file.status = "uploading";
+            fileListRef = [...fileListRef, reactive(file)];
             return false;
         };
 
         const startUpload = () => {
             //标记上传开始
             uploadingNum.value = 0;
+
+            console.log("*********************");
+            console.log(fileListRef);
+            console.log(fileListRef.value);
+            console.log(fileListRef.value[0]);
+
             fileListRef.value.every((file: any, index: number, arr) => {
-                if (!file.status || file.status === "error") {
+                if (!file.status || file.status === "uploading") {
                     //标记上传开始
-                    recordStatus(index, true, "uploading");
+                    // recordStatus(file, true, "uploading");
                     setTimeout(() => {
+                        console.log(file);
                         file.status = "done";
 
-                        doUpload(index);
-                    }, 1000 * index); // 延迟查看进度
+                        // doUpload(file);
+                    }, 1500); // 延迟查看进度
                 }
                 return true;
             });
         };
 
         const recordStatus = (
-            fileIndex: number,
+            file: any,
             numFlag: boolean,
             statusFlag: string
         ) => {
-            fileListRef.value[fileIndex].status = statusFlag;
-            fileListRef.value = [...fileListRef.value]; // 为解决vue3.0 数组内部元素响应式无效的问题
+            file.status = statusFlag;
             numFlag ? uploadingNum.value++ : uploadingNum.value--;
+
+            console.log(file.name, file.status, uploadingNum.value);
         };
 
-        const doUpload = (fileIndex: number) => {
-            let file = fileListRef.value[fileIndex];
+        const doUpload = (file: File) => {
+            console.log("file:", file);
+            console.log("fileList", fileListRef);
 
             let paramsToken = {
                 bucket: bucket.img
@@ -101,6 +109,7 @@ export default defineComponent({
                 .then(response => {
                     let uploadHost = response.data.data.upload_host;
                     let token = response.data.data.token;
+                    let file = fileListRef.value[0];
 
                     /*********************= //2. 执行上传 =**************************** */
                     let config = {
@@ -132,36 +141,21 @@ export default defineComponent({
                             );
 
                             //标记上传失败
-                            recordStatus(fileIndex, false, "error");
+                            recordStatus(file, false, "error");
                         },
                         complete: result => {
+                            console.log(result);
                             cigoLayer.msg(file.name + ":" + result.msg);
 
-                            //TODO 记录文件编号，用于后续表单上传
-                            fileListRef.value[fileIndex].id = result.data.id;
-
-                            //TODO url和preview字段都可以预览
-                            fileListRef.value[fileIndex].url =
-                                result.data.signed_url;
-                            fileListRef.value[fileIndex].preview =
-                                result.data.signed_url;
-
                             //标记上传成功
-                            recordStatus(fileIndex, false, "done");
+                            recordStatus(file, false, "done");
+                            // previewImage.value = result.data.signed_url;
                         }
                     });
 
                     /************************************************* */
                 })
                 .catch(apiErrorCatch.v1);
-        };
-
-        const showPreview = (file: any) => {
-            previewImageUrl.value = file.preview || file.url;
-            previewShowFlag.value = true;
-        };
-        const closePreview = (file: any) => {
-            previewShowFlag.value = false;
         };
 
         return {
@@ -171,11 +165,7 @@ export default defineComponent({
 
             removeFile,
             beforeUpload,
-            startUpload,
-            previewShowFlag,
-            previewImageUrl,
-            showPreview,
-            closePreview
+            startUpload
         };
     }
 });
@@ -190,7 +180,7 @@ export default defineComponent({
     align-items: center;
 
     .upload-form {
-        width: 500px;
+        width: 300px;
         display: flex;
         flex-direction: column;
     }
