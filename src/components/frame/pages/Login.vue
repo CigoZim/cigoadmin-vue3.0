@@ -60,7 +60,7 @@ import {
 } from "@/common/http";
 import {
     LoginUserInfo
-} from "./types/index";
+} from "@/components/frame/utils/types";
 import {
     systemStore
 } from "@/store/index";
@@ -80,16 +80,12 @@ export default defineComponent({
 
         // 登录函数
         const doLogin = () => {
-            console.log("dologin");
-            console.log(formData);
-
             let params = toRaw(formData);
             apiRequest.v1
                 .post("/login", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {
-                    console.log("response:", response);
                     let userInfo: LoginUserInfo = {
                         isLogin: true,
                         id: response.data.data.id,
@@ -108,8 +104,6 @@ export default defineComponent({
         };
 
         onMounted(() => {
-            console.log("login mouted");
-
             TweenMax.to(".login-page-form", 1, {
                 top: "30%",
                 right: "10%",

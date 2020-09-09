@@ -1,9 +1,9 @@
 <template>
-<div class="cigo-left-menu">
-    <logo-area class="left-menu-logo-area"></logo-area>
-    <div class="left-menu-list-container" :style="{'--leftMenuContainerWidth': leftMenuContainerWidth}">
-        <div class="left-menu-list">
-            <menu-list :menuList="menuListRef" :level="0"></menu-list>
+<div class="cigo-sider">
+    <logo-area class="sider-logo-area"></logo-area>
+    <div class="sider-menu-list-container" :style="{'--leftMenuContainerWidth': leftMenuContainerWidth}">
+        <div class="sider-menu-list">
+            <menu-list :menuList="menuTreeListRef" :level="0"></menu-list>
         </div>
     </div>
     <div class="copy-right">
@@ -15,52 +15,33 @@
 <script lang="ts">
 import {
     defineComponent,
-    isReactive,
-    onBeforeMount,
-    ref,
     toRef,
     watch,
     onMounted,
-    provide,
-    toRefs
+    toRefs,
+    inject
 } from "vue";
-import LogoArea from "./leftMenu/LogoArea.vue";
-import MenuList from "./leftMenu/MenuList.vue";
+import LogoArea from "./sider/LogoArea.vue";
+import MenuList from "./sider/MenuList.vue";
 import {
     systemStore
 } from "@/store/index";
 import {
-    apiRequest,
-    apiSign,
-    apiErrorCatch
-} from "@/common/http";
-import {
-    Menu
-} from "@/components/frame/types/index";
-import {
     TweenMax
 } from "gsap";
-import {
-    makeRandomColor
-} from "@/components/frame/utils/common";
 
 export default defineComponent({
-    name: "LeftMenu",
+    name: "CigoSider",
     components: {
         LogoArea,
         MenuList
     },
     setup(props, context) {
-        let menuList: Menu[] = [];
-        let menuListRef = ref(menuList);
+        let menuTreeListRef = inject("menuTreeListRef");
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
         );
-
-        onBeforeMount(() => {
-            getMenuList();
-        });
         watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
             menuChange(openFlag);
         });
@@ -71,7 +52,12 @@ export default defineComponent({
 
         const menuChange = (openFlag: boolean) => {
             TweenMax.to(
-                [".cigo-left-menu", ".left-menu-list", ".copy-right"],
+                [
+                    ".cigo-sider",
+                    ".sider-logo-area",
+                    ".sider-menu-list",
+                    ".copy-right"
+                ],
                 0.8, {
                     width: openFlag ? "240px" : "103px",
                     onStart: () => {
@@ -88,40 +74,17 @@ export default defineComponent({
             );
         };
 
-        // 获取菜单数据
-        const getMenuList = () => {
-            apiRequest.v1
-                .get("/menu", {
-                    headers: apiSign({})
-                })
-                .then(response => {
-                    menuListRef.value = response.data.data;
-                    initMenuItemColor(menuListRef.value);
-                })
-                .catch(apiErrorCatch.v1);
-        };
-
-        const initMenuItemColor = (list: Menu[]) => {
-            list.every((val: Menu, index: number, arr) => {
-                val.color = makeRandomColor(1, 100, 250);
-                if (val.subList && val.subList.length) {
-                    initMenuItemColor(val.subList);
-                }
-                return true;
-            });
-        };
-
         return {
             ...toRefs(systemStore.getState().systemState),
-            menuListRef
+            menuTreeListRef
         };
     }
 });
 </script>
 
 <style lang="scss">
-.cigo-left-menu {
-    widows: 0px;
+.cigo-sider {
+    width: 0px;
     height: 100vh;
     display: flex;
     z-index: 8000;
@@ -129,7 +92,7 @@ export default defineComponent({
     position: relative;
     background-color: #424d52;
 
-    .left-menu-list-container {
+    .sider-menu-list-container {
         background-color: transparent;
         position: absolute;
         width: var(--leftMenuContainerWidth);
@@ -145,7 +108,7 @@ export default defineComponent({
         -ms-transition: all 0.5s ease-in-out;
         transition: all 0.5s ease-in-out;
 
-        .left-menu-list {
+        .sider-menu-list {
             width: 0px;
             display: flex;
             height: 100%;
@@ -153,7 +116,7 @@ export default defineComponent({
         }
     }
 
-    .left-menu-list-container::-webkit-scrollbar {
+    .sider-menu-list-container::-webkit-scrollbar {
         /** 滚动但不显示滚动条 */
         width: 0px;
     }

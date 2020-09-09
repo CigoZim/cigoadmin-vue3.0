@@ -1,13 +1,12 @@
 <template>
 <div class="main-content">
     <div class="main-content-top">
-        <content-left-menu class="main-content-left-menu"></content-left-menu>
+        <content-menu class="main-content-menu"></content-menu>
         <div class="main-content-body">
-            <!-- 知识点——动态组件：https://cn.vuejs.org/v2/guide/components.html#%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6 -->
             <router-view v-slot="{ Component }">
-                <transition :css="transCss" :appear="transAppear" :duration="transTime" @before-leave="beforeLeave">
+                <transition :appear="appearFlag" @enter="enter(Component)" @leave="leave(currComponent)">
                     <keep-alive :exclude="noCachePages" :max="maxCachePages">
-                        <component class="view" :is="Component" />
+                        <component :is="Component" />
                     </keep-alive>
                 </transition>
             </router-view>
@@ -23,36 +22,63 @@ import {
     ref,
     watch,
     toRefs,
-    reactive
+    reactive,
+    toRaw,
+    toRef,
+    provide,
+    isRef,
+    isReactive
 } from "vue";
 
-import ContentLeftMenu from "./ContentLeftMenu.vue";
+import ContentMenu from "./ContentMenu.vue";
 import BottomPanel from "./BottomPanel.vue";
 
 import {
     TweenMax
 } from "gsap";
 
+import {
+    systemStore
+} from "@/store/index";
+
 export default defineComponent({
     name: "MainContent",
     components: {
-        ContentLeftMenu,
+        ContentMenu,
         BottomPanel
     },
     setup() {
-        let noCachePages = ref(["Dashboard"]);
-        let maxCachePages = ref(20);
+        let noCachePages = ref(["CigoDashboard"]);
+        let maxCachePages = ref(200);
+        let currComponent = toRef(
+            systemStore.getState().systemState,
+            "currComponent"
+        );
+
         let transConfig = reactive({
-            transCss: ref(false),
-            transAppear: ref(true),
-            transTime: 3000,
-            beforeLeave: () => {
-                console.log("beforeLeave");
-                TweenMax.to(".main-content-body", 0.8, {
-                    opacity: 0.5,
+            appearFlag: ref(true),
+            leave: (component: string) => {
+                //移除无需缓存的页面打开记录
+                // TODO  systemStore.removeOpenTab(name);
+            },
+            enter: (component: any) => {
+                //记录打开页面
+                let name = component.type.name;
+                systemStore.recordCurrComponent(name);
+                let openTabs = toRaw(systemStore.getState().openTabs);
+                if (openTabs.indexOf(name) === -1) {
+                    systemStore.recordOpenTab(name);
+                }
+                //开启切换动画
+                //TODO 点击过快，需要取消原动画
+                TweenMax.to(".main-content-body", 0, {
+                    opacity: 0,
+                    marginLeft: 30,
                     onComplete: () => {
                         TweenMax.to(".main-content-body", 0.8, {
-                            opacity: 1
+                            opacity: 1,
+                            marginLeft: 0,
+                            delay: 0.15
                         });
                     }
                 });
@@ -62,6 +88,7 @@ export default defineComponent({
         return {
             noCachePages,
             maxCachePages,
+            currComponent,
             ...toRefs(transConfig)
         };
     }
@@ -72,7 +99,6 @@ export default defineComponent({
 .main-content {
     display: flex;
     flex: 1;
-    background-color: red;
     flex-direction: column;
 
     .main-content-top {
@@ -80,14 +106,14 @@ export default defineComponent({
         flex: 1;
         flex-direction: row;
 
-        .main-content-left-menu {
+        .main-content-menu {
             display: flex;
         }
 
         .main-content-body {
             display: flex;
             flex: 1;
-            background-color: #f5f5f5;
+            padding: 10px;
         }
     }
 

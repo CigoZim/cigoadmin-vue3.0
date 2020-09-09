@@ -10,6 +10,6 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "BreadCrumb",
+    name: "CigoBreadCrumb"
 });
 </script>

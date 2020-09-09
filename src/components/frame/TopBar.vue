@@ -20,10 +20,10 @@ import {
     toRefs
 } from "vue";
 
-import BreadCrumb from "./BreadCrumb.vue";
-import ToolsBar from "./topBar/ToolsBar.vue";
-import ManagerIcon from "./topBar/ManagerIcon.vue";
-import OpenPages from "./OpenPages.vue";
+import BreadCrumb from "@/components/frame/topBar/BreadCrumb.vue";
+import ToolsBar from "@/components/frame/topBar/ToolsBar.vue";
+import ManagerIcon from "@/components/frame/topBar/ManagerIcon.vue";
+import OpenPages from "@/components/frame/topBar/OpenPages.vue";
 
 import {
     Domain
@@ -55,7 +55,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     padding: 15px 12px 0px;
-    background-color: pink;
+    border-bottom: 1px solid #f0f0f0;
 
     .top-bar-top {
         display: flex;

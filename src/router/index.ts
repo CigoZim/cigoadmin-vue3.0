@@ -6,7 +6,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/login",
 		name: "Login",
-		component: () => import("@/components/frame/Login.vue"),
+		component: () => import("@/components/frame/pages/Login.vue"),
 	},
 	{
 		path: "/",
@@ -17,7 +17,28 @@ const routes: Array<RouteRecordRaw> = [
 			{
 				path: "",
 				name: "Dashboard",
-				component: () => import("@/components/frame/Dashboard.vue"),
+				component: () => import("@/components/frame/pages/Dashboard.vue"),
+			},
+			{
+				path: "authRule",
+				name: "CigoAuthRule",
+				component: () => import("@/components/frame/pages/auth/AuthRule.vue"),
+			},
+			{
+				path: "authGroup",
+				name: "CigoAuthRuleGroup",
+				component: () =>
+					import("@/components/frame/pages/auth/AuthRuleGroup.vue"),
+			},
+			{
+				path: "manager",
+				name: "CigoManager",
+				component: () => import("@/components/frame/pages/auth/Manager.vue"),
+			},
+			{
+				path: "user",
+				name: "CigoUser",
+				component: () => import("@/components/frame/pages/auth/User.vue"),
 			},
 		],
 	},
@@ -27,8 +48,8 @@ const routes: Array<RouteRecordRaw> = [
 	/*-----------------------*/
 	{
 		path: "/gone",
-		name: "Gone",
-		component: () => import("@/components/frame/other/gone.vue"),
+		name: "CigoGone",
+		component: () => import("@/components/frame/pages/Gone.vue"),
 	},
 ];
 

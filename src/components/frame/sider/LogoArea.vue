@@ -68,7 +68,6 @@ export default defineComponent({
         font-size: 2.5em;
         font-weight: 900;
         font-style: italic;
-        padding-left: 8px;
         position: absolute;
     }
 
@@ -77,7 +76,6 @@ export default defineComponent({
         font-style: italic;
         color: #fff;
         font-weight: 700;
-        padding-left: 5px;
         overflow: hidden;
         position: absolute;
         white-space: nowrap;

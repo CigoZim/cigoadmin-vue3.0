@@ -25,8 +25,7 @@ import {
     computed,
     toRef,
     watch,
-    onBeforeMount,
-    inject
+    onBeforeMount
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
@@ -37,10 +36,10 @@ import {
 } from "@/store/index";
 import {
     Menu
-} from "@/components/frame/types";
+} from "@/components/frame/utils/types";
 import {
-    useRouter
-} from "vue-router";
+    showPage
+} from "../utils/common";
 
 export default defineComponent({
     name: "MenuList",
@@ -63,6 +62,10 @@ export default defineComponent({
             id: 0,
             title: ""
         };
+        let currComponent = toRef(
+            systemStore.getState().systemState,
+            "currComponent"
+        );
         let clickOpenMenuRef = ref(clickOpenMenu);
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
@@ -126,6 +129,9 @@ export default defineComponent({
             let classes: string[] = [];
             if (!item.group_flag) {
                 classes.push("menu-item");
+                if (currComponent.value == item.component_name) {
+                    classes.push("curr");
+                }
             } else {
                 classes.push("menu-group");
                 if (props.level == 0 && titleGoneFlag.value) {
@@ -136,7 +142,6 @@ export default defineComponent({
         };
 
         /** 点击菜单项事件处理 */
-        const router = useRouter();
         const clickMenu = (item: Menu) => {
             // 分组项无动作
             if (item.group_flag) {
@@ -163,28 +168,6 @@ export default defineComponent({
 
             //记录有效点击菜单
             recordClickMenu(item);
-        };
-
-        const showPage = (item: Menu) => {
-            if (!item.url) {
-                return;
-            }
-            //TODO 执行跳转,过滤类型
-            switch (item.target_type) {
-                case "content-page":
-                    router.push(item.url);
-                    break;
-                case "layer-win":
-                    break;
-                case "_blank":
-                default: {
-                    let blankRouter = router.resolve({
-                        path: item.url
-                    });
-                    window.open(blankRouter.href, "_blank");
-                }
-                break;
-            }
         };
 
         /** 记录点击菜单项 */
@@ -270,7 +253,8 @@ export default defineComponent({
             makeMenuItemClass,
             clickMenu,
             hoverMenuItem,
-            titleGoneFlag
+            titleGoneFlag,
+            currComponent
         };
     }
 });
@@ -320,11 +304,12 @@ $menu-list-color-menu-sub: #1a2419;
             }
 
             .item-label {
-                border-radius: 5px;
+                cursor: pointer;
+                border-radius: 3px;
                 font-size: 10px;
                 color: #fff;
-                min-width: 22px;
-                height: 22px;
+                min-width: 18px;
+                height: 18px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -395,6 +380,7 @@ $menu-list-color-menu-sub: #1a2419;
 
             .item-icon {
                 margin-right: 5px;
+                margin-top: -5px;
             }
         }
 
@@ -425,7 +411,7 @@ $menu-list-color-menu-sub: #1a2419;
 
             .item-title {
                 font-size: 14px;
-                width: 150px !important;
+                width: 154px !important;
                 flex: none;
                 position: absolute;
                 left: 0px;
@@ -524,6 +510,7 @@ $menu-list-color-menu-sub: #1a2419;
     }
 
     .menu-container.menu-open.first-level.expand>.menu-item,
+    .menu-item.curr,
     .menu-container:hover>.menu-item {
         background-color: $menu-list-color-bg-highlight !important;
 

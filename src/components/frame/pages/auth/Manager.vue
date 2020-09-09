@@ -1,6 +1,6 @@
 <template>
-<div class="cigo-content-left-menu">
-    <span>主体内容左侧菜单</span>
+<div class="cigo-manager">
+    <span>我是管理员管理</span>
 </div>
 </template>
 
@@ -8,14 +8,16 @@
 import {
     defineComponent
 } from "vue";
-
 export default defineComponent({
-    name: "ContentLeftMenu"
+    name: "CigoManager",
+    setup(props) {
+        return {};
+    }
 });
 </script>
 
 <style lang="scss">
-.cigo-content-left-menu {
-    width: 50px;
+.cigo-manager {
+    display: flex;
 }
 </style>

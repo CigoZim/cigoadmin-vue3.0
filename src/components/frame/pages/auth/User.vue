@@ -1,6 +1,6 @@
 <template>
-<div class="page-news">
-    <h1>我是新闻页面</h1>
+<div class="cigo-user">
+    <span>用户管理</span>
 </div>
 </template>
 
@@ -8,16 +8,16 @@
 import {
     defineComponent
 } from "vue";
-
 export default defineComponent({
-    name: "DemoNews",
-    setup() {}
+    name: "CigoUser",
+    setup(props) {
+        return {};
+    }
 });
 </script>
 
 <style lang="scss">
-.page-news {
+.cigo-user {
     display: flex;
-    flex: 1;
 }
 </style>

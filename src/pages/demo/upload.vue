@@ -1,5 +1,5 @@
 <template>
-<div class="page-index">
+<div class="page-upload">
     <h1>普通上传</h1>
 
     <div class="upload-form">
@@ -51,7 +51,7 @@ export default defineComponent({
 
         const removeFile = (file: any) => {
             const tmpList = fileListRef.value.slice();
-            tmpList.splice(fileListRef.value.indexOf(file), 1);
+            tmpList.splice(tmpList.indexOf(file), 1);
             fileListRef.value = tmpList;
         };
 
@@ -187,7 +187,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.page-index {
+.page-upload {
     display: flex;
     flex: 1;
     flex-direction: column;

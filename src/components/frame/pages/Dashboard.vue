@@ -14,13 +14,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "Dashboard",
-    activated() {
-        console.log("dashboard activated");
-    },
-    deactivated() {
-        console.log("dashboard deactivated");
-    },
+    name: "CigoDashboard",
     setup() {
         onMounted(() => {
             console.log("dashboard mounted");
@@ -40,7 +34,6 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-dashboard {
-    background-color: green;
     display: flex;
     flex: 1;
 }

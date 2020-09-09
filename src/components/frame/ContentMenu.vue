@@ -1,6 +1,6 @@
 <template>
-<div class="page-news">
-    <h1>我是新闻页面</h1>
+<div class="cigo-content-menu">
+    <span>主体内容菜单</span>
 </div>
 </template>
 
@@ -10,14 +10,12 @@ import {
 } from "vue";
 
 export default defineComponent({
-    name: "DemoNews",
-    setup() {}
+    name: "ContentMenu"
 });
 </script>
 
 <style lang="scss">
-.page-news {
-    display: flex;
-    flex: 1;
+.cigo-content-menu {
+    width: 50px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 <div class="page-index">
-    <h1>我是首页面</h1>
+    <h1>我是首页面1</h1>
     <div>
         <a-button type="primary">Primary</a-button>
         <a-button>Default</a-button>
@@ -17,35 +17,17 @@
 
 <script lang="ts">
 import {
-    defineComponent,
-    onMounted,
-    onUnmounted,
-    onActivated,
-    onDeactivated
+    defineComponent
 } from "vue";
 
 export default defineComponent({
     name: "PagesIndex",
-    setup() {
-        onMounted(() => {
-            console.log("index mounted");
-        });
-        onActivated(() => {
-            console.log("index onActivated");
-        });
-        onDeactivated(() => {
-            console.log("index onDeactivated");
-        });
-        onUnmounted(() => {
-            console.log("index unmounted");
-        });
-    }
+    setup() {}
 });
 </script>
 
 <style lang="scss">
 .page-index {
-    background-color: aqua;
     display: flex;
     flex: 1;
     flex-direction: column;

@@ -1,6 +1,6 @@
 <template>
-<div class="cigo-tools-bar">
-    <span>我是顶部工具条</span>
+<div class="cigo-open-tab-item">
+    <span>flag-</span>
 </div>
 </template>
 
@@ -8,9 +8,14 @@
 import {
     defineComponent
 } from "vue";
-
 export default defineComponent({
-    name: "CigoToolsBar",
+    name: "CigoOpenTabItem",
+    props: {
+        flag: {
+            type: String,
+            default: ""
+        }
+    },
     setup() {
         return {};
     }
@@ -18,9 +23,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.cigo-tools-bar {
+.cigo-open-tab-item {
     display: flex;
-    flex-direction: row;
-    align-items: center;
 }
 </style>

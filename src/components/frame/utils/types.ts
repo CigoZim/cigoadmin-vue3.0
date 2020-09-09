@@ -5,6 +5,7 @@ export interface SystemState {
 	sideMenuOpen: boolean;
 	rightPanelOpen: boolean;
 	leftMenuContainerWidth: string;
+	currComponent: string;
 }
 
 /**
@@ -35,6 +36,10 @@ export interface Menu {
 	summary?: string;
 	target_type?: string;
 	url?: string;
+	component_name?: string;
+	component_label?: string;
+	can_show_tabs?: boolean;
+	can_close_tab?: boolean;
 
 	color?: string;
 

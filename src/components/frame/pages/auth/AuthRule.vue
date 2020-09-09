@@ -1,6 +1,6 @@
 <template>
-<div class="page-news">
-    <h1>我是新闻页面</h1>
+<div class="cigo-auth-rule">
+    <span>我是权限节点管理</span>
 </div>
 </template>
 
@@ -8,16 +8,16 @@
 import {
     defineComponent
 } from "vue";
-
 export default defineComponent({
-    name: "DemoNews",
-    setup() {}
+    name: "CigoAuthRule",
+    setup(props) {
+        return {};
+    }
 });
 </script>
 
 <style lang="scss">
-.page-news {
+.cigo-auth-rule {
     display: flex;
-    flex: 1;
 }
 </style>

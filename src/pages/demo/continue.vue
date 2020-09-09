@@ -1,5 +1,5 @@
 <template>
-<div class="page-index">
+<div class="page-continue">
     <h1>断点续传示例（待完成）</h1>
 
     <div class="upload-form">
@@ -37,7 +37,7 @@ import cigoLayer from "@/components/cigo-layer";
 import UUID from "uuidjs";
 
 export default defineComponent({
-    name: "DemoUpload",
+    name: "DemoContinue",
     components: {
         UploadOutlined
     },
@@ -51,7 +51,7 @@ export default defineComponent({
 
         const removeFile = (file: any) => {
             const tmpList = fileListRef.value.slice();
-            tmpList.splice(fileListRef.value.indexOf(file), 1);
+            tmpList.splice(tmpList.indexOf(file), 1);
             fileListRef.value = tmpList;
         };
 
@@ -187,7 +187,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.page-index {
+.page-continue {
     display: flex;
     flex: 1;
     flex-direction: column;

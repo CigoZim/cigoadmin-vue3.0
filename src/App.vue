@@ -16,9 +16,7 @@ import {
 export default {
     name: "App",
     setup() {
-        onMounted(() => {
-            console.log("app mounted");
-        });
+        onMounted(() => {});
     }
 };
 </script>
