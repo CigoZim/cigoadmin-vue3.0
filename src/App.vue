@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="scss">
-.app-pege {
+.app-page {
     display: flex;
 }
 </style>
