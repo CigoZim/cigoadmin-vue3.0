@@ -1,6 +1,6 @@
 <template>
 <div class="page-index">
-    <h1>上传示例</h1>
+    <h1>普通上传</h1>
 
     <div class="upload-form">
         <a-upload list-type="picture" :multiple="multiple" :fileList="fileListRef" :remove="removeFile" :beforeUpload="beforeUpload" @preview="showPreview">
