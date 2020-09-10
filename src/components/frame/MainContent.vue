@@ -27,7 +27,8 @@ import {
     toRef,
     provide,
     isRef,
-    isReactive
+    isReactive,
+    inject
 } from "vue";
 
 import ContentMenu from "./ContentMenu.vue";
@@ -40,6 +41,9 @@ import {
 import {
     systemStore
 } from "@/store/index";
+import {
+    Menu
+} from "./utils/types";
 
 export default defineComponent({
     name: "MainContent",
@@ -50,6 +54,7 @@ export default defineComponent({
     setup() {
         let noCachePages = ref(["CigoDashboard"]);
         let maxCachePages = ref(200);
+        let menuBaseMapRef: any = inject("menuBaseMapRef");
         let currComponent = toRef(
             systemStore.getState().systemState,
             "currComponent"
@@ -57,14 +62,22 @@ export default defineComponent({
 
         let transConfig = reactive({
             appearFlag: ref(true),
-            leave: (component: string) => {
-                //移除无需缓存的页面打开记录
-                // TODO  systemStore.removeOpenTab(name);
+            leave: (componentName: string) => {
+                if (
+                    menuBaseMapRef.value &&
+                    menuBaseMapRef.value.has(componentName)
+                ) {
+                    let leaveItem: Menu = menuBaseMapRef.value.get(name);
+                    if (leaveItem && !leaveItem.can_cache) {
+                        // 移除无需缓存的页面打开记录
+                        systemStore.removeOpenTab(name);
+                    }
+                }
             },
             enter: (component: any) => {
+                console.log("enter", component.type.name);
                 //记录打开页面
-                let name = component.type.name;
-                systemStore.recordCurrComponent(name);
+                systemStore.recordCurrComponent(component.type.name);
                 //开启切换动画
                 //TODO 点击过快，需要取消原动画
                 TweenMax.to(".main-content-body", 0, {

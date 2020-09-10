@@ -46,8 +46,8 @@ export interface Menu {
 	url?: string;
 	component_name?: string;
 	component_label?: string;
-	can_show_tabs?: boolean;
 	can_close_tab?: boolean;
+	can_cache?: boolean;
 	path?: "0,";
 	pid?: 0;
 

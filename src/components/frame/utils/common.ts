@@ -1,4 +1,3 @@
-import { useRouter } from "vue-router";
 import { Menu } from "./types";
 import router from "@/router/index";
 
@@ -37,6 +36,8 @@ export function showPage(item: Menu): void {
 	//TODO 执行跳转,过滤类型
 	switch (item.target_type) {
 		case "content-page":
+			console.log("push", item.title, item.url);
+
 			router.push(item.url);
 			break;
 		case "layer-win":

@@ -7,6 +7,8 @@ import {
 	Menu,
 	ModeFormMenuExpand,
 } from "@/components/frame/utils/types";
+import cigoLayer from "@/components/cigo-layer";
+import { showPage } from "@/components/frame/utils/common";
 
 interface State {
 	systemState: SystemState;
@@ -104,20 +106,6 @@ class Store {
 	}
 
 	/**
-	 * 记录当前打开组件
-	 * @param componentName
-	 */
-	public recordCurrComponent(componentName: string) {
-		this.state.systemState.currComponent = componentName;
-		let openTabs = toRaw(this.state.openTabs);
-		if (openTabs.indexOf(componentName) === -1) {
-			this.state.openTabs = [...openTabs, componentName];
-		}
-		this.setModeForMenuExpand(ModeFormMenuExpand.NOW_ROUTER);
-		this.saveToStorage("systemState", toRaw(this.state.systemState));
-	}
-
-	/**
 	 * 保存用户信息
 	 */
 	public saveUserInfo(userInfo: LoginUserInfo): void {
@@ -134,6 +122,22 @@ class Store {
 		this.state.userInfo = { isLogin: false };
 		localStorage.clear();
 		router.push("/gone");
+	}
+
+	/**
+	 * 记录当前打开组件
+	 * @param componentName
+	 */
+	public recordCurrComponent(componentName: string) {
+		let openTabs = toRaw(this.state.openTabs);
+		if (openTabs.indexOf(componentName) === -1) {
+			this.state.openTabs = [...openTabs, componentName];
+			this.saveToStorage("openTabs", toRaw(this.state.openTabs));
+		}
+
+		this.state.systemState.currComponent = componentName;
+		this.setModeForMenuExpand(ModeFormMenuExpand.NOW_ROUTER);
+		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
 
 	/**
@@ -155,30 +159,38 @@ class Store {
 		pageItem: Menu,
 		baseList: Map<string, Menu>
 	): void {
-		//非关闭页面无动作
 		if (pageItem && !pageItem.can_close_tab) {
+			cigoLayer.msg("当前页面不可关闭");
 			return;
 		}
 		//移除当前页缓存
+		//TODO 关闭当前页缓存实例
 		const tmpList = this.state.openTabs.slice();
 		let index = tmpList.indexOf(componentName);
 		tmpList.splice(index, 1);
-		this.state.openTabs = tmpList;
+		this.state.openTabs = [...tmpList];
 		this.saveToStorage("openTabs", toRaw(this.state.openTabs));
-		//TODO 关闭当前页缓存实例
-		//TODO 跳转临近页面
-		//TODO 暂时跳转尾页
-		if (tmpList.length) {
-			let jumpName: string = tmpList[tmpList.length - 1];
-			if (baseList.has(jumpName)) {
-				let jumpMenu = baseList.get(jumpName);
-				if (jumpMenu && jumpMenu.url) {
-					router.push(jumpMenu.url);
-					return;
-				}
-			}
+
+		//是否全部关闭
+		if (tmpList.length == 0) {
+			cigoLayer.msg("页面全部关闭");
+			router.push("/");
+			return;
 		}
-		router.push("/");
+		//TODO 跳转临近页面
+		if (index >= tmpList.length) {
+			index = tmpList.length - 1;
+		}
+
+		if (!baseList.has(tmpList[index])) {
+			console.log(index, tmpList[index]);
+
+			cigoLayer.msg(tmpList[index] + "页面丢失");
+			router.push("/");
+			return;
+		}
+		let jumpItem = baseList.get(tmpList[index]);
+		router.push(jumpItem && jumpItem.url ? jumpItem.url : "/");
 	}
 }
 

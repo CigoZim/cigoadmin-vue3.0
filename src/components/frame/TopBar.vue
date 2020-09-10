@@ -55,7 +55,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     padding: 15px 12px 0px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #eee;
 
     .top-bar-top {
         display: flex;
