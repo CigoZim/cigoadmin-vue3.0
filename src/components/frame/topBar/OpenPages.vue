@@ -2,9 +2,9 @@
 <div class="cigo-open-pages">
     <div class="open-tabs-container">
         <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
-            <span class="tab-dot"></span>
-            <span class="tab-name">{{makeTabName(item)}}</span>
-            <span v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)">x</span>
+            <div class="tab-dot"></div>
+            <div class="tab-name">{{makeTabName(item)}}</div>
+            <div v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)">x</div>
         </div>
     </div>
 </div>
@@ -95,19 +95,16 @@ export default defineComponent({
 <style lang="scss">
 .cigo-open-pages {
     width: 100%;
-    overflow: hidden;
     height: 41px;
     position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
 
     .open-tabs-container {
-        width: 70vw; //TODO flex=1 内容超出导致宽度超出屏幕
         display: flex;
         flex-direction: row;
-        overflow-x: scroll;
-        overflow-y: hidden;
 
         .open-tabs {
-            min-width: 50px;
             cursor: pointer;
             display: flex;
             flex-direction: row;
