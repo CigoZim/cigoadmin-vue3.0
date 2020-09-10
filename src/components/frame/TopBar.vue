@@ -33,7 +33,7 @@ import {
 } from "@/store/index";
 
 export default defineComponent({
-    name: "TopBar",
+    name: "CigoTopBar",
     components: {
         BreadCrumb,
         ToolsBar,
@@ -52,12 +52,15 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-top-bar {
+    width: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     padding: 15px 12px 0px;
     border-bottom: 1px solid #eee;
 
     .top-bar-top {
+        width: 100%;
         display: flex;
         flex-direction: row;
         align-items: center;

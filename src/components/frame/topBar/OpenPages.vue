@@ -1,12 +1,14 @@
 <template>
 <div class="cigo-open-pages">
+    <icon-font class="more-icon left-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
     <div class="open-tabs-container">
         <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
-            <div class="tab-dot"></div>
-            <div class="tab-name">{{makeTabName(item)}}</div>
-            <div v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)">x</div>
+            <span class="tab-dot"></span>
+            <span class="tab-name">{{makeTabName(item)}}</span>
+            <icon-font v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)" :iconFlag="'cigoadmin-icon-shanchu'"></icon-font>
         </div>
     </div>
+    <icon-font class="more-icon right-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
 </div>
 </template>
 
@@ -21,6 +23,7 @@ import {
     toRef,
     watch
 } from "vue";
+import IconFont from "@/components/frame/other/IconFont.vue";
 import {
     State,
     systemStore
@@ -35,6 +38,9 @@ import {
 //TODO 继续优化
 export default defineComponent({
     name: "CigoOpenPages",
+    components: {
+        IconFont
+    },
     setup() {
         let menuBaseMapRef: any = inject("menuBaseMapRef");
         let openTabsRef = toRef(systemStore.getState(), "openTabs");
@@ -96,22 +102,59 @@ export default defineComponent({
 .cigo-open-pages {
     width: 100%;
     height: 41px;
-    position: relative;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    display: flex;
+    flex-direction: row;
+
+    .more-icon {
+        width: 20px;
+        height: 31px;
+        background-color: #757575;
+        margin-top: 10px;
+        color: #fff;
+        -moz-transition: all 0.6s ease-in-out;
+        -webkit-transition: all 0.6s ease-in-out;
+        -o-transition: all 0.6s ease-in-out;
+        -ms-transition: all 0.6s ease-in-out;
+        transition: all 0.6s ease-in-out;
+        opacity: 0.3;
+    }
+
+    .more-icon:hover {
+        opacity: 1;
+    }
+
+    .left-more {
+        margin-right: 3px;
+        border-top-left-radius: 3px;
+    }
+
+    .right-more {
+        margin-left: 5px;
+        border-bottom-left-radius: 3px;
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
 
     .open-tabs-container {
+        height: 58px;
+        flex: 1;
         display: flex;
         flex-direction: row;
+        overflow-x: scroll;
+        overflow-y: hidden;
 
         .open-tabs {
+            white-space: nowrap;
             cursor: pointer;
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
             padding: 5px 10px;
             background-color: var(--tabBgColor);
             margin: 10px 8px 0px 0px;
@@ -137,22 +180,16 @@ export default defineComponent({
             }
 
             .close-tab-icon {
-                background-color: #cc1111;
-                border: 1px solid #c0c0c0;
                 width: 0px;
                 height: 0px;
-                border-radius: 0px;
                 position: absolute;
-                color: #fff;
-                top: 0px;
-                right: 0px;
+                color: red;
+                background-color: #fff;
+                top: -5px;
+                right: -5px;
                 display: flex;
                 opacity: 0;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                font-size: 0px;
-                padding-bottom: 3px;
+                border-radius: 50%;
                 -moz-transition: all 0.5s ease-in-out;
                 -webkit-transition: all 0.5s ease-in-out;
                 -o-transition: all 0.5s ease-in-out;
@@ -185,20 +222,18 @@ export default defineComponent({
             background-color: #46d1ad;
 
             .close-tab-icon {
-                border: 1px solid #c0c0c0;
                 width: 18px;
                 height: 18px;
-                font-size: 15px;
-                top: -5px;
-                right: -5px;
-                border-radius: 9px;
                 opacity: 1;
-                font-size: 15px;
             }
         }
 
         .open-tabs:first-child {
-            margin-left: 8px;
+            margin-left: 5px;
+        }
+
+        .open-tabs:last-child {
+            margin-right: 0px;
         }
     }
 

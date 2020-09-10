@@ -1,5 +1,5 @@
 <template>
-<div class="main-content">
+<div class="cigo-main-content">
     <div class="main-content-top">
         <content-menu class="main-content-menu"></content-menu>
         <div class="main-content-body">
@@ -46,7 +46,7 @@ import {
 } from "./utils/types";
 
 export default defineComponent({
-    name: "MainContent",
+    name: "CigoMainContent",
     components: {
         ContentMenu,
         BottomPanel
@@ -104,7 +104,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.main-content {
+.cigo-main-content {
+    width: 100%;
+    height: 0;
     display: flex;
     flex: 1;
     flex-direction: column;

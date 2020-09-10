@@ -3,7 +3,7 @@
     <sider class="frame-left-menu"></sider>
     <div class="frame-right">
         <top-bar class="frame-top-bar"></top-bar>
-        <main-content class="frame-main-content" />
+        <main-content class="frame-main-content"></main-content>
     </div>
     <right-panel class="frame-right-panel"></right-panel>
 </div>
@@ -37,7 +37,7 @@ import {
 } from "./utils/common";
 
 export default defineComponent({
-    name: "Frame",
+    name: "CigoFrame",
     components: {
         Sider,
         TopBar,
@@ -119,6 +119,8 @@ export default defineComponent({
     overflow: hidden;
 
     .frame-right {
+        width: 0;
+        height: 100%;
         display: flex;
         background-color: #fff;
         flex: 1;
