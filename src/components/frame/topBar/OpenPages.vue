@@ -2,7 +2,7 @@
 <div class="cigo-open-pages">
     <div class="open-tabs-container">
         <div class="open-tabs" @click="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index">
-            <span class="tab-dot"></span>
+            <span class="tab-dot" :style="{'--dotColor':getDotColor(item)}"></span>
             <span class="tab-name">{{makeTabName(item)}}</span>
             <span class="close-tab-icon" @click="closePage(item)">x</span>
         </div>
@@ -73,13 +73,22 @@ export default defineComponent({
             }
         };
 
+        const getDotColor = (name: string) => {
+            if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
+                let pageItem = menuBaseMapRef.value.get(name);
+                return pageItem && pageItem.color ? pageItem.color : "#fff";
+            }
+            return "#fff";
+        };
+
         return {
             currComponent,
             menuBaseMapRef,
             openTabsRef,
             makeTabName,
             closePage,
-            openPage
+            openPage,
+            getDotColor
         };
     }
 });
@@ -117,7 +126,7 @@ export default defineComponent({
             opacity: 0.5;
 
             .tab-dot {
-                background: #fff;
+                background-color: var(--dotColor);
                 width: 0px;
                 height: 0px;
                 border-radius: 0px;
