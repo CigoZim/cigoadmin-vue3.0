@@ -52,8 +52,6 @@ export default defineComponent({
         };
 
         const closePage = (name: string) => {
-            console.log("closepage");
-
             if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
                 let pageItem = menuBaseMapRef.value.get(name);
                 if (pageItem) {
@@ -67,8 +65,6 @@ export default defineComponent({
         };
 
         const openPage = (name: string) => {
-            console.log("openPage");
-
             if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
                 let pageItem = menuBaseMapRef.value.get(name);
                 pageItem ? showPage(pageItem) : false;
@@ -101,15 +97,17 @@ export default defineComponent({
     width: 100%;
     overflow: hidden;
     height: 41px;
+    position: relative;
 
     .open-tabs-container {
-        width: 80vw; //TODO flex=1 内容超出导致宽度超出屏幕
+        width: 70vw; //TODO flex=1 内容超出导致宽度超出屏幕
         display: flex;
         flex-direction: row;
         overflow-x: scroll;
         overflow-y: hidden;
 
         .open-tabs {
+            min-width: 50px;
             cursor: pointer;
             display: flex;
             flex-direction: row;

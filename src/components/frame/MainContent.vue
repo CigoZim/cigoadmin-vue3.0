@@ -75,7 +75,6 @@ export default defineComponent({
                 }
             },
             enter: (component: any) => {
-                console.log("enter", component.type.name);
                 //记录打开页面
                 systemStore.recordCurrComponent(component.type.name);
                 //开启切换动画

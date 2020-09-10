@@ -183,8 +183,6 @@ class Store {
 		}
 
 		if (!baseList.has(tmpList[index])) {
-			console.log(index, tmpList[index]);
-
 			cigoLayer.msg(tmpList[index] + "页面丢失");
 			router.push("/");
 			return;

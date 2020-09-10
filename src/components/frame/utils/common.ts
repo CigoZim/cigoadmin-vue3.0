@@ -33,11 +33,9 @@ export function showPage(item: Menu): void {
 	if (!item.url) {
 		return;
 	}
-	//TODO 执行跳转,过滤类型
+	//执行跳转,过滤类型
 	switch (item.target_type) {
 		case "content-page":
-			console.log("push", item.title, item.url);
-
 			router.push(item.url);
 			break;
 		case "layer-win":
