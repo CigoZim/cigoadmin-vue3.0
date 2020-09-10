@@ -430,7 +430,7 @@ $menu-list-color-menu-sub: #1a2419;
     /** 菜单常规属性 */
     .menu-item {
         cursor: pointer;
-        border-bottom: 1px dashed #444;
+        border-bottom: 1px dashed #353535;
 
         .item-left {
             display: flex;
@@ -586,6 +586,7 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
+    .menu-container.menu-open.first-level.expand>.menu-item.curr+.item-sublist>.menu-container>.menu-item.curr,
     .menu-container.menu-open.first-level.expand>.item-sublist>.menu-container:hover>.menu-item {
         background-color: transparent !important;
 
