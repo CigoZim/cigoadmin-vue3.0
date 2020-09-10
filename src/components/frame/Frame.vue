@@ -50,11 +50,9 @@ export default defineComponent({
         let baseMap = new Map();
         let menuBaseMapRef = ref(baseMap);
         let firstLevel = new Map();
-        let menuBaseMapRefFirstLevel = ref(firstLevel);
 
         provide("menuTreeListRef", menuTreeListRef);
         provide("menuBaseMapRef", menuBaseMapRef);
-        provide("menuBaseMapRefFirstLevel", menuBaseMapRefFirstLevel);
 
         onBeforeMount(() => {
             getMenuList();
@@ -72,7 +70,7 @@ export default defineComponent({
 
                     //初始化层级菜单数据
                     let treeList = response.data.data.treeList;
-                    initTreeMenuList(response.data.data.treeList, 0);
+                    initTreeMenuList(response.data.data.treeList);
                     menuTreeListRef.value = [...treeList];
                 })
                 .catch(apiErrorCatch.v1);
@@ -89,8 +87,7 @@ export default defineComponent({
             menuBaseMapRef.value = map;
         };
 
-        const initTreeMenuList = (list: Menu[], level: number) => {
-            let map = new Map();
+        const initTreeMenuList = (list: Menu[]) => {
             list.every((item: Menu, index: number, arr) => {
                 item.color = makeRandomColor(1, 100, 250);
                 //同步基础菜单数据颜色
@@ -100,19 +97,12 @@ export default defineComponent({
                 ) {
                     menuBaseMapRef.value.get(item.component_name).color =
                         item.color;
-                    if (level == 0) {
-                        map.set(item.component_name, item);
-                    }
                 }
-
                 if (item.subList && item.subList.length) {
-                    initTreeMenuList(item.subList, level + 1);
+                    initTreeMenuList(item.subList);
                 }
                 return true;
             });
-            if (level == 0) {
-                menuBaseMapRefFirstLevel.value = map;
-            }
         };
 
         return {};
