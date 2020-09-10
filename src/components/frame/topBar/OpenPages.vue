@@ -5,7 +5,7 @@
         <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
             <span class="tab-dot"></span>
             <span class="tab-name">{{makeTabName(item)}}</span>
-            <icon-font v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)" :iconFlag="'cigoadmin-icon-shanchu'"></icon-font>
+            <icon-font v-if="menuNameBaseMapRef.has(item) && menuNameBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)" :iconFlag="'cigoadmin-icon-shanchu'"></icon-font>
         </div>
     </div>
     <icon-font class="more-icon right-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
@@ -42,7 +42,7 @@ export default defineComponent({
         IconFont
     },
     setup() {
-        let menuBaseMapRef: any = inject("menuBaseMapRef");
+        let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");
         let openTabsRef = toRef(systemStore.getState(), "openTabs");
         let currComponent = toRef(
             systemStore.getState().systemState,
@@ -50,36 +50,48 @@ export default defineComponent({
         );
 
         const makeTabName = (name: string) => {
-            if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
-                let pageItem = menuBaseMapRef.value.get(name);
+            if (
+                menuNameBaseMapRef.value &&
+                menuNameBaseMapRef.value.has(name)
+            ) {
+                let pageItem = menuNameBaseMapRef.value.get(name);
                 return pageItem && pageItem.title ? pageItem.title : name;
             }
             return name;
         };
 
         const closePage = (name: string) => {
-            if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
-                let pageItem = menuBaseMapRef.value.get(name);
+            if (
+                menuNameBaseMapRef.value &&
+                menuNameBaseMapRef.value.has(name)
+            ) {
+                let pageItem = menuNameBaseMapRef.value.get(name);
                 if (pageItem) {
                     systemStore.closeOpenTab(
                         name,
                         pageItem,
-                        menuBaseMapRef.value
+                        menuNameBaseMapRef.value
                     );
                 }
             }
         };
 
         const openPage = (name: string) => {
-            if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
-                let pageItem = menuBaseMapRef.value.get(name);
+            if (
+                menuNameBaseMapRef.value &&
+                menuNameBaseMapRef.value.has(name)
+            ) {
+                let pageItem = menuNameBaseMapRef.value.get(name);
                 pageItem ? showPage(pageItem) : false;
             }
         };
 
         const getDotColor = (name: string) => {
-            if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
-                let pageItem = menuBaseMapRef.value.get(name);
+            if (
+                menuNameBaseMapRef.value &&
+                menuNameBaseMapRef.value.has(name)
+            ) {
+                let pageItem = menuNameBaseMapRef.value.get(name);
                 return pageItem && pageItem.color ? pageItem.color : "#fff";
             }
             return "#fff";
@@ -87,7 +99,7 @@ export default defineComponent({
 
         return {
             currComponent,
-            menuBaseMapRef,
+            menuNameBaseMapRef,
             openTabsRef,
             makeTabName,
             closePage,

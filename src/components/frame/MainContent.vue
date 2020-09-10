@@ -1,16 +1,13 @@
 <template>
 <div class="cigo-main-content">
-    <div class="main-content-top">
-        <content-menu class="main-content-menu"></content-menu>
-        <div class="main-content-body">
-            <router-view v-slot="{ Component }">
-                <transition :appear="appearFlag" @enter="enter(Component)" @leave="leave(currComponent)">
-                    <keep-alive :exclude="noCachePages" :max="maxCachePages">
-                        <component :is="Component" />
-                    </keep-alive>
-                </transition>
-            </router-view>
-        </div>
+    <div class="main-content-body">
+        <router-view v-slot="{ Component }">
+            <transition :appear="appearFlag" @enter="enter(Component)" @leave="leave(currComponent)">
+                <keep-alive :exclude="noCachePages" :max="maxCachePages">
+                    <component :is="Component" />
+                </keep-alive>
+            </transition>
+        </router-view>
     </div>
     <bottom-panel class="main-content-bottom"></bottom-panel>
 </div>
@@ -31,7 +28,6 @@ import {
     inject
 } from "vue";
 
-import ContentMenu from "./ContentMenu.vue";
 import BottomPanel from "./BottomPanel.vue";
 
 import {
@@ -48,13 +44,12 @@ import {
 export default defineComponent({
     name: "CigoMainContent",
     components: {
-        ContentMenu,
         BottomPanel
     },
     setup() {
         let noCachePages = ref(["CigoDashboard"]);
         let maxCachePages = ref(200);
-        let menuBaseMapRef: any = inject("menuBaseMapRef");
+        let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");
         let currComponent = toRef(
             systemStore.getState().systemState,
             "currComponent"
@@ -64,10 +59,10 @@ export default defineComponent({
             appearFlag: ref(true),
             leave: (componentName: string) => {
                 if (
-                    menuBaseMapRef.value &&
-                    menuBaseMapRef.value.has(componentName)
+                    menuNameBaseMapRef.value &&
+                    menuNameBaseMapRef.value.has(componentName)
                 ) {
-                    let leaveItem: Menu = menuBaseMapRef.value.get(name);
+                    let leaveItem: Menu = menuNameBaseMapRef.value.get(name);
                     if (leaveItem && !leaveItem.can_cache) {
                         // 移除无需缓存的页面打开记录
                         systemStore.removeOpenTab(name);
@@ -111,20 +106,10 @@ export default defineComponent({
     flex: 1;
     flex-direction: column;
 
-    .main-content-top {
+    .main-content-body {
         display: flex;
         flex: 1;
-        flex-direction: row;
-
-        .main-content-menu {
-            display: flex;
-        }
-
-        .main-content-body {
-            display: flex;
-            flex: 1;
-            padding: 10px;
-        }
+        padding: 10px;
     }
 
     .main-content-bottom {

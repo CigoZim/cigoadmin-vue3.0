@@ -1,15 +1,18 @@
 <template>
-<div class="cigo-sider">
-    <logo-area class="sider-logo-area"></logo-area>
-    <div class="sider-menu-list-container" :style="{'--leftMenuContainerWidth': leftMenuContainerWidth}">
-        <div class="sider-menu-list">
-            <menu-list :menuList="menuTreeListRef" :level="0"></menu-list>
+    <div class="cigo-sider">
+        <logo-area class="sider-logo-area"></logo-area>
+        <div
+            class="sider-menu-list-container"
+            :style="{'--leftMenuContainerWidth': leftMenuContainerWidth}"
+        >
+            <div class="sider-menu-list">
+                <menu-list :menuList="menuTreeListRef" :level="0"></menu-list>
+            </div>
+        </div>
+        <div class="copy-right">
+            <span>@西谷开源 出品</span>
         </div>
     </div>
-    <div class="copy-right">
-        <span>@西谷开源 出品</span>
-    </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -24,15 +27,9 @@ import {
 } from "vue";
 import LogoArea from "./sider/LogoArea.vue";
 import MenuList from "./sider/MenuList.vue";
-import {
-    systemStore
-} from "@/store/index";
-import {
-    TweenMax
-} from "gsap";
-import {
-    Menu
-} from "./utils/types";
+import { systemStore } from "@/store/index";
+import { TweenMax } from "gsap";
+import { Menu } from "./utils/types";
 
 export default defineComponent({
     name: "CigoSider",
@@ -42,7 +39,7 @@ export default defineComponent({
     },
     setup(props, context) {
         let menuTreeListRef: any = inject("menuTreeListRef");
-        let menuBaseMapRef = inject("menuBaseMapRef");
+        let menuNameBaseMapRef = inject("menuNameBaseMapRef");
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
@@ -64,7 +61,8 @@ export default defineComponent({
                     ".sider-menu-list",
                     ".copy-right"
                 ],
-                0.8, {
+                0.8,
+                {
                     width: openFlag ? "240px" : "103px",
                     onStart: () => {
                         if (openFlag) {

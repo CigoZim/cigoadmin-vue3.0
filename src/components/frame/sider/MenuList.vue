@@ -74,7 +74,7 @@ export default defineComponent({
             "sideMenuOpen"
         );
         let titleGoneFlag = ref(false);
-        let menuBaseMapRef: any = inject("menuBaseMapRef");
+        let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");
 
         onMounted(() => {
             menuChange(menuOpenFlag.value);
@@ -151,12 +151,12 @@ export default defineComponent({
         /** 跳转路由为主：处理 */
         const modeForMenuExpandNowRouter = (item: Menu): string => {
             if (
-                !menuBaseMapRef.value ||
-                !menuBaseMapRef.value.has(currComponent.value)
+                !menuNameBaseMapRef.value ||
+                !menuNameBaseMapRef.value.has(currComponent.value)
             ) {
                 return "close";
             }
-            let routerItem: Menu = menuBaseMapRef.value.get(
+            let routerItem: Menu = menuNameBaseMapRef.value.get(
                 currComponent.value
             );
             if (item.component_name == currComponent.value) {
@@ -185,10 +185,10 @@ export default defineComponent({
 
                 //标记当前(根据菜单项级联路径，保证当前级联菜单项的所有父辈都能够高亮)
                 if (
-                    menuBaseMapRef.value &&
-                    menuBaseMapRef.value.has(currComponent.value)
+                    menuNameBaseMapRef.value &&
+                    menuNameBaseMapRef.value.has(currComponent.value)
                 ) {
-                    let nowItem: Menu = menuBaseMapRef.value.get(
+                    let nowItem: Menu = menuNameBaseMapRef.value.get(
                         currComponent.value
                     );
                     if (item.id == nowItem.id) {

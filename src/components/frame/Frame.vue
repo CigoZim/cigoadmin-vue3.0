@@ -47,12 +47,12 @@ export default defineComponent({
     setup() {
         let treeList: Menu[] = [];
         let menuTreeListRef = ref(treeList);
-        let baseMap = new Map();
-        let menuBaseMapRef = ref(baseMap);
-        let firstLevel = new Map();
+        let menuNameBaseMapRef = ref(new Map());
+        let menuIdBaseMapRef = ref(new Map());
 
         provide("menuTreeListRef", menuTreeListRef);
-        provide("menuBaseMapRef", menuBaseMapRef);
+        provide("menuNameBaseMapRef", menuNameBaseMapRef);
+        provide("menuIdBaseMapRef", menuIdBaseMapRef);
 
         onBeforeMount(() => {
             getMenuList();
@@ -66,7 +66,7 @@ export default defineComponent({
                 })
                 .then(response => {
                     //初始化基础菜单数据
-                    initBaseMap(response.data.data.baseList);
+                    initMenuMapData(response.data.data.baseList);
 
                     //初始化层级菜单数据
                     let treeList = response.data.data.treeList;
@@ -76,15 +76,18 @@ export default defineComponent({
                 .catch(apiErrorCatch.v1);
         };
 
-        const initBaseMap = (baseList: []) => {
-            let map = new Map();
+        const initMenuMapData = (baseList: []) => {
+            let idMap = new Map();
+            let nameMap = new Map();
             baseList.every((item: Menu, index: number, arr) => {
                 if (item.component_name) {
-                    map.set(item.component_name, item);
+                    nameMap.set(item.component_name, item);
                 }
+                idMap.set("id_" + item.id, item);
                 return true;
             });
-            menuBaseMapRef.value = map;
+            menuIdBaseMapRef.value = idMap;
+            menuNameBaseMapRef.value = nameMap;
         };
 
         const initTreeMenuList = (list: Menu[]) => {
@@ -93,9 +96,9 @@ export default defineComponent({
                 //同步基础菜单数据颜色
                 if (
                     item.component_name &&
-                    menuBaseMapRef.value.has(item.component_name)
+                    menuNameBaseMapRef.value.has(item.component_name)
                 ) {
-                    menuBaseMapRef.value.get(item.component_name).color =
+                    menuNameBaseMapRef.value.get(item.component_name).color =
                         item.color;
                 }
                 if (item.subList && item.subList.length) {
