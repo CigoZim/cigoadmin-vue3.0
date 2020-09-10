@@ -51,3 +51,36 @@ export function showPage(item: Menu): void {
 			break;
 	}
 }
+
+/**
+ * 页面全屏
+ */
+export function goFullScreen() {
+	if (!document) {
+		return;
+	}
+	let el = document.documentElement as any;
+	let rfs =
+		el.requestFullScreen ||
+		el.webkitRequestFullScreen ||
+		el.mozRequestFullScreen ||
+		el.msRequestFullscreen;
+	if (typeof rfs != "undefined" && rfs) {
+		rfs.call(el);
+	}
+	return;
+}
+
+/**
+ * 页面退出全屏
+ */
+export function exitFullScreen() {
+	let cfs = document as any;
+	if (cfs.exitFullscreen) {
+		cfs.exitFullscreen();
+	} else if (cfs.webkitCancelFullScreen) {
+		cfs.webkitCancelFullScreen();
+	} else {
+		cfs.msExitFullscreen();
+	}
+}
