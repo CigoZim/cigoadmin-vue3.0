@@ -1,8 +1,8 @@
 <template>
 <div class="cigo-open-pages">
     <div class="open-tabs-container">
-        <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index">
-            <span class="tab-dot" :style="{'--dotColor':getDotColor(item)}"></span>
+        <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
+            <span class="tab-dot"></span>
             <span class="tab-name">{{makeTabName(item)}}</span>
             <span v-if="menuBaseMapRef.has(item) && menuBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)">x</span>
         </div>
@@ -115,20 +115,16 @@ export default defineComponent({
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            border-top: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            border-bottom: 0px;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
-            padding: 5px 8px;
-            background-color: #ddd;
+            padding: 5px 10px;
+            background-color: var(--tabBgColor);
             margin: 10px 8px 0px 0px;
             position: relative;
             opacity: 0.5;
 
             .tab-dot {
-                background-color: var(--dotColor);
+                background-color: #fff;
                 width: 0px;
                 height: 0px;
                 border-radius: 0px;
@@ -141,8 +137,8 @@ export default defineComponent({
             }
 
             .tab-name {
-                color: #444;
-                font-size: 13px;
+                color: #222;
+                font-size: 14px;
             }
 
             .close-tab-icon {
@@ -173,9 +169,6 @@ export default defineComponent({
         .open-tabs.curr,
         .open-tabs:hover {
             opacity: 1;
-            border-top: 1px solid #f0f0f0;
-            border-left: 1px solid #f0f0f0;
-            border-right: 1px solid #f0f0f0;
 
             .tab-name {
                 color: #fff;
