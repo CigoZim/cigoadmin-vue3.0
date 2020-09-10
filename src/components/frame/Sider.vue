@@ -19,7 +19,8 @@ import {
     watch,
     onMounted,
     toRefs,
-    inject
+    inject,
+    ref
 } from "vue";
 import LogoArea from "./sider/LogoArea.vue";
 import MenuList from "./sider/MenuList.vue";
@@ -29,6 +30,9 @@ import {
 import {
     TweenMax
 } from "gsap";
+import {
+    Menu
+} from "./utils/types";
 
 export default defineComponent({
     name: "CigoSider",
@@ -37,11 +41,13 @@ export default defineComponent({
         MenuList
     },
     setup(props, context) {
-        let menuTreeListRef = inject("menuTreeListRef");
+        let menuTreeListRef: any = inject("menuTreeListRef");
+        let menuBaseMapRef = inject("menuBaseMapRef");
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
         );
+
         watch(menuOpenFlag, (openFlag: boolean, preOpenFLag: boolean) => {
             menuChange(openFlag);
         });

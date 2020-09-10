@@ -67,7 +67,6 @@ export default defineComponent({
         };
 
         const openPage = (name: string) => {
-            console.log("showPage:", name);
             if (menuBaseMapRef.value && menuBaseMapRef.value.has(name)) {
                 let pageItem = menuBaseMapRef.value.get(name);
                 pageItem ? showPage(pageItem) : false;

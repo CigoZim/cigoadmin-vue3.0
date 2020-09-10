@@ -65,10 +65,6 @@ export default defineComponent({
                 //记录打开页面
                 let name = component.type.name;
                 systemStore.recordCurrComponent(name);
-                let openTabs = toRaw(systemStore.getState().openTabs);
-                if (openTabs.indexOf(name) === -1) {
-                    systemStore.recordOpenTab(name);
-                }
                 //开启切换动画
                 //TODO 点击过快，需要取消原动画
                 TweenMax.to(".main-content-body", 0, {

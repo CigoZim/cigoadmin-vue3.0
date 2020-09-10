@@ -25,7 +25,8 @@ import {
     computed,
     toRef,
     watch,
-    onBeforeMount
+    onBeforeMount,
+    inject
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
 import {
@@ -35,6 +36,7 @@ import {
     systemStore
 } from "@/store/index";
 import {
+    ModeFormMenuExpand,
     Menu
 } from "@/components/frame/utils/types";
 import {
@@ -58,20 +60,21 @@ export default defineComponent({
         }
     },
     setup(props) {
-        let clickOpenMenu: Menu = {
-            id: 0,
-            title: ""
-        };
         let currComponent = toRef(
             systemStore.getState().systemState,
             "currComponent"
         );
-        let clickOpenMenuRef = ref(clickOpenMenu);
+        let menuItemExpand: Menu = {
+            id: 0,
+            title: ""
+        };
+        let expandMenuItem = ref(menuItemExpand);
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
         );
         let titleGoneFlag = ref(false);
+        let menuBaseMapRef: any = inject("menuBaseMapRef");
 
         onMounted(() => {
             menuChange(menuOpenFlag.value);
@@ -105,9 +108,9 @@ export default defineComponent({
                     }
                 }
             });
-            //如果关闭左侧菜单，则关闭当前正展开的一级菜单
-            if (!openFlag && clickOpenMenuRef.value.id) {
-                recordClickMenu(clickOpenMenuRef.value); // 清空当前菜单
+            //如果左侧菜单为关闭状态，则闭合当前正展开的一级菜单
+            if (!openFlag && expandMenuItem.value.id) {
+                recordClickMenu(expandMenuItem.value); // 清空当前菜单
             }
         };
 
@@ -116,12 +119,62 @@ export default defineComponent({
             let classes: string[] = [];
             classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
             classes.push(props.level == 0 ? "first-level" : "");
-            if (!item.group_flag) {
-                classes.push(
-                    clickOpenMenuRef.value.id == item.id ? "expand" : "close"
-                );
+
+            //处理一级菜单展开问题
+            if (!item.group_flag && props.level == 0) {
+                let flag: string = "close";
+                //分析是否展开
+                switch (systemStore.getState().noCached.modeForMenuExpand) {
+                    case ModeFormMenuExpand.CLICK_MENU: //点击菜单为主
+                        flag = modeForMenuExpandClickMenu(item);
+                        break;
+                    case ModeFormMenuExpand.NOW_ROUTER: //跳转路由为主
+                        flag = modeForMenuExpandNowRouter(item);
+                        break;
+                    default:
+                        //未知
+                        break;
+                }
+                classes.push(flag);
             }
             return classes;
+        };
+
+        /** 点击菜单为主：处理 */
+        const modeForMenuExpandClickMenu = (item: Menu) => {
+            let flag = "close";
+            if (item.subList && item.subList.length > 0) {
+                flag = expandMenuItem.value.id == item.id ? "expand" : "close";
+            }
+            return flag;
+        };
+        /** 跳转路由为主：处理 */
+        const modeForMenuExpandNowRouter = (item: Menu): string => {
+            if (
+                !menuBaseMapRef.value ||
+                !menuBaseMapRef.value.has(currComponent.value)
+            ) {
+                return "close";
+            }
+            let routerItem: Menu = menuBaseMapRef.value.get(
+                currComponent.value
+            );
+            if (item.component_name == currComponent.value) {
+                expandMenuItem.value = {
+                    id: 0,
+                    title: ""
+                };
+                return "close";
+            } else if (
+                routerItem &&
+                routerItem.path &&
+                item.path &&
+                routerItem.path.indexOf(item.path + item.id + ",") >= 0
+            ) {
+                expandMenuItem.value = item;
+                return "expand";
+            }
+            return "close";
         };
 
         /** 获取菜单项Class */
@@ -129,8 +182,25 @@ export default defineComponent({
             let classes: string[] = [];
             if (!item.group_flag) {
                 classes.push("menu-item");
-                if (currComponent.value == item.component_name) {
-                    classes.push("curr");
+
+                //标记当前(根据菜单项级联路径，保证当前级联菜单项的所有父辈都能够高亮)
+                if (
+                    menuBaseMapRef.value &&
+                    menuBaseMapRef.value.has(currComponent.value)
+                ) {
+                    let nowItem: Menu = menuBaseMapRef.value.get(
+                        currComponent.value
+                    );
+                    if (item.id == nowItem.id) {
+                        classes.push("curr");
+                    } else if (
+                        nowItem &&
+                        nowItem.path &&
+                        item.path &&
+                        nowItem.path.indexOf(item.path + item.id + ",") >= 0
+                    ) {
+                        classes.push("curr");
+                    }
                 }
             } else {
                 classes.push("menu-group");
@@ -147,39 +217,30 @@ export default defineComponent({
             if (item.group_flag) {
                 return;
             }
+
+            // 一级菜单&左边栏开启状态下记录点击菜单项
+            if (props.level == 0 && menuOpenFlag.value) {
+                //记录有效点击菜单
+                recordClickMenu(item);
+            }
+
             // 无子菜单直接跳转
             if (!item.subList || item.subList.length == 0) {
                 showPage(item);
-                return;
             }
-
-            /** 上面是菜单跳转判断 */
-            /*************************************** */
-            /** 下面是一级菜单展开判断 */
-
-            // 非一级菜单无动作
-            if (props.level > 0) {
-                return;
-            }
-            // 左侧菜单非开启状态无动作
-            if (!menuOpenFlag.value) {
-                return;
-            }
-
-            //记录有效点击菜单
-            recordClickMenu(item);
         };
 
         /** 记录点击菜单项 */
         const recordClickMenu = (item: Menu) => {
             // 记录点击菜单项
-            clickOpenMenuRef.value =
-                item.id == clickOpenMenuRef.value.id ?
+            expandMenuItem.value =
+                item.id == expandMenuItem.value.id ?
                 {
                     id: 0,
                     title: ""
                 } :
                 item;
+            systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU);
         };
 
         /** 鼠标滑入/滑出菜单项 */
@@ -189,9 +250,15 @@ export default defineComponent({
             }
             subMenuListAnimation(item, inOutFlag);
         };
-        watch(clickOpenMenuRef, (newMenu: Menu, preMenu: Menu) => {
+        watch(expandMenuItem, (newMenu: Menu, preMenu: Menu) => {
             subMenuListAnimation(newMenu, true);
-            subMenuListAnimation(preMenu, false);
+            if (
+                systemStore.getState().noCached.modeForMenuExpand ==
+                ModeFormMenuExpand.CLICK_MENU ||
+                newMenu.id != preMenu.id
+            ) {
+                subMenuListAnimation(preMenu, false);
+            }
         });
         const subMenuListAnimation = (item: Menu, openFlag: boolean) => {
             if (!item.subList || !item.subList.length) {

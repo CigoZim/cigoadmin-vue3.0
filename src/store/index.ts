@@ -2,12 +2,15 @@ import { reactive, toRaw, ref, watch, toRef } from "vue";
 import router from "@/router/index";
 import {
 	SystemState,
+	NoCachedState,
 	LoginUserInfo,
 	Menu,
+	ModeFormMenuExpand,
 } from "@/components/frame/utils/types";
 
 interface State {
 	systemState: SystemState;
+	noCached: NoCachedState;
 	userInfo: LoginUserInfo;
 	openTabs: string[];
 }
@@ -17,6 +20,7 @@ class Store {
 	constructor(initialState: State) {
 		// 初始化值进行响应式代理
 		this.state = reactive(initialState);
+
 		//同步缓存中systemState
 		let systemState = localStorage.getItem("systemState");
 		if (systemState) {
@@ -93,11 +97,23 @@ class Store {
 	}
 
 	/**
+	 * 设置当前一级菜单展开以谁为主
+	 */
+	public setModeForMenuExpand(flag: ModeFormMenuExpand) {
+		this.state.noCached.modeForMenuExpand = flag;
+	}
+
+	/**
 	 * 记录当前打开组件
 	 * @param componentName
 	 */
 	public recordCurrComponent(componentName: string) {
 		this.state.systemState.currComponent = componentName;
+		let openTabs = toRaw(this.state.openTabs);
+		if (openTabs.indexOf(componentName) === -1) {
+			this.state.openTabs = [...openTabs, componentName];
+		}
+		this.setModeForMenuExpand(ModeFormMenuExpand.NOW_ROUTER);
 		this.saveToStorage("systemState", toRaw(this.state.systemState));
 	}
 
@@ -115,17 +131,9 @@ class Store {
 	 * 退出登录
 	 */
 	public logout(): void {
-		this.state.userInfo = initialLoginUserInfo();
+		this.state.userInfo = { isLogin: false };
 		localStorage.clear();
 		router.push("/gone");
-	}
-
-	/**
-	 * 记录打开tab页面
-	 */
-	public recordOpenTab(componentName: string): void {
-		this.state.openTabs = [...this.state.openTabs, componentName];
-		this.saveToStorage("openTabs", toRaw(this.state.openTabs));
 	}
 
 	/**
@@ -162,7 +170,6 @@ class Store {
 		//TODO 暂时跳转尾页
 		if (tmpList.length) {
 			let jumpName: string = tmpList[tmpList.length - 1];
-			console.log("jumpName:", jumpName);
 			if (baseList.has(jumpName)) {
 				let jumpMenu = baseList.get(jumpName);
 				if (jumpMenu && jumpMenu.url) {
@@ -176,25 +183,24 @@ class Store {
 }
 
 const initialState = (): State => {
-	let systemState = initialSystemState();
-	let userInfo = initialLoginUserInfo();
+	let systemState: SystemState = {
+		sideMenuOpen: false,
+		rightPanelOpen: false,
+		leftMenuContainerWidth: "113px",
+		currComponent: "",
+	};
+	let noCached: NoCachedState = {
+		modeForMenuExpand: ModeFormMenuExpand.NOW_ROUTER,
+	};
+	let userInfo: LoginUserInfo = { isLogin: false };
 	let tabs: string[] = [];
 	return {
 		systemState: systemState,
+		noCached: noCached,
 		userInfo: userInfo,
 		openTabs: tabs,
 	};
 };
-
-const initialSystemState = (): SystemState => ({
-	sideMenuOpen: false,
-	rightPanelOpen: false,
-	leftMenuContainerWidth: "113px",
-	currComponent: "",
-});
-const initialLoginUserInfo = (): LoginUserInfo => ({
-	isLogin: false,
-});
 
 const systemStore = new Store(initialState());
 export { State, systemStore };
