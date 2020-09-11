@@ -1,17 +1,13 @@
 <template>
-<div class="cigo-layer-msg" :class="[showFlag]">
-    <div class="cigo-layer-msg-content">
-        <span>{{msg}}</span>
+    <div class="cigo-layer-msg" :class="[showFlag]">
+        <div class="cigo-layer-msg-content">
+            <span>{{msg}}</span>
+        </div>
     </div>
-</div>
 </template>
 
 <script lang="ts">
-import {
-    defineComponent,
-    ref,
-    onMounted
-} from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 
 import CigoMask from "./mask.vue";
 

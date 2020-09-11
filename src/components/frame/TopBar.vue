@@ -1,36 +1,34 @@
 <template>
-<div class="cigo-top-bar">
-    <div class="top-bar-top">
-        <div class="top-bar-top-left">
-            <img class="left-menu-toggle-icon" :class="[sideMenuOpen?'open':'close']" @click="systemStore.toggleSideMenu()" :src="cdnOpenIcon + '/menu-close.png'" />
-            <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
+    <div class="cigo-top-bar">
+        <div class="top-bar-top">
+            <div class="top-bar-top-left">
+                <img
+                    class="left-menu-toggle-icon"
+                    :class="[sideMenuOpen?'open':'close']"
+                    @click="systemStore.toggleSideMenu()"
+                    :src="cdnOpenIcon + '/menu-close.png'"
+                />
+                <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
+            </div>
+            <div class="top-bar-top-right">
+                <tools-bar class="top-bar-tools-bar"></tools-bar>
+                <manager-icon class="top-bar-manager-icon"></manager-icon>
+            </div>
         </div>
-        <div class="top-bar-top-right">
-            <tools-bar class="top-bar-tools-bar"></tools-bar>
-            <manager-icon class="top-bar-manager-icon"></manager-icon>
-        </div>
+        <open-pages class="top-bar-open-pages"></open-pages>
     </div>
-    <open-pages class="top-bar-open-pages"></open-pages>
-</div>
 </template>
 
 <script lang="ts">
-import {
-    defineComponent,
-    toRefs
-} from "vue";
+import { defineComponent, toRefs } from "vue";
 
 import BreadCrumb from "@/components/frame/topBar/BreadCrumb.vue";
 import ToolsBar from "@/components/frame/topBar/ToolsBar.vue";
 import ManagerIcon from "@/components/frame/topBar/ManagerIcon.vue";
 import OpenPages from "@/components/frame/topBar/OpenPages.vue";
 
-import {
-    Domain
-} from "@/common/http";
-import {
-    systemStore
-} from "@/store/index";
+import { Domain } from "@/common/http";
+import { systemStore } from "@/store/index";
 
 export default defineComponent({
     name: "CigoTopBar",
@@ -57,7 +55,8 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     padding: 5px 12px 0px;
-    border-bottom: 1px solid #eee;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ddd;
 
     .top-bar-top {
         width: 100%;

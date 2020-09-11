@@ -1,15 +1,27 @@
 <template>
-<div class="cigo-open-pages">
-    <icon-font class="more-icon left-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
-    <div class="open-tabs-container">
-        <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
-            <span class="tab-dot"></span>
-            <span class="tab-name">{{makeTabName(item)}}</span>
-            <icon-font v-if="menuNameBaseMapRef.has(item) && menuNameBaseMapRef.get(item).can_close_tab" class="close-tab-icon" @click.stop="closePage(item)" :iconFlag="'cigoadmin-icon-shanchu'"></icon-font>
+    <div class="cigo-open-pages">
+        <icon-font class="more-icon left-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
+        <div class="open-tabs-container">
+            <div
+                class="open-tabs"
+                @click.stop="openPage(item)"
+                :class="[currComponent == item ? 'curr' : '']"
+                v-for="(item, index) in openTabsRef"
+                :key="index"
+                :style="{'--tabBgColor':getDotColor(item)}"
+            >
+                <span class="tab-dot"></span>
+                <span class="tab-name">{{makeTabName(item)}}</span>
+                <icon-font
+                    v-if="menuNameBaseMapRef.has(item) && menuNameBaseMapRef.get(item).can_close_tab"
+                    class="close-tab-icon"
+                    @click.stop="closePage(item)"
+                    :iconFlag="'cigoadmin-icon-shanchu'"
+                ></icon-font>
+            </div>
         </div>
+        <icon-font class="more-icon right-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
     </div>
-    <icon-font class="more-icon right-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
-</div>
 </template>
 
 <script lang="ts">
@@ -24,16 +36,9 @@ import {
     watch
 } from "vue";
 import IconFont from "@/components/frame/other/IconFont.vue";
-import {
-    State,
-    systemStore
-} from "@/store";
-import {
-    SystemState
-} from "../utils/types";
-import {
-    showPage
-} from "../utils/common";
+import { State, systemStore } from "@/store";
+import { SystemState } from "../utils/types";
+import { showPage } from "../utils/common";
 
 //TODO 继续优化
 export default defineComponent({
@@ -118,21 +123,25 @@ export default defineComponent({
     flex-direction: row;
 
     .more-icon {
-        width: 20px;
-        height: 31px;
-        background-color: #757575;
-        margin-top: 10px;
+        width: 18px;
+        height: 25px;
+        margin-top: 15px;
+        background-color: #ddd;
         color: #fff;
-        -moz-transition: all 0.6s ease-in-out;
-        -webkit-transition: all 0.6s ease-in-out;
-        -o-transition: all 0.6s ease-in-out;
-        -ms-transition: all 0.6s ease-in-out;
-        transition: all 0.6s ease-in-out;
+        cursor: pointer;
+        -moz-transition: all 0.5s ease-in-out;
+        -webkit-transition: all 0.5s ease-in-out;
+        -o-transition: all 0.5s ease-in-out;
+        -ms-transition: all 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
         opacity: 0.3;
     }
 
     .more-icon:hover {
         opacity: 1;
+        width: 20px;
+        height: 31px;
+        margin-top: 10px;
     }
 
     .left-more {

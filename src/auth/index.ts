@@ -24,8 +24,8 @@ class Auth {
 			switch (this.guard.name) {
 				case "CigoGone":
 				case "CigoTipLogout":
-					break;
 				case "Login":
+					break;
 				default:
 					router.push("/login");
 					break;

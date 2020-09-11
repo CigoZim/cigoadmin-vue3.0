@@ -1,15 +1,22 @@
 <template>
-<div class="cigo-right-panel" :class="[openClass]">
-    <div class="right-panel-bg" @click.stop="systemStore.closeRightPanel()"></div>
-    <div class="right-panel">
-        <div class="right-panel-content">
-            <span>我是右侧面板</span>
-        </div>
-        <div class="right-panel-toggle" :class="[openClass]" @click.stop="systemStore.toggleRightPanel()">
-            <img class="right-panel-toggle-icon" :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'" />
+    <div class="cigo-right-panel" :class="[openClass]">
+        <div class="right-panel-bg" @click.stop="systemStore.closeRightPanel()"></div>
+        <div class="right-panel">
+            <div class="right-panel-content">
+                <span>我是右侧面板</span>
+            </div>
+            <div
+                class="right-panel-toggle"
+                :class="[openClass]"
+                @click.stop="systemStore.toggleRightPanel()"
+            >
+                <img
+                    class="right-panel-toggle-icon"
+                    :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'"
+                />
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -22,15 +29,9 @@ import {
     ref
 } from "vue";
 
-import {
-    Domain
-} from "@/common/http";
-import {
-    systemStore
-} from "@/store/index";
-import {
-    TweenMax
-} from "gsap";
+import { Domain } from "@/common/http";
+import { systemStore } from "@/store/index";
+import { TweenMax } from "gsap";
 
 export default defineComponent({
     name: "RightPanel",
@@ -64,19 +65,19 @@ export default defineComponent({
                 opacity: openFlag ? 1 : 0.5
             });
             if (openFlag) {
-                TweenMax.to(".right-panel-content", 0.2, {
+                TweenMax.to(".right-panel-content", 0.4, {
                     width: "200px",
-                    onComplete: () => {
-                        TweenMax.to(".right-panel-content", 0.3, {
+                    onStart: () => {
+                        TweenMax.to(".right-panel-content", 0.5, {
                             opacity: 1
                         });
                     }
                 });
             } else {
-                TweenMax.to(".right-panel-content", 0.3, {
+                TweenMax.to(".right-panel-content", 0.4, {
                     opacity: 0,
-                    onComplete: () => {
-                        TweenMax.to(".right-panel-content", 0.2, {
+                    onStart: () => {
+                        TweenMax.to(".right-panel-content", 0.5, {
                             width: "0px"
                         });
                     }

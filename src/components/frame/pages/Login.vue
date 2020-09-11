@@ -1,34 +1,34 @@
 <template>
-<div class="login-page">
-    <div class="login-page-form">
-        <div class="form-layer shadow three"></div>
-        <div class="form-layer shadow two"></div>
-        <div class="form-layer shadow one">
-            <div class="adv-content">
-                <p class="title">CigoAdmin：西谷后台</p>
-                <p class="sub-title">——西谷开源出品</p>
+    <div class="login-page">
+        <div class="login-page-form">
+            <div class="form-layer shadow three"></div>
+            <div class="form-layer shadow two"></div>
+            <div class="form-layer shadow one">
+                <div class="adv-content">
+                    <p class="title">CigoAdmin：西谷后台</p>
+                    <p class="sub-title">——西谷开源出品</p>
+                </div>
             </div>
-        </div>
-        <div class="form-layer content">
-            <div class="logo">
-                <span>C</span>
-            </div>
+            <div class="form-layer content">
+                <div class="logo">
+                    <span>C</span>
+                </div>
 
-            <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
-                <a-form-item label="用户名：" v-bind="validateInfos.username">
-                    <a-input v-model:value="username" placeholder="请输入用户名" />
-                </a-form-item>
-                <a-form-item label="密 码：" v-bind="validateInfos.password">
-                    <a-input v-model:value="password" placeholder="请输入密码" />
-                </a-form-item>
-                <a-form-item :wrapper-col="{ span: 22, offset: 6 }">
-                    <a-button type="primary" @click="doLogin">登 陆</a-button>
-                    <a-button style="margin-left: 10px;" @click="resetFields">重 置</a-button>
-                </a-form-item>
-            </a-form>
+                <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                    <a-form-item label="用户名：" v-bind="validateInfos.username">
+                        <a-input v-model:value="username" placeholder="请输入用户名" />
+                    </a-form-item>
+                    <a-form-item label="密 码：" v-bind="validateInfos.password">
+                        <a-input v-model:value="password" placeholder="请输入密码" />
+                    </a-form-item>
+                    <a-form-item :wrapper-col="{ span: 22, offset: 6 }">
+                        <a-button type="primary" @click="doLogin">登 陆</a-button>
+                        <a-button style="margin-left: 10px;" @click="resetFields">重 置</a-button>
+                    </a-form-item>
+                </a-form>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -43,25 +43,12 @@ import {
     computed
 } from "vue";
 
-import {
-    Domain,
-    apiRequest,
-    apiSign,
-    apiErrorCatch
-} from "@/common/http";
-import {
-    LoginUserInfo
-} from "@/components/frame/utils/types";
-import {
-    systemStore
-} from "@/store/index";
-import {
-    TweenMax
-} from "gsap";
+import { Domain, apiRequest, apiSign, apiErrorCatch } from "@/common/http";
+import { LoginUserInfo } from "@/components/frame/utils/types";
+import { systemStore } from "@/store/index";
+import { TweenMax } from "gsap";
 import toArray from "lodash/toArray";
-import {
-    useForm
-} from "@ant-design-vue/use";
+import { useForm } from "@ant-design-vue/use";
 import cigoLayer from "@/components/cigo-layer";
 
 export default defineComponent({
@@ -73,14 +60,18 @@ export default defineComponent({
             module: "admin"
         });
         const rulesRef = reactive({
-            username: [{
-                required: true,
-                message: "请输入用户名"
-            }],
-            password: [{
-                required: true,
-                message: "请输入密码"
-            }]
+            username: [
+                {
+                    required: true,
+                    message: "请输入用户名"
+                }
+            ],
+            password: [
+                {
+                    required: true,
+                    message: "请输入密码"
+                }
+            ]
         });
         const {
             resetFields,
@@ -119,6 +110,7 @@ export default defineComponent({
                                 email: response.data.data.email,
                                 role_flag: response.data.data.role_flag
                             };
+                            cigoLayer.msg("登录成功");
 
                             systemStore.saveUserInfo(userInfo);
                         })
@@ -209,7 +201,8 @@ export default defineComponent({
                     font-style: italic;
                     color: #fff;
                     font-weight: 700;
-                    -webkit-box-reflect: below 8px -webkit-linear-gradient(transparent, transparent 40%, rgba(255, 255, 255, 0.3));
+                    -webkit-box-reflect: below 8px -webkit-linear-gradient(transparent, transparent
+                                40%, rgba(255, 255, 255, 0.3));
                 }
 
                 .sub-title {

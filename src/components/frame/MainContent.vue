@@ -1,16 +1,20 @@
 <template>
-<div class="cigo-main-content">
-    <div class="main-content-body">
-        <router-view v-slot="{ Component }">
-            <transition :appear="appearFlag" @enter="enter(Component)" @leave="leave(currComponent)">
-                <keep-alive :exclude="noCachePages" :max="maxCachePages">
-                    <component :is="Component" />
-                </keep-alive>
-            </transition>
-        </router-view>
+    <div class="cigo-main-content">
+        <div class="main-content-body">
+            <router-view v-slot="{ Component }">
+                <transition
+                    :appear="appearFlag"
+                    @enter="enter(Component)"
+                    @leave="leave(currComponent)"
+                >
+                    <keep-alive :exclude="noCachePages" :max="maxCachePages">
+                        <component :is="Component" />
+                    </keep-alive>
+                </transition>
+            </router-view>
+        </div>
+        <bottom-panel class="main-content-bottom"></bottom-panel>
     </div>
-    <bottom-panel class="main-content-bottom"></bottom-panel>
-</div>
 </template>
 
 <script lang="ts">
@@ -30,16 +34,10 @@ import {
 
 import BottomPanel from "./BottomPanel.vue";
 
-import {
-    TweenMax
-} from "gsap";
+import { TweenMax } from "gsap";
 
-import {
-    systemStore
-} from "@/store/index";
-import {
-    Menu
-} from "./utils/types";
+import { systemStore } from "@/store/index";
+import { Menu } from "./utils/types";
 
 export default defineComponent({
     name: "CigoMainContent",
@@ -110,11 +108,6 @@ export default defineComponent({
         display: flex;
         flex: 1;
         padding: 10px;
-    }
-
-    .main-content-bottom {
-        display: flex;
-        background-color: blue;
     }
 }
 </style>
