@@ -1,14 +1,42 @@
 <template>
-<div class="gone-page">
-    <h1>找不到了!!</h1>
+<div class="cigo-gone">
+    <h1>页面跑丢了，{{delayTime}}s后跳转...</h1>
 </div>
 </template>
 
 <script lang="ts">
 import {
-    defineComponent
+    systemStore
+} from "@/store";
+import {
+    defineComponent,
+    onMounted,
+    ref
 } from "vue";
+import router from "@/router";
 export default defineComponent({
-    name: "CigoGone"
+    name: "CigoGone",
+    notShowTab: true,
+    setup() {
+        let delayTime = ref(3);
+
+        onMounted(() => {
+            delayLogout();
+        });
+
+        const delayLogout = () => {
+            setTimeout(() => {
+                if (--delayTime.value > 1) {
+                    delayLogout();
+                    return;
+                }
+                router.push("/");
+            }, 1000);
+        };
+
+        return {
+            delayTime
+        };
+    }
 });
 </script>

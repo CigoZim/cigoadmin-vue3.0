@@ -8,7 +8,6 @@ import {
 	ModeFormMenuExpand,
 } from "@/components/frame/utils/types";
 import cigoLayer from "@/components/cigo-layer";
-import { showPage } from "@/components/frame/utils/common";
 
 interface State {
 	systemState: SystemState;

@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import {
+	createRouter,
+	createWebHistory,
+	ErrorHandler,
+	RouteRecordRaw,
+} from "vue-router";
 import { frameRoutes, checkAuth } from "@/components/frame/router";
 import pagesRouter from "./pages";
 
@@ -16,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
 	/*-----------------------*/
 	{
 		path: "/gone",
-		name: "CigoGone",
+		name: "DefaultGone",
 		component: () => import("@/components/frame/pages/Gone.vue"),
 	},
 ];
@@ -28,6 +33,9 @@ const router = createRouter({
 
 router.beforeEach((guard) => {
 	checkAuth(guard, router);
+});
+router.onError((handler: ErrorHandler) => {
+	console.log("error:", handler);
 });
 
 export default router;

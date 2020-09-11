@@ -1,5 +1,5 @@
 const pages = {
-	path: "/pages/",
+	path: "/pages",
 	name: "Pages",
 	component: () => import("@/components/frame/Frame.vue"),
 	redirect: "noRedirect",
@@ -26,6 +26,11 @@ const pages = {
 			component: () => import("@/pages/demo/continue.vue"),
 		},
 		/******************************= 自定义页面结束 =********************************/
+		{
+			path: "gone",
+			name: "PagesGone",
+			component: () => import("@/components/frame/pages/Gone.vue"),
+		},
 	],
 };
 

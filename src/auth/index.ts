@@ -17,22 +17,15 @@ class Auth {
 	 * 检查登录情况
 	 */
 	public checkLogin(router: Router): boolean {
-		//是否登录模块
-		if (this.guard.name === "Login") {
-			return false;
-		}
 		//是否登录状态
 		if (!systemStore.getState().userInfo.isLogin) {
-			console.log("尚未登录，跳转登录页面...", this.guard.name);
+			console.log("guard.name", this.guard.name);
+
 			switch (this.guard.name) {
 				case "CigoGone":
-					setTimeout(() => {
-						router.push("/");
-					}, 3000);
-					break;
 				case "CigoTipLogout":
 					break;
-				case "login":
+				case "Login":
 				default:
 					router.push("/login");
 					break;

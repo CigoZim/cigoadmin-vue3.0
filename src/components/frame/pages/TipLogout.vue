@@ -1,5 +1,5 @@
 <template>
-<div class="gone-page">
+<div class="cigo-tip-logout">
     <h1>已退出登录，{{delayTime}}s后跳转...</h1>
 </div>
 </template>

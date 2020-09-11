@@ -48,19 +48,33 @@ export const frameRoutes = [
 			/*-----------微信管理路由------------*/
 			...weixinRouter,
 			/*---------------------------------*/
+			{
+				path: "gone",
+				name: "CigoGone",
+				component: () => import("@/components/frame/pages/Gone.vue"),
+			},
 		],
-	},
-	{
-		path: "/gone",
-		name: "CigoGone",
-		component: () => import("@/components/frame/pages/Gone.vue"),
 	},
 ];
 
 export function checkAuth(guard: any, router: Router) {
+	//检查路由是否存在
+	if (!router.hasRoute(guard.name)) {
+		//三层不同404路由
+		if (guard.fullPath.indexOf("/frame") >= 0) {
+			router.push("/frame/gone");
+		} else if (guard.fullPath.indexOf("/pages") >= 0) {
+			router.push("/pages/gone");
+		} else {
+			router.push("/gone");
+		}
+		return;
+	}
+	//检查登录状态
 	let continueFlag: boolean = authInstance.init(guard).checkLogin(router);
 	if (!continueFlag) {
 		return;
 	}
+	//检查权限
 	authInstance.checkAuth(router);
 }
