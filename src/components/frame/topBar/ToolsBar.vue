@@ -1,8 +1,13 @@
 <template>
 <div class="cigo-tools-bar">
-    <span>我是顶部工具条</span>
+    <icon-font class="tools-btn search" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-sousuo1'" title="全文搜索"></icon-font>
     <icon-font v-if="fullScreenFlag" class="tools-btn full-screen" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-tuichuquanping3'" title="全屏切换"></icon-font>
     <icon-font v-if="!fullScreenFlag" class="tools-btn full-screen" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-quanping'" title="全屏切换"></icon-font>
+    <icon-font class="tools-btn trash" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-lajitong'" title="回收站"></icon-font>
+    <icon-font class="tools-btn font-size" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-fuhao-ziti'" title="字体大小"></icon-font>
+    <icon-font class="tools-btn cache" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-saoba'" title="缓存清理"></icon-font>
+    <icon-font class="tools-btn language" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-zhongyingwen1'" title="语言切换"></icon-font>
+    <icon-font class="tools-btn theme" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-zhuti'" title="主题切换"></icon-font>
 </div>
 </template>
 
@@ -49,8 +54,16 @@ export default defineComponent({
 
     .tools-btn {
         cursor: pointer;
-        width: 15px;
-        height: 15px;
+        width: 30px;
+        height: 30px;
+        color: #353535;
+        margin-right: 5px;
+        padding: 7px;
+        border-radius: 5px;
+    }
+
+    .tools-btn:hover {
+        background-color: #cccccc55;
     }
 }
 </style>

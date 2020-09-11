@@ -20,6 +20,11 @@ export const frameRoutes = [
 				component: () => import("@/components/frame/pages/Dashboard.vue"),
 			},
 			{
+				path: "logoutTip",
+				name: "CigoTipLogout",
+				component: () => import("@/components/frame/pages/TipLogout.vue"),
+			},
+			{
 				path: "authRule",
 				name: "CigoAuthRule",
 				component: () => import("@/components/frame/pages/auth/AuthRule.vue"),

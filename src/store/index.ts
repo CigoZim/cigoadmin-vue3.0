@@ -121,16 +121,21 @@ class Store {
 	public logout(): void {
 		this.state.userInfo = { isLogin: false };
 		localStorage.clear();
-		router.push("/gone");
+		router.push("/");
 	}
 
 	/**
 	 * 记录当前打开组件
 	 * @param componentName
 	 */
-	public recordCurrComponent(componentName: string) {
+	public recordCurrComponent(component: any) {
+		let componentName: string = component.type.name;
 		let openTabs = toRaw(this.state.openTabs);
-		if (openTabs.indexOf(componentName) === -1) {
+		if (
+			componentName &&
+			openTabs.indexOf(componentName) === -1 &&
+			!component.type.notShowTab //TIPS_FLAG
+		) {
 			this.state.openTabs = [...openTabs, componentName];
 			this.saveToStorage("openTabs", toRaw(this.state.openTabs));
 		}

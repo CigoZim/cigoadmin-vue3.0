@@ -1,10 +1,8 @@
 <template>
 <div class="cigo-bread-crumb">
-    <div class="bread-crumb-item">
-        <span>首页</span>
-    </div>
     <div class="bread-crumb-item" v-for="(item, index) in breadCrumbList" :key="index">
-        <span>>> {{item.title}}</span>
+        <span v-if="index" class="divider">/</span>
+        <span class="title">{{item.title}}</span>
     </div>
 </div>
 </template>
@@ -81,7 +79,13 @@ export default defineComponent({
     flex-direction: row;
 
     .bread-crumb-item {
+        font-size: 13px;
+        color: #555;
         margin-right: 5px;
+
+        .divider {
+            margin-right: 5px;
+        }
     }
 }
 </style>

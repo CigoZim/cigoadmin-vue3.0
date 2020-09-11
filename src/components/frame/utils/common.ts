@@ -1,6 +1,5 @@
 import { Menu } from "./types";
 import router from "@/router/index";
-import lodash from "lodash";
 
 /**
  * 创建标签随机颜色

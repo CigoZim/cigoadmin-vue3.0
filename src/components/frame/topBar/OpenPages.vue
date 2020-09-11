@@ -187,7 +187,7 @@ export default defineComponent({
             }
 
             .tab-name {
-                color: #222;
+                color: #000;
                 font-size: 14px;
             }
 
@@ -231,8 +231,6 @@ export default defineComponent({
         }
 
         .open-tabs:hover {
-            background-color: #46d1ad;
-
             .close-tab-icon {
                 width: 18px;
                 height: 18px;

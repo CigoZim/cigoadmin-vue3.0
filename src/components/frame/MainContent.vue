@@ -71,7 +71,7 @@ export default defineComponent({
             },
             enter: (component: any) => {
                 //记录打开页面
-                systemStore.recordCurrComponent(component.type.name);
+                systemStore.recordCurrComponent(component);
                 //开启切换动画
                 //TODO 点击过快，需要取消原动画
                 TweenMax.to(".main-content-body", 0, {

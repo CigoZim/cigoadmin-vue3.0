@@ -23,13 +23,19 @@ class Auth {
 		}
 		//是否登录状态
 		if (!systemStore.getState().userInfo.isLogin) {
-			console.log("尚未登录，跳转登录页面...");
-			if (this.guard.name === "gone") {
-				setTimeout(() => {
+			console.log("尚未登录，跳转登录页面...", this.guard.name);
+			switch (this.guard.name) {
+				case "CigoGone":
+					setTimeout(() => {
+						router.push("/");
+					}, 3000);
+					break;
+				case "CigoTipLogout":
+					break;
+				case "login":
+				default:
 					router.push("/login");
-				}, 3000);
-			} else {
-				router.push("/login");
+					break;
 			}
 
 			return false;
