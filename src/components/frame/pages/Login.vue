@@ -13,29 +13,19 @@
             <div class="logo">
                 <span>C</span>
             </div>
-            <div class="form-item field">
-                <label class="label">用户名</label>
-                <div class="control">
-                    <input class="input" v-model="username" type="text" placeholder="请输入用户名" />
-                </div>
-            </div>
-            <div class="form-item field">
-                <label class="label">密码</label>
-                <div class="control">
-                    <input class="input" v-model="password" type="password" placeholder="请输入密码" />
-                </div>
-            </div>
 
-            <div class="form-item btns field is-grouped">
-                <div class="control">
-                    <button class="button is-link login-btn" @click="doLogin">登 录</button>
-                </div>
-                <!--
-                <div class="control">
-                    <button class="button is-link is-light">取 消</button>
-                </div>
-                    -->
-            </div>
+            <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
+                <a-form-item label="用户名：" v-bind="validateInfos.username">
+                    <a-input v-model:value="username" placeholder="请输入用户名" />
+                </a-form-item>
+                <a-form-item label="密 码：" v-bind="validateInfos.password">
+                    <a-input v-model:value="password" placeholder="请输入密码" />
+                </a-form-item>
+                <a-form-item :wrapper-col="{ span: 22, offset: 6 }">
+                    <a-button type="primary" @click="doLogin">登 陆</a-button>
+                    <a-button style="margin-left: 10px;" @click="resetFields">重 置</a-button>
+                </a-form-item>
+            </a-form>
         </div>
     </div>
 </div>
@@ -49,7 +39,8 @@ import {
     onMounted,
     readonly,
     toRaw,
-    onUnmounted
+    onUnmounted,
+    computed
 } from "vue";
 
 import {
@@ -67,41 +58,36 @@ import {
 import {
     TweenMax
 } from "gsap";
+import toArray from "lodash/toArray";
+import {
+    useForm
+} from "@ant-design-vue/use";
+import cigoLayer from "@/components/cigo-layer";
 
 export default defineComponent({
     name: "Login",
     setup(props) {
-        // 表单数据
-        const formData = reactive({
+        const modelRef = reactive({
             username: "admin",
             password: "123456",
             module: "admin"
         });
-
-        // 登录函数
-        const doLogin = () => {
-            let params = toRaw(formData);
-            apiRequest.v1
-                .post("/login", params, {
-                    headers: apiSign(params)
-                })
-                .then(response => {
-                    let userInfo: LoginUserInfo = {
-                        isLogin: true,
-                        id: response.data.data.id,
-                        token: response.data.data.token,
-                        username: response.data.data.username,
-                        phone: response.data.data.phone,
-                        nickname: response.data.data.nickname,
-                        real_name: response.data.data.real_name,
-                        email: response.data.data.email,
-                        role_flag: response.data.data.role_flag
-                    };
-
-                    systemStore.saveUserInfo(userInfo);
-                })
-                .catch(apiErrorCatch.v1);
-        };
+        const rulesRef = reactive({
+            username: [{
+                required: true,
+                message: "请输入用户名"
+            }],
+            password: [{
+                required: true,
+                message: "请输入密码"
+            }]
+        });
+        const {
+            resetFields,
+            validate,
+            validateInfos,
+            mergeValidateInfo
+        } = useForm(modelRef, rulesRef);
 
         onMounted(() => {
             TweenMax.to(".login-page-form", 1, {
@@ -112,9 +98,51 @@ export default defineComponent({
             });
         });
 
+        const doLogin = (e: any) => {
+            e.preventDefault();
+            validate()
+                .then(() => {
+                    let params = toRaw(modelRef);
+                    apiRequest.v1
+                        .post("/login", params, {
+                            headers: apiSign(params)
+                        })
+                        .then(response => {
+                            let userInfo: LoginUserInfo = {
+                                isLogin: true,
+                                id: response.data.data.id,
+                                token: response.data.data.token,
+                                username: response.data.data.username,
+                                phone: response.data.data.phone,
+                                nickname: response.data.data.nickname,
+                                real_name: response.data.data.real_name,
+                                email: response.data.data.email,
+                                role_flag: response.data.data.role_flag
+                            };
+
+                            systemStore.saveUserInfo(userInfo);
+                        })
+                        .catch(apiErrorCatch.v1);
+                })
+                .catch(err => {
+                    console.log("error", err);
+                    let help: any = mergeValidateInfo(...toArray(validateInfos))
+                        .help;
+                    cigoLayer.msg(help);
+                });
+        };
+
         return {
+            labelCol: {
+                span: 6
+            },
+            wrapperCol: {
+                span: 16
+            },
+            validateInfos,
+            resetFields,
             doLogin,
-            ...toRefs(formData)
+            ...toRefs(modelRef)
         };
     }
 });
@@ -219,21 +247,6 @@ export default defineComponent({
                 font-style: italic;
                 padding-top: 5px;
                 padding-right: 6px;
-            }
-
-            .form-item.field {
-                .label {
-                    font-size: 14px;
-                    color: #666;
-                }
-            }
-
-            .form-item.btns {
-                padding-top: 20px;
-
-                .login-btn {
-                    width: 264px;
-                }
             }
         }
     }

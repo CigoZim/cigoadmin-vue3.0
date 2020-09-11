@@ -21,6 +21,16 @@
     html-tags "^3.1.0"
     svg-tags "^1.0.0"
 
+"@ant-design-vue/use@^0.0.1-alpha.1":
+  version "0.0.1-alpha.1"
+  resolved "https://registry.npm.taobao.org/@ant-design-vue/use/download/@ant-design-vue/use-0.0.1-alpha.1.tgz#22d4f98bc932105fadb922761d424c468c74ce2e"
+  integrity sha1-ItT5i8kyEF+tuSJ2HUJMRox0zi4=
+  dependencies:
+    "@vue/runtime-dom" "^3.0.0-rc.1"
+    async-validator "^3.4.0"
+    lodash-es "^4.17.15"
+    resize-observer-polyfill "^1.5.1"
+
 "@ant-design/colors@^4.0.0":
   version "4.0.5"
   resolved "https://registry.npm.taobao.org/@ant-design/colors/download/@ant-design/colors-4.0.5.tgz?cache=0&sync_timestamp=1596611514727&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40ant-design%2Fcolors%2Fdownload%2F%40ant-design%2Fcolors-4.0.5.tgz#d7d100d7545cca8f624954604a6892fc48ba5aae"
@@ -1824,12 +1834,27 @@
   resolved "https://registry.npm.taobao.org/@vue/preload-webpack-plugin/download/@vue/preload-webpack-plugin-1.1.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Fpreload-webpack-plugin%2Fdownload%2F%40vue%2Fpreload-webpack-plugin-1.1.2.tgz#ceb924b4ecb3b9c43871c7a429a02f8423e621ab"
   integrity sha1-zrkktOyzucQ4ccekKaAvhCPmIas=
 
+"@vue/reactivity@3.0.0-rc.10":
+  version "3.0.0-rc.10"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-rc.10.tgz#34d5f51bcc5a7c36e27d7a9c1bd7a3d25ffa7c56"
+  integrity sha1-NNX1G8xafDbifXqcG9ej0l/6fFY=
+  dependencies:
+    "@vue/shared" "3.0.0-rc.10"
+
 "@vue/reactivity@3.0.0-rc.7":
   version "3.0.0-rc.7"
   resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-rc.7.tgz?cache=0&sync_timestamp=1598033737823&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Freactivity%2Fdownload%2F%40vue%2Freactivity-3.0.0-rc.7.tgz#fd5fda961c57a8065c6408170e06808a39f801a2"
   integrity sha1-/V/alhxXqAZcZAgXDgaAijn4AaI=
   dependencies:
     "@vue/shared" "3.0.0-rc.7"
+
+"@vue/runtime-core@3.0.0-rc.10":
+  version "3.0.0-rc.10"
+  resolved "https://registry.npm.taobao.org/@vue/runtime-core/download/@vue/runtime-core-3.0.0-rc.10.tgz#9055aef5113cbc328aaec29760c2151e0ed3cf40"
+  integrity sha1-kFWu9RE8vDKKrsKXYMIVHg7Tz0A=
+  dependencies:
+    "@vue/reactivity" "3.0.0-rc.10"
+    "@vue/shared" "3.0.0-rc.10"
 
 "@vue/runtime-core@3.0.0-rc.7":
   version "3.0.0-rc.7"
@@ -1847,6 +1872,20 @@
     "@vue/runtime-core" "3.0.0-rc.7"
     "@vue/shared" "3.0.0-rc.7"
     csstype "^2.6.8"
+
+"@vue/runtime-dom@^3.0.0-rc.1":
+  version "3.0.0-rc.10"
+  resolved "https://registry.npm.taobao.org/@vue/runtime-dom/download/@vue/runtime-dom-3.0.0-rc.10.tgz#50f95cb991483a4262163723320967ad17bb321f"
+  integrity sha1-UPlcuZFIOkJiFjcjMglnrRe7Mh8=
+  dependencies:
+    "@vue/runtime-core" "3.0.0-rc.10"
+    "@vue/shared" "3.0.0-rc.10"
+    csstype "^2.6.8"
+
+"@vue/shared@3.0.0-rc.10":
+  version "3.0.0-rc.10"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-rc.10.tgz#e7ab62abcabbfc738545902b96a3aa78f59f3286"
+  integrity sha1-56tiq8q7/HOFRZArlqOqePWfMoY=
 
 "@vue/shared@3.0.0-rc.7":
   version "3.0.0-rc.7"
@@ -2353,7 +2392,7 @@ async-limiter@~1.0.0:
   resolved "https://registry.npm.taobao.org/async-limiter/download/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha1-3TeelPDbgxCwgpH51kwyCXZmF/0=
 
-async-validator@^3.3.0:
+async-validator@^3.3.0, async-validator@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/async-validator/download/async-validator-3.4.0.tgz?cache=0&sync_timestamp=1596623594706&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fasync-validator%2Fdownload%2Fasync-validator-3.4.0.tgz#871b3e594124bf4c4eb7bcd1a9e78b44f3b09cae"
   integrity sha1-hxs+WUEkv0xOt7zRqeeLRPOwnK4=
@@ -6851,6 +6890,11 @@ locutus@^2.0.11:
   integrity sha1-g/hRCZcf091iBIKgQ4GRbkox1PA=
   dependencies:
     es6-promise "^4.2.5"
+
+lodash-es@^4.17.15:
+  version "4.17.15"
+  resolved "https://registry.npm.taobao.org/lodash-es/download/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
+  integrity sha1-Ib2Wg5NUQS8j16EDQOXqxu5FXXg=
 
 lodash.camelcase@^4.3.0:
   version "4.3.0"
