@@ -1,5 +1,6 @@
 import { Menu } from "./types";
 import router from "@/router/index";
+import lodash from "lodash";
 
 /**
  * 创建标签随机颜色
@@ -53,34 +54,37 @@ export function showPage(item: Menu): void {
 }
 
 /**
- * 页面全屏
+ * 全屏切换
+ * @param target
  */
-export function goFullScreen() {
-	if (!document) {
-		return;
+export function toggleFullScreen() {
+	if (isFullScreen()) {
+		let doc = document as any;
+		let existFunc =
+			doc.exitFullscreen ||
+			doc.mozCancelFullScreen ||
+			doc.webkitCancelFullScreen ||
+			doc.msExitFullscreen;
+		if (typeof existFunc != "undefined" && existFunc) {
+			existFunc.call(doc);
+		}
+	} else {
+		let body = document.body as any;
+		let existFunc =
+			body.requestFullScreen ||
+			body.webkitRequestFullScreen ||
+			body.mozRequestFullScreen ||
+			body.msRequestFullscreen;
+		if (typeof existFunc != "undefined" && existFunc) {
+			existFunc.call(body);
+		}
 	}
-	let el = document.documentElement as any;
-	let rfs =
-		el.requestFullScreen ||
-		el.webkitRequestFullScreen ||
-		el.mozRequestFullScreen ||
-		el.msRequestFullscreen;
-	if (typeof rfs != "undefined" && rfs) {
-		rfs.call(el);
-	}
-	return;
 }
 
 /**
- * 页面退出全屏
+ * 判断是否全屏
  */
-export function exitFullScreen() {
-	let cfs = document as any;
-	if (cfs.exitFullscreen) {
-		cfs.exitFullscreen();
-	} else if (cfs.webkitCancelFullScreen) {
-		cfs.webkitCancelFullScreen();
-	} else {
-		cfs.msExitFullscreen();
-	}
+export function isFullScreen() {
+	let body = document as any;
+	return body.isFullScreen || body.mozIsFullScreen || body.webkitIsFullScreen;
 }

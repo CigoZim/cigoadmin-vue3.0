@@ -1,26 +1,41 @@
 <template>
 <div class="cigo-tools-bar">
     <span>我是顶部工具条</span>
-    <span class="tools-btn go-fullscreen" @click.stop="goFullScreen">全屏</span>
-    <span class="tools-btn exit-fullscreen" @click.stop="exitFullScreen">退出全屏</span>
+    <icon-font v-if="fullScreenFlag" class="tools-btn full-screen" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-tuichuquanping3'" title="全屏切换"></icon-font>
+    <icon-font v-if="!fullScreenFlag" class="tools-btn full-screen" @click.stop="clickFullScreen" :iconFlag="'cigoadmin-icon-quanping'" title="全屏切换"></icon-font>
 </div>
 </template>
 
 <script lang="ts">
 import {
-    defineComponent
+    computed,
+    defineComponent,
+    ref
 } from "vue";
+import IconFont from "@/components/frame/other/IconFont.vue";
 import {
-    goFullScreen,
-    exitFullScreen
+    isFullScreen,
+    toggleFullScreen
 } from "../utils/common";
 
 export default defineComponent({
     name: "CigoToolsBar",
+    components: {
+        IconFont
+    },
     setup() {
+        let fullScreenFlag = ref(isFullScreen());
+        const clickFullScreen = () => {
+            toggleFullScreen();
+            setTimeout(() => {
+                fullScreenFlag.value = isFullScreen();
+            }, 100);
+        };
         return {
-            goFullScreen,
-            exitFullScreen
+            fullScreenFlag,
+            clickFullScreen,
+            isFullScreen,
+            toggleFullScreen
         };
     }
 });
@@ -33,10 +48,9 @@ export default defineComponent({
     align-items: center;
 
     .tools-btn {
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 5px 10px;
         cursor: pointer;
+        width: 15px;
+        height: 15px;
     }
 }
 </style>
