@@ -18,7 +18,7 @@ export default defineComponent({
     name: "CigoGone",
     notShowTab: true,
     setup() {
-        let delayTime = ref(3);
+        let delayTime = ref(2);
 
         onMounted(() => {
             delayLogout();
