@@ -22,10 +22,10 @@
 <script lang="ts">
 import { defineComponent, toRefs } from "vue";
 
-import BreadCrumb from "@/components/frame/topBar/BreadCrumb.vue";
-import ToolsBar from "@/components/frame/topBar/ToolsBar.vue";
-import ManagerIcon from "@/components/frame/topBar/ManagerIcon.vue";
-import OpenPages from "@/components/frame/topBar/OpenPages.vue";
+import BreadCrumb from "@/components/cigo-admin-core/topBar/BreadCrumb.vue";
+import ToolsBar from "@/components/cigo-admin-core/topBar/ToolsBar.vue";
+import ManagerIcon from "@/components/cigo-admin-core/topBar/ManagerIcon.vue";
+import OpenPages from "@/components/cigo-admin-core/topBar/OpenPages.vue";
 
 import { Domain } from "@/common/http";
 import { systemStore } from "@/store/index";

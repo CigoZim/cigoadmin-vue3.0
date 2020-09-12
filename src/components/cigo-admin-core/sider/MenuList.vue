@@ -1,20 +1,50 @@
 <template>
-<div class="cigo-menu-list">
-    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)" @mouseenter="hoverMenuItem(item, true)" @mouseleave="hoverMenuItem(item, false)">
-        <div class="menu-common" :class="makeMenuItemClass(item)">
-            <div class="item-left">
-                <i class="item-line" v-if="!item.group_flag"></i>
-                <icon-font class="item-icon" v-if="!item.group_flag" :style="[item.color ? {color: item.color} : {}]" :iconFlag="item.icon"></icon-font>
+    <div class="cigo-menu-list">
+        <div
+            class="menu-container"
+            :class="makeMenuItemContainerClass(item)"
+            v-for="(item, index) in menuList"
+            :key="index"
+            @click.stop="clickMenu(item)"
+            @mouseenter="hoverMenuItem(item, true)"
+            @mouseleave="hoverMenuItem(item, false)"
+        >
+            <div class="menu-common" :class="makeMenuItemClass(item)">
+                <div class="item-left">
+                    <i class="item-line" v-if="!item.group_flag"></i>
+                    <icon-font
+                        class="item-icon"
+                        v-if="!item.group_flag"
+                        :style="[item.color ? {color: item.color} : {}]"
+                        :iconFlag="item.icon"
+                    ></icon-font>
+                </div>
+                <div class="item-right">
+                    <span
+                        class="item-title"
+                        :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']"
+                    >{{item.title}}</span>
+                    <label
+                        class="item-label"
+                        :class="[item.label_class]"
+                        :style="[item.color ? {backgroundColor: item.color} : {}]"
+                    >22</label>
+                    <icon-font
+                        class="item-more"
+                        :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']"
+                        :iconFlag="'cigoadmin-icon-expand'"
+                    ></icon-font>
+                </div>
             </div>
-            <div class="item-right">
-                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
-                <label class="item-label" :class="[item.label_class]" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
-                <icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :iconFlag="'cigoadmin-icon-expand'"></icon-font>
-            </div>
+            <menu-list
+                :id="'sub-list-' + item.id"
+                class="item-sublist"
+                v-if="item.subList && item.subList.length"
+                :menuList="item.subList"
+                :level="level+1"
+            ></menu-list>
         </div>
-        <menu-list :id="'sub-list-' + item.id" class="item-sublist" v-if="item.subList && item.subList.length" :menuList="item.subList" :level="level+1"></menu-list>
     </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -28,20 +58,14 @@ import {
     onBeforeMount,
     inject
 } from "vue";
-import IconFont from "@/components/frame/other/IconFont.vue";
-import {
-    TweenMax
-} from "gsap";
-import {
-    systemStore
-} from "@/store/index";
+import IconFont from "@/components/cigo-admin-core/other/IconFont.vue";
+import { TweenMax } from "gsap";
+import { systemStore } from "@/store/index";
 import {
     ModeFormMenuExpand,
     Menu
-} from "@/components/frame/utils/types";
-import {
-    showPage
-} from "../utils/common";
+} from "@/components/cigo-admin-core/utils/types";
+import { showPage } from "../utils/common";
 
 export default defineComponent({
     name: "MenuList",
@@ -50,7 +74,7 @@ export default defineComponent({
     },
     props: {
         menuList: {
-            type: Array as() => Menu[],
+            type: Array as () => Menu[],
             require: true,
             default: []
         },
@@ -88,7 +112,8 @@ export default defineComponent({
         const menuChange = (openFlag: boolean) => {
             TweenMax.to(
                 ".first-level>.menu-item>.item-right>.item-title",
-                0.8, {
+                0.8,
+                {
                     opacity: openFlag ? 1 : 0,
                     delay: 0
                 }
@@ -159,19 +184,28 @@ export default defineComponent({
             let routerItem: Menu = menuNameBaseMapRef.value.get(
                 currComponent.value
             );
+
+            // 能跳转当前路由说明没有子项，返回关闭，且清空当前展开菜单项记录，以触发正打开项目
             if (item.component_name == currComponent.value) {
                 expandMenuItem.value = {
                     id: 0,
                     title: ""
                 };
                 return "close";
-            } else if (
+            }
+            // 非当前菜单，则检查是否当前路由项级联菜单root级菜单
+            // 是则置为展开，否则关闭
+            else if (
                 routerItem &&
                 routerItem.path &&
                 item.path &&
                 routerItem.path.indexOf(item.path + item.id + ",") >= 0
             ) {
-                expandMenuItem.value = item;
+                // 1:当前展开root级菜单不触发切换，避免出现点击二级展开导致菜单关闭的问题
+                if (item.id != expandMenuItem.value.id) {
+                    expandMenuItem.value = item;
+                }
+                // 2:但保留展开状态
                 return "expand";
             }
             return "close";
@@ -234,12 +268,13 @@ export default defineComponent({
         const recordClickMenu = (item: Menu) => {
             // 记录点击菜单项
             expandMenuItem.value =
-                item.id == expandMenuItem.value.id ?
-                {
-                    id: 0,
-                    title: ""
-                } :
-                item;
+                item.id == expandMenuItem.value.id
+                    ? {
+                          id: 0,
+                          title: ""
+                      }
+                    : item;
+            //修改菜单展开模式为点击展开模式
             systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU);
         };
 
@@ -254,7 +289,7 @@ export default defineComponent({
             subMenuListAnimation(newMenu, true);
             if (
                 systemStore.getState().noCached.modeForMenuExpand ==
-                ModeFormMenuExpand.CLICK_MENU ||
+                    ModeFormMenuExpand.CLICK_MENU ||
                 newMenu.id != preMenu.id
             ) {
                 subMenuListAnimation(preMenu, false);
@@ -275,7 +310,8 @@ export default defineComponent({
 
                 TweenMax.to(
                     "#sub-list-" + item.id + ">.menu-container>.menu-common",
-                    0.5, {
+                    0.5,
+                    {
                         height: openFlag ? "40px" : "0px",
                         opacity: openFlag ? 1 : 0
                     }
@@ -291,7 +327,8 @@ export default defineComponent({
 
                 TweenMax.to(
                     "#sub-list-" + item.id + ">.menu-container>.menu-common",
-                    0.5, {
+                    0.5,
+                    {
                         width: openFlag ? "240px" : "0px",
                         height: openFlag ? "40px" : "0px",
                         opacity: openFlag ? 1 : 0
@@ -416,13 +453,13 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-close.first-level>.menu-group {
+    .menu-close.first-level > .menu-group {
         .item-right {
             display: none;
         }
     }
 
-    .menu-close.first-level>.menu-group.gone {
+    .menu-close.first-level > .menu-group.gone {
         display: none;
     }
 
@@ -457,14 +494,14 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container:last-of-type>.menu-item {
+    .menu-container:last-of-type > .menu-item {
         border-bottom: 0px;
     }
 
     /*****************************************/
     /** 一级菜单属性 */
 
-    .first-level>.menu-item {
+    .first-level > .menu-item {
         height: 45px;
         background-color: $menu-list-color-menu-main;
 
@@ -501,7 +538,7 @@ $menu-list-color-menu-sub: #1a2419;
 
     /*****************************************/
     /** 二级+菜单属性 */
-    .menu-item+.item-sublist {
+    .menu-item + .item-sublist {
         width: 0px;
         height: 0px;
         opacity: 0;
@@ -520,31 +557,31 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-item+.item-sublist>.menu-container>.menu-common {
+    .menu-item + .item-sublist > .menu-container > .menu-common {
         width: 0px;
         height: 0px;
         opacity: 0px;
     }
 
-    .menu-close.first-level>.item-sublist {
+    .menu-close.first-level > .item-sublist {
         left: 103px;
     }
 
-    .menu-open.first-level>.item-sublist {
+    .menu-open.first-level > .item-sublist {
         width: 240px !important;
         position: relative;
         left: auto;
     }
 
-    .menu-open.first-level>.item-sublist>.menu-container>.menu-common {
+    .menu-open.first-level > .item-sublist > .menu-container > .menu-common {
         width: 240px !important;
     }
 
-    .menu-open.first-level>.item-sublist>.menu-container>.menu-item {
+    .menu-open.first-level > .item-sublist > .menu-container > .menu-item {
         padding-left: 15px;
     }
 
-    .menu-open.first-level>.item-sublist>.menu-container>.menu-group {
+    .menu-open.first-level > .item-sublist > .menu-container > .menu-group {
         padding-left: 25px;
     }
 
@@ -566,7 +603,7 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container.menu-open.first-level>.menu-item {
+    .menu-container.menu-open.first-level > .menu-item {
         .item-more.show {
             -moz-transform: rotate(0deg);
             -webkit-transform: rotate(0deg);
@@ -576,9 +613,9 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container.menu-open.first-level.expand>.menu-item,
+    .menu-container.menu-open.first-level.expand > .menu-item,
     .menu-item.curr,
-    .menu-container:hover>.menu-item {
+    .menu-container:hover > .menu-item {
         background-color: $menu-list-color-bg-highlight !important;
 
         .item-line {
@@ -586,8 +623,15 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container.menu-open.first-level.expand>.menu-item.curr+.item-sublist>.menu-container>.menu-item.curr,
-    .menu-container.menu-open.first-level.expand>.item-sublist>.menu-container:hover>.menu-item {
+    .menu-container.menu-open.first-level.expand
+        > .menu-item.curr
+        + .item-sublist
+        > .menu-container
+        > .menu-item.curr,
+    .menu-container.menu-open.first-level.expand
+        > .item-sublist
+        > .menu-container:hover
+        > .menu-item {
         background-color: transparent !important;
 
         .item-left,
@@ -596,8 +640,8 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container.menu-open:hover:not(.first-level)>.menu-item,
-    .menu-container.menu-close:hover>.menu-item {
+    .menu-container.menu-open:hover:not(.first-level) > .menu-item,
+    .menu-container.menu-close:hover > .menu-item {
         .item-more.show {
             -moz-transform: rotate(90deg);
             -webkit-transform: rotate(90deg);
@@ -607,7 +651,7 @@ $menu-list-color-menu-sub: #1a2419;
         }
     }
 
-    .menu-container.menu-open.first-level.expand>.menu-item {
+    .menu-container.menu-open.first-level.expand > .menu-item {
         .item-more.show {
             -moz-transform: rotate(540deg);
             -webkit-transform: rotate(540deg);

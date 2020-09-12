@@ -6,12 +6,12 @@ var routes = [
     {
         path: "/",
         name: "Home",
-        component: function () { return Promise.resolve().then(function () { return require("@/components/frame/Home.vue"); }); }
+        component: function () { return Promise.resolve().then(function () { return require("@/components/cigo-admin-core/Home.vue"); }); }
     },
     {
         path: "/login",
         name: "Login",
-        component: function () { return Promise.resolve().then(function () { return require("@/components/frame/Login.vue"); }); }
+        component: function () { return Promise.resolve().then(function () { return require("@/components/cigo-admin-core/Login.vue"); }); }
     },
 ];
 var router = vue_router_1.createRouter({

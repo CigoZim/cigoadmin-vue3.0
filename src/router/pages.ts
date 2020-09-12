@@ -1,7 +1,7 @@
 const pages = {
 	path: "/pages",
 	name: "Pages",
-	component: () => import("@/components/frame/Frame.vue"),
+	component: () => import("@/components/cigo-admin-core/Frame.vue"),
 	redirect: "noRedirect",
 	children: [
 		/******************************= 自定义页面开始 =********************************/
@@ -29,7 +29,7 @@ const pages = {
 		{
 			path: "gone",
 			name: "PagesGone",
-			component: () => import("@/components/frame/pages/Gone.vue"),
+			component: () => import("@/components/cigo-admin-core/pages/Gone.vue"),
 		},
 	],
 };

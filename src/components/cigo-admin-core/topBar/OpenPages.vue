@@ -35,7 +35,7 @@ import {
     toRef,
     watch
 } from "vue";
-import IconFont from "@/components/frame/other/IconFont.vue";
+import IconFont from "@/components/cigo-admin-core/other/IconFont.vue";
 import { State, systemStore } from "@/store";
 import { SystemState } from "../utils/types";
 import { showPage } from "../utils/common";

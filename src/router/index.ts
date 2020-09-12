@@ -4,7 +4,7 @@ import {
 	ErrorHandler,
 	RouteRecordRaw,
 } from "vue-router";
-import { frameRoutes, checkAuth } from "@/components/frame/router";
+import { frameRoutes, checkAuth } from "@/components/cigo-admin-core/router";
 import pagesRouter from "./pages";
 
 const routes: Array<RouteRecordRaw> = [
@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: "/gone",
 		name: "DefaultGone",
-		component: () => import("@/components/frame/pages/Gone.vue"),
+		component: () => import("@/components/cigo-admin-core/pages/Gone.vue"),
 	},
 ];
 

@@ -4,8 +4,8 @@
             <router-view v-slot="{ Component }">
                 <transition
                     :appear="appearFlag"
-                    @enter="enter(Component)"
                     @leave="leave(currComponent)"
+                    @enter="enter(Component)"
                 >
                     <keep-alive :exclude="noCachePages" :max="maxCachePages">
                         <component :is="Component" />
@@ -60,6 +60,11 @@ export default defineComponent({
                     menuNameBaseMapRef.value &&
                     menuNameBaseMapRef.value.has(componentName)
                 ) {
+                    //TODO 组件的控制标识设置
+                    // 1：组件代码内部可以设置默认标识控制
+                    // 2：数据库菜单节点可以配置动态标识控制
+                    // 3：优先级：数据库动态控制>组件内部默认控制
+                    // 4：标识：是否记录历史、是否显示、是否可关闭、是否缓存
                     let leaveItem: Menu = menuNameBaseMapRef.value.get(name);
                     if (leaveItem && !leaveItem.can_cache) {
                         // 移除无需缓存的页面打开记录

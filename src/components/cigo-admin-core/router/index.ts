@@ -6,44 +6,49 @@ export const frameRoutes = [
 	{
 		path: "/login",
 		name: "Login",
-		component: () => import("@/components/frame/pages/Login.vue"),
+		component: () => import("@/components/cigo-admin-core/pages/Login.vue"),
 	},
 	{
 		path: "/frame",
 		name: "FramePages",
-		component: () => import("@/components/frame/Frame.vue"),
+		component: () => import("@/components/cigo-admin-core/Frame.vue"),
 		redirect: "noRedirect",
 		children: [
 			{
 				path: "",
 				name: "Dashboard",
-				component: () => import("@/components/frame/pages/Dashboard.vue"),
+				component: () =>
+					import("@/components/cigo-admin-core/pages/Dashboard.vue"),
 			},
 			{
 				path: "logoutTip",
 				name: "CigoTipLogout",
-				component: () => import("@/components/frame/pages/TipLogout.vue"),
+				component: () =>
+					import("@/components/cigo-admin-core/pages/TipLogout.vue"),
 			},
 			{
 				path: "authRule",
 				name: "CigoAuthRule",
-				component: () => import("@/components/frame/pages/auth/AuthRule.vue"),
+				component: () =>
+					import("@/components/cigo-admin-core/pages/auth/AuthRule.vue"),
 			},
 			{
 				path: "authGroup",
 				name: "CigoAuthRuleGroup",
 				component: () =>
-					import("@/components/frame/pages/auth/AuthRuleGroup.vue"),
+					import("@/components/cigo-admin-core/pages/auth/AuthRuleGroup.vue"),
 			},
 			{
 				path: "manager",
 				name: "CigoManager",
-				component: () => import("@/components/frame/pages/auth/Manager.vue"),
+				component: () =>
+					import("@/components/cigo-admin-core/pages/auth/Manager.vue"),
 			},
 			{
 				path: "user",
 				name: "CigoUser",
-				component: () => import("@/components/frame/pages/auth/User.vue"),
+				component: () =>
+					import("@/components/cigo-admin-core/pages/auth/User.vue"),
 			},
 			/*-----------微信管理路由------------*/
 			...weixinRouter,
@@ -51,7 +56,7 @@ export const frameRoutes = [
 			{
 				path: "gone",
 				name: "CigoGone",
-				component: () => import("@/components/frame/pages/Gone.vue"),
+				component: () => import("@/components/cigo-admin-core/pages/Gone.vue"),
 			},
 		],
 	},

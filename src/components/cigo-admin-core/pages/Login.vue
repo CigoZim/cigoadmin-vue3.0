@@ -44,7 +44,7 @@ import {
 } from "vue";
 
 import { Domain, apiRequest, apiSign, apiErrorCatch } from "@/common/http";
-import { LoginUserInfo } from "@/components/frame/utils/types";
+import { LoginUserInfo } from "@/components/cigo-admin-core/utils/types";
 import { systemStore } from "@/store/index";
 import { TweenMax } from "gsap";
 import toArray from "lodash/toArray";

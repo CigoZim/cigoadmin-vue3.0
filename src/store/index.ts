@@ -6,7 +6,7 @@ import {
 	LoginUserInfo,
 	Menu,
 	ModeFormMenuExpand,
-} from "@/components/frame/utils/types";
+} from "@/components/cigo-admin-core/utils/types";
 import cigoLayer from "@/components/cigo-layer";
 
 interface State {
@@ -132,8 +132,8 @@ class Store {
 		let openTabs = toRaw(this.state.openTabs);
 		if (
 			componentName &&
-			openTabs.indexOf(componentName) === -1 &&
-			!component.type.notShowTab //TIPS_FLAG
+			!component.type.notShowTab && //TIPS_FLAG
+			openTabs.indexOf(componentName) === -1
 		) {
 			this.state.openTabs = [...openTabs, componentName];
 			this.saveToStorage("openTabs", toRaw(this.state.openTabs));

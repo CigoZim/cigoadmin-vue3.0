@@ -1,37 +1,40 @@
 <template>
-<div class="cigo-manager-icon">
-    <div class="line"></div>
-    <icon-font class="icon avatar" @click.stop="jumpTo('/frame/profile')" :iconFlag="'cigoadmin-icon-touxiangtongyong'" title="管理员"></icon-font>
-    <span class="user-name" @click.stop="jumpTo('/frame/profile')">管理员</span>
-    <div class="menu-list-container" @mouseenter="hoverMoreIcon(true)" @mouseleave="hoverMoreIcon(false)">
-        <icon-font class="icon more" :iconFlag="'cigoadmin-icon-gengduo'" title="更多"></icon-font>
-        <div class="menu-list">
-            <span class="menu-item" @click="jumpTo('/frame/profile')">个人信息</span>
-            <span class="menu-item" @click="jumpTo('/frame/modifyIcon')">修改头像</span>
-            <span class="menu-item" @click="jumpTo('/frame/modifyPwd')">修改密码</span>
-            <span class="divider"></span>
-            <span class="menu-item" @click="jumpTo('/frame/manager')">管理员</span>
-            <span class="menu-item" @click="jumpTo('/frame/authGroup')">角色管理</span>
-            <span class="menu-item" @click="jumpTo('/settings')">系统设置</span>
-            <span class="divider"></span>
-            <span class="menu-item" @click="logout">退出登录</span>
+    <div class="cigo-manager-icon">
+        <div class="line"></div>
+        <icon-font
+            class="icon avatar"
+            @click.stop="jumpTo('/frame/profile')"
+            :iconFlag="'cigoadmin-icon-touxiangtongyong'"
+            title="管理员"
+        ></icon-font>
+        <span class="user-name" @click.stop="jumpTo('/frame/profile')">管理员</span>
+        <div
+            class="menu-list-container"
+            @mouseenter="hoverMoreIcon(true)"
+            @mouseleave="hoverMoreIcon(false)"
+        >
+            <icon-font class="icon more" :iconFlag="'cigoadmin-icon-gengduo'" title="更多"></icon-font>
+            <div class="menu-list">
+                <span class="menu-item" @click="jumpTo('/frame/profile')">个人信息</span>
+                <span class="menu-item" @click="jumpTo('/frame/modifyIcon')">修改头像</span>
+                <span class="menu-item" @click="jumpTo('/frame/modifyPwd')">修改密码</span>
+                <span class="divider"></span>
+                <span class="menu-item" @click="jumpTo('/frame/manager')">管理员</span>
+                <span class="menu-item" @click="jumpTo('/frame/authGroup')">角色管理</span>
+                <span class="menu-item" @click="jumpTo('/settings')">系统设置</span>
+                <span class="divider"></span>
+                <span class="menu-item" @click="logout">退出登录</span>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script lang="ts">
-import {
-    defineComponent
-} from "vue";
-import IconFont from "@/components/frame/other/IconFont.vue";
-import {
-    systemStore
-} from "@/store/index";
+import { defineComponent } from "vue";
+import IconFont from "@/components/cigo-admin-core/other/IconFont.vue";
+import { systemStore } from "@/store/index";
 import router from "@/router/index";
-import {
-    TweenMax
-} from "gsap";
+import { TweenMax } from "gsap";
 
 export default defineComponent({
     name: "CigoManagerIcon",
@@ -45,7 +48,8 @@ export default defineComponent({
         const hoverMoreIcon = (inOutFlag: boolean) => {
             TweenMax.to(
                 ".cigo-manager-icon>.menu-list-container>.menu-list",
-                0.5, {
+                0.5,
+                {
                     width: inOutFlag ? "130px" : "0px",
                     height: inOutFlag ? "270px" : "0px",
                     opacity: inOutFlag ? 1 : 0,
@@ -54,7 +58,8 @@ export default defineComponent({
             );
             TweenMax.to(
                 ".cigo-manager-icon>.menu-list-container>.menu-list>.menu-item",
-                0.5, {
+                0.5,
+                {
                     width: inOutFlag ? "130px" : "0px",
                     height: inOutFlag ? "38px" : "0px",
                     opacity: inOutFlag ? 1 : 0,
