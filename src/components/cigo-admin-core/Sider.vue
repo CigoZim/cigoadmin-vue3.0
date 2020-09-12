@@ -95,6 +95,7 @@ export default defineComponent({
     flex-direction: column;
     position: relative;
     background-color: #424d52;
+    box-shadow: 4px 0px 10px #ccc;
 
     .sider-menu-list-container {
         background-color: transparent;

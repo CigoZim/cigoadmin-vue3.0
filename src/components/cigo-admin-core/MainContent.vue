@@ -112,7 +112,13 @@ export default defineComponent({
     .main-content-body {
         display: flex;
         flex: 1;
-        padding: 10px;
+        margin: 15px 12px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .main-content-body::-webkit-scrollbar {
+        width: 0;
     }
 }
 </style>

@@ -28,6 +28,7 @@ export default defineComponent({
     flex-direction: row;
     justify-content: space-between;
     padding: 3px 10px;
+    box-shadow: 0px -2px 10px #f0f0f0;
 
     .info-item {
         color: #757575;

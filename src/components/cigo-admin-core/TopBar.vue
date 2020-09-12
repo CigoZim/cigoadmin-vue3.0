@@ -57,6 +57,7 @@ export default defineComponent({
     padding: 5px 12px 0px;
     background-color: #f7f7f7;
     border-bottom: 1px solid #ddd;
+    box-shadow: 0px 4px 10px #bbb;
 
     .top-bar-top {
         width: 100%;

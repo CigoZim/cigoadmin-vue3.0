@@ -26,7 +26,6 @@
                     >{{item.title}}</span>
                     <label
                         class="item-label"
-                        :class="[item.label_class]"
                         :style="[item.color ? {backgroundColor: item.color} : {}]"
                     >22</label>
                     <icon-font

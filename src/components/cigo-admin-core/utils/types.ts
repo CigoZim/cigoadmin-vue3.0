@@ -35,10 +35,9 @@ export interface LoginUserInfo {
  * 菜单类型
  */
 export interface Menu {
+	// 默认属性
 	id?: number;
 	title: string;
-	group_flag?: string;
-	label_class?: string;
 	icon?: string;
 	subList?: Menu[];
 	summary?: string;
@@ -48,18 +47,20 @@ export interface Menu {
 	component_label?: string;
 	can_close_tab?: boolean;
 	can_cache?: boolean;
-	path?: "0,";
-	pid?: 0;
+	path?: string;
+	pid?: number;
+	group?: string;
+	group_sort?: number;
+	module?: string;
+	opt_rate?: number;
+	sort?: number;
+	status?: number;
+	type?: number; // 节点类型（0-系统菜单；1-权限节点非菜单；2-按钮）
 
+	//后端动态添加
+	group_flag?: string;
+	// 前端动态添加
 	color?: string;
-
-	// group: ""
-	// group_sort: 100
-	// module: "admin"
-	// opt_rate: 0
-	// sort: 100
-	// status: 1
-	// type: 0
 }
 
 /**
