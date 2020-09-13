@@ -21,20 +21,23 @@ class Store {
 	constructor(initialState: State) {
 		// 初始化值进行响应式代理
 		this.state = reactive(initialState);
+		this.synchronizeData();
+	}
 
+	private synchronizeData(): void {
 		//同步缓存中systemState
 		let systemState = localStorage.getItem("systemState");
 		if (systemState) {
 			this.state.systemState = JSON.parse(systemState);
 		} else {
-			this.saveToStorage("systemState", initialState.systemState);
+			this.saveToStorage("systemState", this.state.systemState);
 		}
 		//同步缓存中userInfo
 		let userInfo = localStorage.getItem("userInfo");
 		if (userInfo) {
 			this.state.userInfo = JSON.parse(userInfo);
 		} else {
-			this.saveToStorage("userInfo", initialState.userInfo);
+			this.saveToStorage("userInfo", this.state.userInfo);
 		}
 		//同步缓存中openTabs
 		let openTabs = localStorage.getItem("openTabs");
@@ -42,7 +45,7 @@ class Store {
 			let tabs: string[] = JSON.parse(openTabs);
 			this.state.openTabs = tabs ? tabs : [];
 		} else {
-			this.saveToStorage("openTabs", initialState.openTabs);
+			this.saveToStorage("openTabs", this.state.openTabs);
 		}
 	}
 
@@ -108,8 +111,10 @@ class Store {
 	 * 保存用户信息
 	 */
 	public saveUserInfo(userInfo: LoginUserInfo): void {
+		this.state = reactive(initialState());
 		this.state.userInfo = userInfo;
-		this.saveToStorage("userInfo", toRaw(this.state.userInfo));
+		localStorage.clear();
+		this.synchronizeData();
 
 		router.push("/");
 	}
@@ -118,7 +123,7 @@ class Store {
 	 * 退出登录
 	 */
 	public logout(): void {
-		this.state.userInfo = { isLogin: false };
+		this.state = reactive(initialState());
 		localStorage.clear();
 		router.push("/");
 	}

@@ -144,8 +144,8 @@ export default defineComponent({
             classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
             classes.push(props.level == 0 ? "first-level" : "");
 
-            //处理一级菜单展开问题
-            if (!item.group_flag && props.level == 0) {
+            //左侧栏开启状态：则处理一级菜单展开问题
+            if (menuOpenFlag.value && !item.group_flag && props.level == 0) {
                 let flag: string = "close";
                 //分析是否展开
                 switch (systemStore.getState().noCached.modeForMenuExpand) {

@@ -1,7 +1,8 @@
-import { createApp } from "vue";
+import { createApp, defineAsyncComponent } from "vue";
 
 import Alert from "./alert.vue";
 import Msg from "./msg.vue";
+import PopWindow from "./pop-window.vue";
 
 import "../css/layer.css";
 
@@ -46,20 +47,17 @@ class CigoLayer {
 	 * 关闭指定layer
 	 */
 	public close(layerIndex: number) {
-		setTimeout(() => {
-			//解绑vue
-			this.layerInstances.get(layerIndex).unmount();
-			this.layerInstances.delete(layerIndex);
-
-			//节点ID
-			let nodeId: string = "cigo-layer-item-" + layerIndex;
-			//移除节点
-			let body = document.body || document.documentElement;
-			let node = document.getElementById(nodeId);
-			if (node) {
-				body.removeChild(node);
-			}
-		}, 500);
+		//解绑vue
+		this.layerInstances.get(layerIndex).unmount();
+		this.layerInstances.delete(layerIndex);
+		//节点ID
+		let nodeId: string = "cigo-layer-item-" + layerIndex;
+		//移除节点
+		let body = document.body || document.documentElement;
+		let node = document.getElementById(nodeId);
+		if (node) {
+			body.removeChild(node);
+		}
 	}
 
 	/**
@@ -81,6 +79,12 @@ class CigoLayer {
 	 */
 	public msg(msg: string) {
 		this.open(Msg, { msg: msg });
+	}
+	/**
+	 * 动态组件窗体
+	 */
+	public window(component: any) {
+		this.open(PopWindow, { component: component });
 	}
 }
 

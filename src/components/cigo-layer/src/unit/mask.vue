@@ -1,20 +1,18 @@
 <template>
-<div class="cigo-layer-mask-content" @click="clickMask"></div>
+    <div class="cigo-layer-mask-content" @click="click"></div>
 </template>
 
 <script lang="ts">
-import {
-    defineComponent
-} from "vue";
+import { defineComponent, onMounted } from "vue";
 export default defineComponent({
     name: "CigoLayerMask",
-    setup() {
-        const clickMask = () => {
-            console.log("click mask");
+    setup(props, context) {
+        const click = () => {
+            context.emit("clickMask");
         };
 
         return {
-            clickMask
+            click
         };
     }
 });
@@ -25,6 +23,9 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     background-color: #222;
-    opacity: 0.6;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }
 </style>

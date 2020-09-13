@@ -1,40 +1,25 @@
 <template>
-<div id="app" class="cigo-frame">
-    <sider class="frame-left-menu"></sider>
-    <div class="frame-right">
-        <top-bar class="frame-top-bar"></top-bar>
-        <main-content class="frame-main-content"></main-content>
+    <div id="app" class="cigo-frame">
+        <sider class="frame-left-menu"></sider>
+        <div class="frame-right">
+            <top-bar class="frame-top-bar"></top-bar>
+            <main-content class="frame-main-content"></main-content>
+        </div>
+        <right-panel class="frame-right-panel"></right-panel>
     </div>
-    <right-panel class="frame-right-panel"></right-panel>
-</div>
 </template>
 
 <script lang="ts">
-import {
-    defineComponent,
-    onBeforeMount,
-    provide,
-    ref,
-    watch
-} from "vue";
+import { defineComponent, onBeforeMount, provide, ref, watch } from "vue";
 
 import Sider from "./Sider.vue";
 import TopBar from "./TopBar.vue";
 import MainContent from "./MainContent.vue";
 import RightPanel from "./RightPanel.vue";
 
-import {
-    apiErrorCatch,
-    apiRequest,
-    apiSign,
-    Domain
-} from "@/common/http";
-import {
-    Menu
-} from "./utils/types";
-import {
-    makeRandomColor
-} from "./utils/common";
+import { apiErrorCatch, apiRequest, apiSign, Domain } from "@/common/http";
+import { Menu } from "./utils/types";
+import { makeRandomColor } from "./utils/common";
 
 export default defineComponent({
     name: "CigoFrame",
@@ -45,12 +30,15 @@ export default defineComponent({
         RightPanel
     },
     setup() {
-        let treeList: Menu[] = [];
-        let menuTreeListRef = ref(treeList);
+        let treeListTmp: Menu[] = [];
+        let menuTreeListRef = ref(treeListTmp);
+        let treeListForEditTmp: Menu[] = [];
+        let menuTreeListForEdit = ref(treeListForEditTmp);
         let menuNameBaseMapRef = ref(new Map());
         let menuIdBaseMapRef = ref(new Map());
 
         provide("menuTreeListRef", menuTreeListRef);
+        provide("menuTreeListForEdit", menuTreeListForEdit);
         provide("menuNameBaseMapRef", menuNameBaseMapRef);
         provide("menuIdBaseMapRef", menuIdBaseMapRef);
 
@@ -70,7 +58,10 @@ export default defineComponent({
 
                     //初始化层级菜单数据
                     let treeList = response.data.data.treeList;
-                    initTreeMenuList(response.data.data.treeList);
+                    let treeListForEdit: Menu[] = [];
+                    initTreeMenuList(treeList, treeListForEdit);
+
+                    menuTreeListForEdit.value = [...treeListForEdit];
                     menuTreeListRef.value = [...treeList];
                 })
                 .catch(apiErrorCatch.v1);
@@ -90,9 +81,10 @@ export default defineComponent({
             menuNameBaseMapRef.value = nameMap;
         };
 
-        const initTreeMenuList = (list: Menu[]) => {
+        const initTreeMenuList = (list: Menu[], treeListForEdit?: Menu[]) => {
             list.every((item: Menu, index: number, arr) => {
                 item.color = makeRandomColor(1, 100, 250);
+
                 //同步基础菜单数据颜色
                 if (
                     item.component_name &&
@@ -101,8 +93,23 @@ export default defineComponent({
                     menuNameBaseMapRef.value.get(item.component_name).color =
                         item.color;
                 }
+
+                //同步编辑菜单数据
+                let itemFormEdit: Menu = {
+                    id: 0,
+                    title: ""
+                };
+                if (!item.group_flag && treeListForEdit) {
+                    Object.assign(itemFormEdit, item); //Knowledge_Flag 知识点：深拷贝vs浅拷贝
+                    itemFormEdit.subList = [];
+                    treeListForEdit.push(itemFormEdit);
+                }
+
                 if (item.subList && item.subList.length) {
-                    initTreeMenuList(item.subList);
+                    initTreeMenuList(item.subList, itemFormEdit.subList);
+                } else {
+                    delete item.subList;
+                    delete itemFormEdit.subList;
                 }
                 return true;
             });

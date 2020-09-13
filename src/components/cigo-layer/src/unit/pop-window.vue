@@ -1,0 +1,134 @@
+<template>
+    <div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
+        <cigo-mask
+            :id="'pop-window-mask-'+layerIndex"
+            class="cigo-layer-mask"
+            @clickMask="clickMask"
+        ></cigo-mask>
+        <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
+            <component :is="component" />
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import {
+    defineComponent,
+    ref,
+    onMounted,
+    reactive,
+    inject,
+    markRaw
+} from "vue";
+import Vue from "vue";
+import CigoMask from "./mask.vue";
+import cigoLayer from "@/components/cigo-layer/index";
+import { TweenMax } from "gsap";
+
+import User from "@/components/cigo-admin-core/pages/auth/User.vue";
+
+import Tmp from "@/components/cigo-layer/src/unit/Tmp.vue";
+
+export default defineComponent({
+    name: "CigoPopWindow",
+    props: {
+        layerIndex: {
+            type: Number,
+            default: ""
+        }
+        // component: {
+        //     type: Object,
+        //     default: {}
+        // }
+    },
+    components: {
+        CigoMask,
+        User,
+        Tmp
+    },
+    setup(props) {
+        const component = ref();
+        onMounted(() => {
+            delayShow();
+        });
+
+        const delayShow = () => {
+            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
+                opacity: 0.6
+            });
+            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
+                opacity: 1,
+                width: "300px",
+                height: "300px"
+            });
+        };
+
+        const delayHide = () => {
+            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
+                opacity: 0
+            });
+            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
+                opacity: 0,
+                width: "0px",
+                height: "0px",
+                onComplete: () => {
+                    cigoLayer.close(props.layerIndex);
+                }
+            });
+        };
+        const clickMask = () => {
+            // delayHide();
+            console.log("111");
+
+            // component.value = markRaw(Tmp);
+            // component.value = markRaw(User);
+            console.log(User);
+            const tmp = () =>
+                import("@/components/cigo-admin-core/pages/Gone.vue");
+            console.log(tmp);
+            console.log(tmp());
+
+            // component.value = markRaw(
+            //     import("@/components/cigo-admin-core/pages/auth/User.vue")
+            // );
+        };
+
+        return {
+            component,
+            clickMask
+        };
+    }
+});
+</script>
+
+<style lang="scss">
+.cigo-pop-window {
+    width: 100vw;
+    height: 100vh;
+    opacity: 1;
+    z-index: 10000;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    -moz-transition: all 0.6s ease-in-out;
+    -webkit-transition: all 0.6s ease-in-out;
+    -o-transition: all 0.6s ease-in-out;
+    -ms-transition: all 0.6s ease-in-out;
+    transition: all 0.6s ease-in-out;
+
+    .cigo-pop-window-content {
+        position: relative;
+        width: 0px;
+        height: 0px;
+        opacity: 0;
+        border-radius: 8px;
+        background-color: #fff;
+        padding: 8px 10px;
+        color: white;
+    }
+}
+</style>

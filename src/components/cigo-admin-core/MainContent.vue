@@ -53,6 +53,9 @@ export default defineComponent({
             "currComponent"
         );
 
+        let tmpComponent = reactive({});
+        provide("tmpComponent", tmpComponent);
+
         let transConfig = reactive({
             appearFlag: ref(true),
             leave: (componentName: string) => {
@@ -73,6 +76,10 @@ export default defineComponent({
                 }
             },
             enter: (component: any) => {
+                console.log(typeof component);
+                console.log(component);
+                tmpComponent = component;
+
                 //记录打开页面
                 systemStore.recordCurrComponent(component);
                 //开启切换动画
@@ -112,13 +119,9 @@ export default defineComponent({
     .main-content-body {
         display: flex;
         flex: 1;
-        margin: 15px 12px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-
-    .main-content-body::-webkit-scrollbar {
-        width: 0;
+        margin: 15px 0px;
+        padding: 0px 12px;
+        overflow: hidden;
     }
 }
 </style>

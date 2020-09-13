@@ -1,99 +1,248 @@
 <template>
     <div class="cigo-auth-rule">
         <div class="top-bar">
-            <div class="left"></div>
-            <div class="right"></div>
+            <a-button-group class="left">
+                <a-button type="primary">
+                    <template v-slot:icon>
+                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
+                    </template>刷新
+                </a-button>
+                <a-button type="primary" @click.stop="ctrlNew">
+                    <template v-slot:icon>
+                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
+                    </template>新建菜单/节点
+                </a-button>
+            </a-button-group>
+            <a-button-group class="right">
+                <a-button type="primary">
+                    <template v-slot:icon>
+                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-daochu'"></cigo-icon-font>
+                    </template>导出数据
+                </a-button>
+            </a-button-group>
         </div>
+
+        <component :is="component" />
 
         <a-table
             class="auth-rule-list"
+            :rowKey="'id'"
             :pagination="false"
             :columns="columns"
             :children-column-name="'subList'"
-            :data-source="menuTreeListRef"
+            :data-source="menuList"
             :row-selection="rowSelection"
-            :scroll="{ x: 1000, y: 450 }"
+            :scroll="{ x: 1800 , y: 'max-content'}"
         >
-            <template #action="{ title }">
-                <a>action{{title}}</a>
+            <template v-slot:icon="{ txt, record }">
+                <span v-if="txt"></span>
+                <cigo-icon-font
+                    class="menu-icon"
+                    :name="record.icon"
+                    :style="[{color:record.color}]"
+                ></cigo-icon-font>
+            </template>
+            <template v-slot:type="{ txt, record }">
+                <span v-if="txt"></span>
+                <span>{{menuType(record)}}</span>
+            </template>
+
+            <template v-slot:targetType="{ txt, record }">
+                <span v-if="txt"></span>
+                <span>{{menuTargetType(record)}}</span>
+            </template>
+            <template v-slot:operation="{ txt, record }">
+                <span v-if="txt"></span>
+                <a-button
+                    class="opt-btn"
+                    @click.stop="ctrlStatus(record)"
+                    type="default"
+                    shape="circle"
+                    size="small"
+                >{{record.status ? '禁':'启'}}</a-button>
+                <a-button
+                    class="opt-btn"
+                    @click.stop="ctrlAddSub(record)"
+                    type="default"
+                    shape="circle"
+                    size="small"
+                    title="添加子项"
+                >
+                    <template v-slot:icon>
+                        <cigo-icon-font
+                            :name="'cigoadmin-icon-xinjianzixiang'"
+                            class="opt-icon opt-sub"
+                        ></cigo-icon-font>
+                    </template>
+                </a-button>
+
+                <a-button
+                    class="opt-btn"
+                    @click.stop="ctrlView(record)"
+                    type="primary"
+                    shape="circle"
+                    size="small"
+                    title="查看"
+                >
+                    <template v-slot:icon>
+                        <cigo-icon-font
+                            :name="'cigoadmin-icon-liulan'"
+                            class="opt-icon opt-primary opt-view"
+                        ></cigo-icon-font>
+                    </template>
+                </a-button>
+                <a-button
+                    class="opt-btn"
+                    @click.stop="ctrlEdit(record)"
+                    type="primary"
+                    shape="circle"
+                    size="small"
+                    title="编辑"
+                >
+                    <template v-slot:icon>
+                        <cigo-icon-font
+                            :name="'cigoadmin-icon-bianji'"
+                            class="opt-icon opt-primary opt-edit"
+                        ></cigo-icon-font>
+                    </template>
+                </a-button>
+                <a-button
+                    class="opt-btn"
+                    @click.stop="ctrlDelete(record)"
+                    type="danger"
+                    shape="circle"
+                    size="small"
+                    title="删除"
+                >
+                    <template v-slot:icon>
+                        <cigo-icon-font
+                            :name="'cigoadmin-icon-shanchu1'"
+                            class="opt-icon opt-primary opt-del"
+                        ></cigo-icon-font>
+                    </template>
+                </a-button>
             </template>
         </a-table>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from "vue";
+import { defineComponent, inject, markRaw, onMounted, ref, watch } from "vue";
+import { Menu } from "@/components/cigo-admin-core/utils/types";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
+import cigoLayer from "@/components/cigo-layer";
+import Tmp from "@/components/cigo-layer/src/unit/Tmp.vue";
+
 export default defineComponent({
     name: "CigoAuthRule",
-    setup(props) {
-        let menuTreeListRef = inject("menuTreeListRef");
+    components: {
+        CigoIconFont,
+        Tmp
+    },
+    setup(props, context) {
+        let menuList = inject("menuTreeListForEdit");
         const columns = [
             {
                 title: "权限节点/菜单",
-                dataIndex: "title",
-                key: "title"
+                dataIndex: "title"
             },
             {
                 title: "图标",
                 dataIndex: "icon",
-                key: "icon",
-                width: "150px"
+                width: "80px",
+                slots: {
+                    customRender: "icon"
+                }
             },
             {
                 title: "节点类型",
                 dataIndex: "type",
-                key: "type",
-                width: "90px"
+                width: "90px",
+                slots: {
+                    customRender: "type"
+                }
             },
             {
                 title: "跳转路由/URL",
                 dataIndex: "url",
-                key: "url"
+                width: "200px"
             },
             {
                 title: "跳转类型",
                 dataIndex: "target_type",
-                key: "target_type",
-                width: "150px"
+                width: "150px",
+                slots: {
+                    customRender: "targetType"
+                }
             },
             {
                 title: "对应组件名",
                 dataIndex: "component_name",
-                key: "component_name"
+                width: "150px"
             },
             {
                 title: "组件显示名称",
                 dataIndex: "component_label",
-                key: "component_label"
+                width: "150px"
             },
             {
                 title: "分组",
-                dataIndex: "sort",
-                key: "sort",
+                dataIndex: "group",
                 width: "100px"
             },
             {
                 title: "分组排序",
                 dataIndex: "group_sort",
-                key: "group_sort",
                 width: "90px"
             },
             {
                 title: "排序",
                 dataIndex: "sort",
-                key: "sort",
                 width: "90px"
             },
             {
-                title: "Action",
+                title: "操作",
                 key: "operation",
                 fixed: "right",
-                width: 150,
+                width: 180,
                 slots: {
-                    customRender: "action"
+                    customRender: "operation"
                 }
             }
         ];
+
+        const menuType = (menu: Menu) => {
+            let type = "";
+            switch (menu.type) {
+                case 1:
+                    type = "权限节点";
+                    break;
+                case 2:
+                    type = "操作按钮";
+                    break;
+                case 0:
+                default:
+                    type = "系统菜单";
+                    break;
+            }
+            return type;
+        };
+        const menuTargetType = (menu: Menu) => {
+            let type = "";
+            switch (menu.target_type) {
+                case "layer-win":
+                    type = "弹窗动态组件";
+                    break;
+                case "_blank":
+                    type = "新窗口";
+                    break;
+                case "content-page":
+                default:
+                    type = "右侧动态组件";
+                    break;
+            }
+            return type;
+        };
 
         const rowSelection = {
             fixed: true,
@@ -117,10 +266,53 @@ export default defineComponent({
             }
         };
 
+        const ctrlStatus = (menu: Menu) => {
+            console.log("ctrlStatus:", menu);
+            cigoLayer.msg("我来测试弹出消息");
+        };
+
+        const component = ref();
+        const ctrlAddSub = (menu: Menu) => {
+            console.log("ctrlAddSub", menu);
+
+            component.value = markRaw(Tmp);
+        };
+        const ctrlView = (menu: Menu) => {
+            console.log("ctrlView", menu);
+        };
+
+        let tmpComponent = inject("tmpComponent");
+
+        const ctrlNew = () => {
+            console.log(tmpComponent);
+            cigoLayer.window(tmpComponent);
+
+            // cigoLayer.window(() =>
+            // import("@/components/cigo-admin-core/pages/auth/User.vue")
+            // );
+        };
+
+        const ctrlEdit = (menu: Menu) => {
+            console.log("ctrlView", menu);
+        };
+
+        const ctrlDelete = (menu: Menu) => {
+            console.log("ctrlDelete", menu);
+        };
+
         return {
-            menuTreeListRef,
+            component,
+            menuList,
             columns,
-            rowSelection
+            menuType,
+            menuTargetType,
+            rowSelection,
+            ctrlStatus,
+            ctrlAddSub,
+            ctrlNew,
+            ctrlView,
+            ctrlEdit,
+            ctrlDelete
         };
     }
 });
@@ -130,11 +322,58 @@ export default defineComponent({
 .cigo-auth-rule {
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     .top-bar {
+        width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+
+        .btn-icon {
+            margin-right: 5px;
+            width: 15px;
+            height: 15px;
+        }
     }
+
+    .auth-rule-list {
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .opt-btn {
+            margin-right: 5px;
+        }
+
+        .opt-btn:last-child {
+            margin-right: 0px;
+        }
+
+        .opt-icon {
+            color: #666;
+            padding: 1px;
+        }
+
+        .opt-primary {
+            color: #fff;
+        }
+
+        .opt-icon:hover {
+            color: #1890ff;
+        }
+
+        .opt-primary:hover {
+            color: #fff !important;
+        }
+    }
+}
+
+.cigo-auth-rule::-webkit-scrollbar {
+    width: 0;
 }
 </style>
