@@ -1,14 +1,10 @@
 <template>
-    <div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
-        <cigo-mask
-            :id="'pop-window-mask-'+layerIndex"
-            class="cigo-layer-mask"
-            @clickMask="clickMask"
-        ></cigo-mask>
-        <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
-            <component :is="component" />
-        </div>
+<div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
+    <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
+    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
+        <component :is="componentRaw" :data="data" @notify="notify" @close="delayHide" />
     </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -18,16 +14,15 @@ import {
     onMounted,
     reactive,
     inject,
-    markRaw
+    markRaw,
+    computed
 } from "vue";
 import Vue from "vue";
 import CigoMask from "./mask.vue";
 import cigoLayer from "@/components/cigo-layer/index";
-import { TweenMax } from "gsap";
-
-import User from "@/components/cigo-admin-core/pages/auth/User.vue";
-
-import Tmp from "@/components/cigo-layer/src/unit/Tmp.vue";
+import {
+    TweenMax
+} from "gsap";
 
 export default defineComponent({
     name: "CigoPopWindow",
@@ -35,19 +30,35 @@ export default defineComponent({
         layerIndex: {
             type: Number,
             default: ""
+        },
+        component: {
+            type: Object,
+            default: {}
+        },
+        width: {
+            type: String,
+            default: "500px"
+        },
+        height: {
+            type: String,
+            default: "400px"
+        },
+        data: {
+            type: Object,
+            default: {}
+        },
+        notify: {
+            type: Function,
+            default: () => {}
         }
-        // component: {
-        //     type: Object,
-        //     default: {}
-        // }
     },
     components: {
-        CigoMask,
-        User,
-        Tmp
+        CigoMask
     },
     setup(props) {
-        const component = ref();
+        let componentRaw = computed(() => {
+            return markRaw(props.component);
+        });
         onMounted(() => {
             delayShow();
         });
@@ -58,8 +69,8 @@ export default defineComponent({
             });
             TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
                 opacity: 1,
-                width: "300px",
-                height: "300px"
+                width: props.width,
+                height: props.height
             });
         };
 
@@ -77,25 +88,13 @@ export default defineComponent({
             });
         };
         const clickMask = () => {
-            // delayHide();
-            console.log("111");
-
-            // component.value = markRaw(Tmp);
-            // component.value = markRaw(User);
-            console.log(User);
-            const tmp = () =>
-                import("@/components/cigo-admin-core/pages/Gone.vue");
-            console.log(tmp);
-            console.log(tmp());
-
-            // component.value = markRaw(
-            //     import("@/components/cigo-admin-core/pages/auth/User.vue")
-            // );
+            delayHide();
         };
 
         return {
-            component,
-            clickMask
+            componentRaw,
+            clickMask,
+            delayHide
         };
     }
 });
@@ -125,10 +124,10 @@ export default defineComponent({
         width: 0px;
         height: 0px;
         opacity: 0;
+        display: flex;
         border-radius: 8px;
         background-color: #fff;
         padding: 8px 10px;
-        color: white;
     }
 }
 </style>

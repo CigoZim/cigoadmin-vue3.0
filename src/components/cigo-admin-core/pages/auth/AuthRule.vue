@@ -1,148 +1,94 @@
 <template>
-    <div class="cigo-auth-rule">
-        <div class="top-bar">
-            <a-button-group class="left">
-                <a-button type="primary">
-                    <template v-slot:icon>
-                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
-                    </template>刷新
-                </a-button>
-                <a-button type="primary" @click.stop="ctrlNew">
-                    <template v-slot:icon>
-                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
-                    </template>新建菜单/节点
-                </a-button>
-            </a-button-group>
-            <a-button-group class="right">
-                <a-button type="primary">
-                    <template v-slot:icon>
-                        <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-daochu'"></cigo-icon-font>
-                    </template>导出数据
-                </a-button>
-            </a-button-group>
-        </div>
-
-        <component :is="component" />
-
-        <a-table
-            class="auth-rule-list"
-            :rowKey="'id'"
-            :pagination="false"
-            :columns="columns"
-            :children-column-name="'subList'"
-            :data-source="menuList"
-            :row-selection="rowSelection"
-            :scroll="{ x: 1800 , y: 'max-content'}"
-        >
-            <template v-slot:icon="{ txt, record }">
-                <span v-if="txt"></span>
-                <cigo-icon-font
-                    class="menu-icon"
-                    :name="record.icon"
-                    :style="[{color:record.color}]"
-                ></cigo-icon-font>
-            </template>
-            <template v-slot:type="{ txt, record }">
-                <span v-if="txt"></span>
-                <span>{{menuType(record)}}</span>
-            </template>
-
-            <template v-slot:targetType="{ txt, record }">
-                <span v-if="txt"></span>
-                <span>{{menuTargetType(record)}}</span>
-            </template>
-            <template v-slot:operation="{ txt, record }">
-                <span v-if="txt"></span>
-                <a-button
-                    class="opt-btn"
-                    @click.stop="ctrlStatus(record)"
-                    type="default"
-                    shape="circle"
-                    size="small"
-                >{{record.status ? '禁':'启'}}</a-button>
-                <a-button
-                    class="opt-btn"
-                    @click.stop="ctrlAddSub(record)"
-                    type="default"
-                    shape="circle"
-                    size="small"
-                    title="添加子项"
-                >
-                    <template v-slot:icon>
-                        <cigo-icon-font
-                            :name="'cigoadmin-icon-xinjianzixiang'"
-                            class="opt-icon opt-sub"
-                        ></cigo-icon-font>
-                    </template>
-                </a-button>
-
-                <a-button
-                    class="opt-btn"
-                    @click.stop="ctrlView(record)"
-                    type="primary"
-                    shape="circle"
-                    size="small"
-                    title="查看"
-                >
-                    <template v-slot:icon>
-                        <cigo-icon-font
-                            :name="'cigoadmin-icon-liulan'"
-                            class="opt-icon opt-primary opt-view"
-                        ></cigo-icon-font>
-                    </template>
-                </a-button>
-                <a-button
-                    class="opt-btn"
-                    @click.stop="ctrlEdit(record)"
-                    type="primary"
-                    shape="circle"
-                    size="small"
-                    title="编辑"
-                >
-                    <template v-slot:icon>
-                        <cigo-icon-font
-                            :name="'cigoadmin-icon-bianji'"
-                            class="opt-icon opt-primary opt-edit"
-                        ></cigo-icon-font>
-                    </template>
-                </a-button>
-                <a-button
-                    class="opt-btn"
-                    @click.stop="ctrlDelete(record)"
-                    type="danger"
-                    shape="circle"
-                    size="small"
-                    title="删除"
-                >
-                    <template v-slot:icon>
-                        <cigo-icon-font
-                            :name="'cigoadmin-icon-shanchu1'"
-                            class="opt-icon opt-primary opt-del"
-                        ></cigo-icon-font>
-                    </template>
-                </a-button>
-            </template>
-        </a-table>
+<div class="cigo-auth-rule">
+    <div class="top-bar">
+        <a-button-group class="left">
+            <a-button type="primary">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
+                </template>刷新
+            </a-button>
+            <a-button type="primary" @click.stop="ctrlNew">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
+                </template>新建菜单/节点
+            </a-button>
+        </a-button-group>
+        <a-button-group class="right">
+            <a-button type="primary">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-daochu'"></cigo-icon-font>
+                </template>导出数据
+            </a-button>
+        </a-button-group>
     </div>
+
+    <a-table class="auth-rule-list" :rowKey="'id'" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuList" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
+        <template v-slot:icon="{ txt, record }">
+            <span v-if="txt"></span>
+            <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
+        </template>
+        <template v-slot:type="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{menuType(record)}}</span>
+        </template>
+
+        <template v-slot:targetType="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{menuTargetType(record)}}</span>
+        </template>
+        <template v-slot:operation="{ txt, record }">
+            <span v-if="txt"></span>
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
+            <a-button class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-xinjianzixiang'" class="opt-icon opt-sub"></cigo-icon-font>
+                </template>
+            </a-button>
+
+            <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-liulan'" class="opt-icon opt-primary opt-view"></cigo-icon-font>
+                </template>
+            </a-button>
+            <a-button class="opt-btn" @click.stop="ctrlEdit(record)" type="primary" shape="circle" size="small" title="编辑">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-bianji'" class="opt-icon opt-primary opt-edit"></cigo-icon-font>
+                </template>
+            </a-button>
+            <a-button class="opt-btn" @click.stop="ctrlDelete(record)" type="danger" shape="circle" size="small" title="删除">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-shanchu1'" class="opt-icon opt-primary opt-del"></cigo-icon-font>
+                </template>
+            </a-button>
+        </template>
+    </a-table>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, markRaw, onMounted, ref, watch } from "vue";
-import { Menu } from "@/components/cigo-admin-core/utils/types";
+import {
+    defineComponent,
+    inject,
+    markRaw,
+    onMounted,
+    ref,
+    watch
+} from "vue";
+import {
+    Menu
+} from "@/components/cigo-admin-core/utils/types";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import cigoLayer from "@/components/cigo-layer";
-import Tmp from "@/components/cigo-layer/src/unit/Tmp.vue";
+import EditRule from "@/components/cigo-admin-core/pages/auth/auth-rule/EditRule.vue";
 
 export default defineComponent({
     name: "CigoAuthRule",
     components: {
-        CigoIconFont,
-        Tmp
+        CigoIconFont
     },
     setup(props, context) {
         let menuList = inject("menuTreeListForEdit");
-        const columns = [
-            {
+        const columns = [{
                 title: "权限节点/菜单",
                 dataIndex: "title"
             },
@@ -271,25 +217,25 @@ export default defineComponent({
             cigoLayer.msg("我来测试弹出消息");
         };
 
-        const component = ref();
         const ctrlAddSub = (menu: Menu) => {
             console.log("ctrlAddSub", menu);
-
-            component.value = markRaw(Tmp);
         };
         const ctrlView = (menu: Menu) => {
             console.log("ctrlView", menu);
         };
 
-        let tmpComponent = inject("tmpComponent");
-
         const ctrlNew = () => {
-            console.log(tmpComponent);
-            cigoLayer.window(tmpComponent);
-
-            // cigoLayer.window(() =>
-            // import("@/components/cigo-admin-core/pages/auth/User.vue")
-            // );
+            cigoLayer.window({
+                component: EditRule,
+                width: "600px",
+                height: "500px",
+                data: {
+                    mode: "add"
+                },
+                notify: (flag: string, data: object) => {
+                    console.log(flag, data);
+                }
+            });
         };
 
         const ctrlEdit = (menu: Menu) => {
@@ -301,7 +247,6 @@ export default defineComponent({
         };
 
         return {
-            component,
             menuList,
             columns,
             menuType,

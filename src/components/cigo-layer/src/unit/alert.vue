@@ -1,5 +1,5 @@
 <template>
-<div class="cigo-layer-item cigo-layer-alert">
+<div class="cigo-layer-alert">
     <cigo-mask></cigo-mask>
     <div class="cigo-layer-alert-content">
         <span>我是消息弹框</span>

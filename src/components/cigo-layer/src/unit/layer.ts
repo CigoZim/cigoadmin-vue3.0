@@ -1,9 +1,12 @@
 import { createApp, defineAsyncComponent } from "vue";
 
+import Antd from "ant-design-vue";
+
 import Alert from "./alert.vue";
 import Msg from "./msg.vue";
 import PopWindow from "./pop-window.vue";
 
+import "ant-design-vue/dist/antd.css";
 import "../css/layer.css";
 
 class CigoLayer {
@@ -24,11 +27,13 @@ class CigoLayer {
 		let body = document.body || document.documentElement;
 		let root = document.createElement("div");
 		root.setAttribute("id", nodeId);
+		root.setAttribute("class", "cigo-layer-item");
 		body.appendChild(root);
 		//实例化并绑定渲染vue组件实例
 		options = options || {};
 		options.layerIndex = this.countFlag;
 		let newInstance = createApp(layerType, options);
+		newInstance.use(Antd);
 		newInstance.mount("#" + nodeId);
 		//记录节点
 		this.layerInstances.set(this.countFlag, newInstance);
@@ -83,8 +88,13 @@ class CigoLayer {
 	/**
 	 * 动态组件窗体
 	 */
-	public window(component: any) {
-		this.open(PopWindow, { component: component });
+	public window(options: any) {
+		console.log(options);
+		if (!options.component) {
+			cigoLayer.msg("请配置弹窗组件");
+			return;
+		}
+		this.open(PopWindow, options);
 	}
 }
 

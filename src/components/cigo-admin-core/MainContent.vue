@@ -1,20 +1,16 @@
 <template>
-    <div class="cigo-main-content">
-        <div class="main-content-body">
-            <router-view v-slot="{ Component }">
-                <transition
-                    :appear="appearFlag"
-                    @leave="leave(currComponent)"
-                    @enter="enter(Component)"
-                >
-                    <keep-alive :exclude="noCachePages" :max="maxCachePages">
-                        <component :is="Component" />
-                    </keep-alive>
-                </transition>
-            </router-view>
-        </div>
-        <bottom-panel class="main-content-bottom"></bottom-panel>
+<div class="cigo-main-content">
+    <div class="main-content-body">
+        <router-view v-slot="{ Component }">
+            <transition :appear="appearFlag" @leave="leave(currComponent)" @enter="enter(Component)">
+                <keep-alive :exclude="noCachePages" :max="maxCachePages">
+                    <component :is="Component" />
+                </keep-alive>
+            </transition>
+        </router-view>
     </div>
+    <bottom-panel class="main-content-bottom"></bottom-panel>
+</div>
 </template>
 
 <script lang="ts">
@@ -34,10 +30,16 @@ import {
 
 import BottomPanel from "./BottomPanel.vue";
 
-import { TweenMax } from "gsap";
+import {
+    TweenMax
+} from "gsap";
 
-import { systemStore } from "@/store/index";
-import { Menu } from "./utils/types";
+import {
+    systemStore
+} from "@/store/index";
+import {
+    Menu
+} from "./utils/types";
 
 export default defineComponent({
     name: "CigoMainContent",
@@ -52,9 +54,6 @@ export default defineComponent({
             systemStore.getState().systemState,
             "currComponent"
         );
-
-        let tmpComponent = reactive({});
-        provide("tmpComponent", tmpComponent);
 
         let transConfig = reactive({
             appearFlag: ref(true),
@@ -76,10 +75,6 @@ export default defineComponent({
                 }
             },
             enter: (component: any) => {
-                console.log(typeof component);
-                console.log(component);
-                tmpComponent = component;
-
                 //记录打开页面
                 systemStore.recordCurrComponent(component);
                 //开启切换动画
