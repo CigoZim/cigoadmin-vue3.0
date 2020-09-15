@@ -25,12 +25,12 @@ export default defineComponent({
         });
 
         const delayLogout = () => {
+            cigoLayer.msg("退出成功");
             setTimeout(() => {
                 if (--delayTime.value > 0) {
                     delayLogout();
                     return;
                 }
-                cigoLayer.msg("退出成功");
                 systemStore.logout();
             }, 1000);
         };

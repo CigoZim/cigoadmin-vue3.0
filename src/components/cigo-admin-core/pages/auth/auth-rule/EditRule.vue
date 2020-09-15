@@ -7,7 +7,13 @@
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="父级节点：" name="pid">
                 <a-select v-model:value="formData.pid" show-search placeholder="请选择父级节点" not-found-content="当前无父级节点" option-filter-prop="children" :filter-option="filterParentMenuOption" @change="handleParentMenuChange">
-                    <a-select-option v-for="(item,index) in menuList" :key="index" :value="item.id">{{item.title}}</a-select-option>
+                    <a-select-option v-for="(item,index) in menuList" :key="index" :value="item.id">
+                        <span v-if="item.level">
+                            <span v-for="(tabItem,tabIndex) in item.level" :key="tabIndex">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <span>{{item.last ? '└ ':'├ '}}</span>
+                        </span>
+                        {{item.title}}
+                    </a-select-option>
                 </a-select>
             </a-form-item>
             <a-form-item label="菜单名：" name="title" v-bind="validateInfos.title">
@@ -90,6 +96,9 @@ import {
     apiRequest,
     apiSign
 } from "@/common/http";
+import {
+    Menu
+} from "@/components/cigo-admin-core/utils/types";
 import cigoLayer from "@/components/cigo-layer";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import {
@@ -122,8 +131,6 @@ export default defineComponent({
     },
     setup(props, ctx) {
         let menuList = [...props.data.menuList];
-        console.log(menuList);
-
         let dataRef = reactive(props.data);
         let formData = reactive({
             type: 0, //节点类型（0-系统菜单；1-权限节点非菜单；2-按钮）

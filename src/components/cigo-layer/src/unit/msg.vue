@@ -1,26 +1,36 @@
 <template>
-    <div :id="'layer-msg-'+layerIndex" class="cigo-layer-msg">
-        <div :id="'layer-msg-content-'+layerIndex" class="cigo-layer-msg-content">
-            <span>{{msg}}</span>
-        </div>
+<div :id="'layer-msg-'+layerIndex" class="cigo-layer-msg">
+    <div :id="'layer-msg-content-'+layerIndex" class="cigo-layer-msg-content">
+        <span>{{msg}}</span>
     </div>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import {
+    defineComponent,
+    ref,
+    onMounted
+} from "vue";
 import cigoLayer from "@/components/cigo-layer/index";
-import { TweenMax } from "gsap";
+import {
+    TweenMax
+} from "gsap";
 
 export default defineComponent({
     name: "CigoLayerMsg",
     props: {
+        layerIndex: {
+            type: Number,
+            default: ""
+        },
         msg: {
             type: String,
             default: ""
         },
-        layerIndex: {
+        timeout: {
             type: Number,
-            default: ""
+            default: 1
         }
     },
     setup(props) {
@@ -40,7 +50,7 @@ export default defineComponent({
         const delayHide = () => {
             TweenMax.to("#layer-msg-content-" + props.layerIndex, 0.5, {
                 opacity: 0,
-                delay: 2,
+                delay: props.timeout,
                 onComplete: () => {
                     cigoLayer.close(props.layerIndex);
                 }
@@ -58,7 +68,7 @@ export default defineComponent({
 <style lang="scss">
 .cigo-layer-msg {
     z-index: 10000;
-    position: absolute;
+    position: fixed;
     top: 40%;
     left: 50%;
     display: flex;

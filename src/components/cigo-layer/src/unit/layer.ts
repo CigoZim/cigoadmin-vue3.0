@@ -9,6 +9,7 @@ import PopWindow from "./pop-window.vue";
 import "ant-design-vue/dist/antd.css";
 import "../css/layer.css";
 import { isString } from "lodash";
+import { string } from "locutus/python";
 
 class CigoLayer {
 	private countFlag: number = 0;
@@ -76,7 +77,9 @@ class CigoLayer {
 	/**
 	 * 确认弹框
 	 */
-	public confirm(options: string | object) {
+	public confirm(
+		options: string | object //Tips_Flag 联合类型
+	) {
 		options = options || {};
 		if (isString(options)) {
 			options = { msg: options };
@@ -86,8 +89,14 @@ class CigoLayer {
 	/**
 	 * 消息
 	 */
-	public msg(msg: string) {
-		this.open(Msg, { msg: msg });
+	public msg(
+		msg: string,
+		timeout?: number //Tips_Flag 可选参数
+	) {
+		let options: any = {};
+		options.msg = msg;
+		if (timeout) options.timeout = timeout;
+		this.open(Msg, options);
 	}
 	/**
 	 * 动态组件窗体

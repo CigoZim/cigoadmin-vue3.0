@@ -45,25 +45,21 @@ export default defineComponent({
         RightPanel
     },
     setup() {
-        let baseListTmp: Menu[] = [];
-        let baseListForEditTmp: Menu[] = [];
         let treeListTmp: Menu[] = [];
         let treeListForEditTmp: Menu[] = [];
-        let treeListForEditBaseTmp: Menu[] = [];
+        let baseListForEditTmp: Menu[] = [];
 
-        let menuBaseListRef = ref(baseListTmp);
+        let menuTreeListRef = ref(treeListTmp); //带分组
+        let menuTreeListForEditRef = ref(treeListForEditTmp); //去除分组
         let menuBaseListForEditRef = ref(baseListForEditTmp); //去除分组且不分层
         let menuBaseListNameMapRef = ref(new Map());
         let menuBaseListIdMapRef = ref(new Map());
-        let menuTreeListRef = ref(treeListTmp); //带分组
-        let menuTreeListForEditRef = ref(treeListForEditTmp); //去除分组
 
-        provide("menuBaseListRef", menuBaseListRef);
+        provide("menuTreeListRef", menuTreeListRef);
+        provide("menuTreeListForEditRef", menuTreeListForEditRef);
         provide("menuBaseListForEditRef", menuBaseListForEditRef);
         provide("menuBaseListNameMapRef", menuBaseListNameMapRef);
         provide("menuBaseListIdMapRef", menuBaseListIdMapRef);
-        provide("menuTreeListRef", menuTreeListRef);
-        provide("menuTreeListForEditRef", menuTreeListForEditRef);
 
         onBeforeMount(() => {
             getMenuList();
@@ -72,57 +68,50 @@ export default defineComponent({
         // 获取菜单数据
         const getMenuList = () => {
             apiRequest.v1
-                .get("/menu/both", {
+                .get("/menu/tree", {
                     headers: apiSign({})
                 })
                 .then(response => {
-                    //初始化基础菜单数据
-                    menuBaseListRef.value = response.data.data.baseList;
-                    initMenuMapData();
-
                     //初始化层级菜单数据
-                    let treeList = response.data.data.treeList;
+                    let treeList: Menu[] = response.data.data;
                     let treeListForEdit: Menu[] = [];
                     let baseListForEdit: Menu[] = [];
+                    let idMap = new Map();
+                    let nameMap = new Map();
                     initTreeMenuList(
                         treeList,
                         baseListForEdit,
                         treeListForEdit,
+                        idMap,
+                        nameMap,
                         0
                     );
 
                     menuTreeListRef.value = [...treeList];
                     menuBaseListForEditRef.value = [...baseListForEdit];
                     menuTreeListForEditRef.value = [...treeListForEdit];
+                    menuBaseListIdMapRef.value = idMap;
+                    menuBaseListNameMapRef.value = nameMap;
                 })
                 .catch(apiErrorCatch.v1);
-        };
-
-        const initMenuMapData = () => {
-            let idMap = new Map();
-            let nameMap = new Map();
-            menuBaseListRef.value.every((item: Menu, index: number, arr) => {
-                if (item.component_name) {
-                    nameMap.set(item.component_name, item);
-                }
-                idMap.set("id_" + item.id, item);
-                return true;
-            });
-            menuBaseListIdMapRef.value = idMap;
-            menuBaseListNameMapRef.value = nameMap;
         };
 
         const initTreeMenuList = (
             list: Menu[],
             baseListForEdit: Menu[],
             treeListForEdit: Menu[],
+            idMap: Map < string, Menu > ,
+            nameMap: Map < string, Menu > ,
             level: number
         ) => {
             list.every((item: Menu, index: number, arr) => {
+                console.log(arr);
+
                 item.color = makeRandomColor(1, 100, 250);
 
                 /** 标注菜单项层级 */
                 item.level = level;
+                item.last = index == arr.length - 1;
 
                 /** 同步基础菜单数据颜色 */
                 if (
@@ -145,10 +134,16 @@ export default defineComponent({
                 };
                 //添加当前菜单项
                 if (!item.group_flag) {
+                    //编辑基础菜单数组
                     Object.assign(itemForBase, item); //Tips_Flag 知识点：深拷贝vs浅拷贝
+                    delete itemForBase.subList; //避免空数组字段出现
                     baseListForEdit.push(itemForBase);
-
+                    idMap.set("id_" + itemForBase.id, itemForBase);
+                    if (itemForBase.component_name)
+                        nameMap.set(itemForBase.component_name, itemForBase);
+                    //编辑级联菜单数组
                     Object.assign(itemForEdit, item);
+                    delete itemForEdit.subList; //避免空数组字段出现
                     treeListForEdit.push(itemForEdit);
                 }
                 //处理子级
@@ -158,10 +153,10 @@ export default defineComponent({
                         item.subList,
                         baseListForEdit,
                         itemForEdit.subList,
+                        idMap,
+                        nameMap,
                         level + 1
                     );
-                } else {
-                    delete item.subList; //防止编辑菜单界面以subList字段标识子项会出现展开图标
                 }
 
                 return true;

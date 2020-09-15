@@ -102,7 +102,7 @@ export default defineComponent({
     height: 100vh;
     opacity: 1;
     z-index: 10000;
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
     display: flex;

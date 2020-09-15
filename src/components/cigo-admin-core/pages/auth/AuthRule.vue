@@ -93,6 +93,7 @@ export default defineComponent({
         let menuTreeListForEditRef: any = inject("menuTreeListForEditRef");
         let menuBaseListForEditRef: any = inject("menuBaseListForEditRef");
         let menuBaseList: Menu[] = [];
+        menuBaseList = [...toRaw(menuBaseListForEditRef.value)];
 
         //Tips_Flag 深刻理解ref、unref、reacte、toRaw、;、Proxy和RefImpl对象
         watch(menuBaseListForEditRef, (newVal, preVal) => {
