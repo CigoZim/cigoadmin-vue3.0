@@ -45,8 +45,26 @@ export default defineComponent({
         });
 
         onMounted(() => {
+            tipPanelExist();
             panelChange(panelOpenFlag.value);
         });
+        const tipPanelExist = () => {
+            setTimeout(() => {
+                if (!panelOpenFlag.value) {
+                    TweenMax.to(".right-panel-toggle", 0.8, {
+                        left: "-27px",
+                        opacity: 1,
+                        onComplete: () => {
+                            TweenMax.to(".right-panel-toggle", 0.8, {
+                                left: "-9px",
+                                opacity: 0.5,
+                                delay: 2
+                            });
+                        }
+                    });
+                }
+            }, 3000);
+        };
 
         const panelChange = (openFlag: boolean) => {
             if (openFlag) {
@@ -129,30 +147,32 @@ export default defineComponent({
 
         .right-panel-toggle {
             cursor: pointer;
-            width: 35px;
-            height: 46px;
+            width: 27px;
+            height: 40px;
             position: absolute;
             align-self: center;
             display: flex;
-            left: -35px;
+            left: -9px;
             background: #6b9afa;
-            border-top-left-radius: 23px;
-            border-bottom-left-radius: 23px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
 
             .right-panel-toggle-icon {
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
                 align-self: center;
-                margin-left: 8px;
+                margin-left: 7px;
             }
         }
 
         .right-panel-toggle:hover {
             opacity: 1 !important;
+            left: -27px !important;
         }
 
         .right-panel-toggle.open {
             background-color: #fff;
+            left: -27px !important;
         }
     }
 }

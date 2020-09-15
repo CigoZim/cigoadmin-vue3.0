@@ -105,8 +105,7 @@ export default defineComponent({
             level: number
         ) => {
             list.every((item: Menu, index: number, arr) => {
-                console.log(arr);
-
+                /** 创建动态颜色 */
                 item.color = makeRandomColor(1, 100, 250);
 
                 /** 标注菜单项层级 */

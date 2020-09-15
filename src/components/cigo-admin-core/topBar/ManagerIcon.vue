@@ -137,6 +137,7 @@ export default defineComponent({
             background-color: #fff;
             border: 1px solid #f0f0f0;
             overflow: hidden;
+            box-shadow: 2px 2px 10px #e5e5e5;
 
             .divider {
                 height: 1px;
