@@ -6,8 +6,12 @@
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="父级节点：" name="pid">
-                <a-select v-model:value="formData.pid" show-search placeholder="请选择父级节点" not-found-content="当前无父级节点" option-filter-prop="children" :filter-option="filterParentMenuOption" @change="handleParentMenuChange">
-                    <a-select-option v-for="(item,index) in menuList" :key="index" :value="item.id">
+                <a-select v-model:value="formData.pid" show-search placeholder="请选择父级节点" not-found-content="当前无父级节点" :filter-option="filterParentMenuOption" @change="handleParentMenuChange">
+                    <a-select-option :value="0" :itemData="{}">
+                        <span style="color:#ccc;">根菜单</span>
+                    </a-select-option>
+                    <!-- //Tips_Flag key值+1保证排除第一项，可尝试取消看option背景色 -->
+                    <a-select-option v-for="(item,index) in menuList" :key="index+1" :value="item.id" :itemData="item">
                         <span v-if="item.level">
                             <span v-for="(tabItem,tabIndex) in item.level" :key="tabIndex">&nbsp;&nbsp;&nbsp;&nbsp;</span>
                             <span>{{item.last ? '└ ':'├ '}}</span>
@@ -29,7 +33,7 @@
                     </template>
                 </a-input>
             </a-form-item>
-            <a-form-item label="路由：" name="url">
+            <a-form-item label="路由：" name="url" v-bind="validateInfos.url">
                 <a-input v-model:value="formData.url" placeholder="请设置路由" />
             </a-form-item>
             <a-form-item label="节点排序：" name="sort">
@@ -46,39 +50,40 @@
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="节点类型" name="type">
                 <a-radio-group v-model:value="formData.type">
-                    <a-radio value="0">菜单</a-radio>
-                    <a-radio value="1">节点</a-radio>
-                    <a-radio value="2">按钮</a-radio>
+                    <a-radio :value="0">菜单</a-radio>
+                    <a-radio :value="1">节点</a-radio>
+                    <a-radio :value="2">按钮</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="不可关闭" name="can_not_close_opentab">
                 <a-radio-group v-model:value="formData.can_not_close_opentab">
-                    <a-radio value="0">否</a-radio>
-                    <a-radio value="1">是</a-radio>
+                    <a-radio :value="0">否</a-radio>
+                    <a-radio :value="1">是</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="不被记录" name="can_not_record_opentab">
                 <a-radio-group v-model:value="formData.can_not_record_opentab">
-                    <a-radio value="0">否</a-radio>
-                    <a-radio value="1">是</a-radio>
+                    <a-radio :value="0">否</a-radio>
+                    <a-radio :value="1">是</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="不被缓存" name="can_not_cache">
                 <a-radio-group v-model:value="formData.can_not_cache">
-                    <a-radio value="0">否</a-radio>
-                    <a-radio value="1">是</a-radio>
+                    <a-radio :value="0">否</a-radio>
+                    <a-radio :value="1">是</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="跳转类型" name="target_type">
                 <a-radio-group v-model:value="formData.target_type">
-                    <a-radio value="0">右侧</a-radio>
-                    <a-radio value="1">弹窗</a-radio>
-                    <a-radio value="2">新页</a-radio>
+                    <a-radio :value="'content-page'">右侧</a-radio>
+                    <a-radio :value="'layer-win'">弹窗</a-radio>
+                    <a-radio :value="'_blank'">新页</a-radio>
                 </a-radio-group>
             </a-form-item>
             <a-form-item label="说明：" name="summary">
                 <a-textarea v-model:value="formData.summary" />
             </a-form-item>
+            <a-form-item v-bind="errorInfos"></a-form-item>
         </a-form>
     </div>
     <div class="btn-area">
@@ -108,6 +113,7 @@ import {
     toArray
 } from "lodash";
 import {
+    computed,
     defineComponent,
     onMounted,
     reactive,
@@ -139,11 +145,11 @@ export default defineComponent({
             title: "",
             icon: "cigoadmin-icon-menu",
             component_name: "",
-            can_not_close_opentab: 0,
+            can_not_close_opentab: 1,
             can_not_record_opentab: 0,
             can_not_cache: 0,
             url: "",
-            target_type: "", //content-page：右侧页面；layer-win：弹窗窗口；_blank：新打开页面
+            target_type: "content-page", //content-page：右侧页面；layer-win：弹窗窗口；_blank：新打开页面
             summary: "",
             group: "",
             group_sort: "",
@@ -158,6 +164,10 @@ export default defineComponent({
             title: [{
                 required: true,
                 message: "请输入用户名"
+            }],
+            url: [{
+                required: true,
+                message: "请配置路由"
             }]
         });
         const {
@@ -167,17 +177,18 @@ export default defineComponent({
             mergeValidateInfo
         } = useForm(formData, formItemRules);
         const filterParentMenuOption = (inputVal: string, option: any) => {
-            console.log("inputVal:", inputVal);
-
             return (
-                option.props.value
-                .toLowerCase()
-                .indexOf(inputVal.toLowerCase()) >= 0
+                option.props.itemData &&
+                option.props.itemData.title.indexOf(inputVal) != -1
             );
         };
         const handleParentMenuChange = (value: any, option: any) => {
+            formData.path = value ?
+                option.props.itemData.path + value + "," :
+                "0,";
             console.log("value:", value);
-            console.log("option:", option);
+            console.log("pid:", formData.pid);
+            console.log("path:", formData.path);
         };
 
         const doAdd = (e: any) => {
@@ -196,11 +207,15 @@ export default defineComponent({
                 })
                 .catch(err => {
                     console.log("error", err);
-                    let help: any = mergeValidateInfo(...toArray(validateInfos))
-                        .help;
-                    cigoLayer.msg(help);
                 });
         };
+
+        const errorInfos = computed(() => {
+            console.log("11111");
+
+            return mergeValidateInfo(...toArray(validateInfos));
+        });
+
         const cancel = () => {
             console.log("取消");
             ctx.emit("close");
@@ -218,6 +233,7 @@ export default defineComponent({
             formData,
             bindIcon,
             validateInfos,
+            errorInfos,
             filterParentMenuOption,
             handleParentMenuChange,
             doAdd,

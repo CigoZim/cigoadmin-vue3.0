@@ -5,7 +5,7 @@
         <div class="right-panel-content">
             <span>我是右侧面板</span>
         </div>
-        <div class="right-panel-toggle" :class="[openClass]" @click.stop="systemStore.toggleRightPanel()">
+        <div class="right-panel-toggle" :class="[openClass]" @click.stop="systemStore.toggleRightPanel()" @mouseenter="hover(true)" @mouseleave="hover(false)">
             <img class="right-panel-toggle-icon" :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'" />
         </div>
     </div>
@@ -48,6 +48,14 @@ export default defineComponent({
             tipPanelExist();
             panelChange(panelOpenFlag.value);
         });
+
+        const hover = (flag: boolean) => {
+            TweenMax.to(".right-panel-toggle", 0.5, {
+                left: flag ? "-27px" : "-9px",
+                opacity: flag ? 1 : 0.5
+            });
+        };
+
         const tipPanelExist = () => {
             setTimeout(() => {
                 if (!panelOpenFlag.value) {
@@ -105,6 +113,7 @@ export default defineComponent({
         return {
             cdnOpenIcon: Domain.cdnOpenIcon,
             systemStore,
+            hover,
             openClass,
             panelOpenFlag
         };
@@ -163,11 +172,6 @@ export default defineComponent({
                 align-self: center;
                 margin-left: 7px;
             }
-        }
-
-        .right-panel-toggle:hover {
-            opacity: 1 !important;
-            left: -27px !important;
         }
 
         .right-panel-toggle.open {
