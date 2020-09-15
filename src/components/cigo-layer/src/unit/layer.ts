@@ -2,12 +2,13 @@ import { createApp, defineAsyncComponent } from "vue";
 
 import Antd from "ant-design-vue";
 
-import Alert from "./alert.vue";
+import Confirm from "./confirm.vue";
 import Msg from "./msg.vue";
 import PopWindow from "./pop-window.vue";
 
 import "ant-design-vue/dist/antd.css";
 import "../css/layer.css";
+import { isString } from "lodash";
 
 class CigoLayer {
 	private countFlag: number = 0;
@@ -73,11 +74,14 @@ class CigoLayer {
 	}
 
 	/**
-	 * 弹框
+	 * 确认弹框
 	 */
-	public alert() {
-		console.log("show alert");
-		this.open(Alert);
+	public confirm(options: string | object) {
+		options = options || {};
+		if (isString(options)) {
+			options = { msg: options };
+		}
+		this.open(Confirm, options);
 	}
 	/**
 	 * 消息
@@ -89,7 +93,6 @@ class CigoLayer {
 	 * 动态组件窗体
 	 */
 	public window(options: any) {
-		console.log(options);
 		if (!options.component) {
 			cigoLayer.msg("请配置弹窗组件");
 			return;

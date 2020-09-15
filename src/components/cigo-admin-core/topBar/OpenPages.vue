@@ -1,27 +1,15 @@
 <template>
-    <div class="cigo-open-pages">
-        <icon-font class="more-icon left-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
-        <div class="open-tabs-container">
-            <div
-                class="open-tabs"
-                @click.stop="openPage(item)"
-                :class="[currComponent == item ? 'curr' : '']"
-                v-for="(item, index) in openTabsRef"
-                :key="index"
-                :style="{'--tabBgColor':getDotColor(item)}"
-            >
-                <span class="tab-dot"></span>
-                <span class="tab-name">{{makeTabName(item)}}</span>
-                <icon-font
-                    v-if="menuNameBaseMapRef.has(item) && menuNameBaseMapRef.get(item).can_close_tab"
-                    class="close-tab-icon"
-                    @click.stop="closePage(item)"
-                    :iconFlag="'cigoadmin-icon-shanchu'"
-                ></icon-font>
-            </div>
+<div class="cigo-open-pages">
+    <cigo-icon-font class="more-icon left-more" :name="'cigoadmin-icon-zuo'"></cigo-icon-font>
+    <div class="open-tabs-container">
+        <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
+            <span class="tab-dot"></span>
+            <span class="tab-name">{{makeTabName(item)}}</span>
+            <cigo-icon-font v-if="menuNameBaseMapRef.has(item) && !menuNameBaseMapRef.get(item).can_not_close_opentab" class="close-tab-icon" @click.stop="closePage(item)" :name="'cigoadmin-icon-shanchu'"></cigo-icon-font>
         </div>
-        <icon-font class="more-icon right-more" :iconFlag="'cigoadmin-icon-zuo'"></icon-font>
     </div>
+    <cigo-icon-font class="more-icon right-more" :name="'cigoadmin-icon-zuo'"></cigo-icon-font>
+</div>
 </template>
 
 <script lang="ts">
@@ -35,16 +23,23 @@ import {
     toRef,
     watch
 } from "vue";
-import IconFont from "@/components/cigo-admin-core/other/IconFont.vue";
-import { State, systemStore } from "@/store";
-import { SystemState } from "../utils/types";
-import { showPage } from "../utils/common";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
+import {
+    State,
+    systemStore
+} from "@/store";
+import {
+    SystemState
+} from "../utils/types";
+import {
+    showPage
+} from "../utils/common";
 
 //TODO 继续优化
 export default defineComponent({
     name: "CigoOpenPages",
     components: {
-        IconFont
+        CigoIconFont
     },
     setup() {
         let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");

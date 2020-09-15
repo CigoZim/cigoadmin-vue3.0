@@ -137,7 +137,7 @@ class Store {
 		let openTabs = toRaw(this.state.openTabs);
 		if (
 			componentName &&
-			!component.type.notShowTab && //TIPS_FLAG
+			!component.type.notRecordOpentabs && //TIPS_FLAG
 			openTabs.indexOf(componentName) === -1
 		) {
 			this.state.openTabs = [...openTabs, componentName];
@@ -168,7 +168,7 @@ class Store {
 		pageItem: Menu,
 		baseList: Map<string, Menu>
 	): void {
-		if (pageItem && !pageItem.can_close_tab) {
+		if (pageItem && pageItem.can_not_close_opentab) {
 			cigoLayer.msg("当前页面不可关闭");
 			return;
 		}

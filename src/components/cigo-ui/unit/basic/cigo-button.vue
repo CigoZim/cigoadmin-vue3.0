@@ -1,22 +1,24 @@
 <template>
-    <div class="cigo-button-component">
+<div class="cigo-button-component">
+    <slot></slot>
+    <cigo-icon-font class="cigo-button-icon-left" :name="icon"></cigo-icon-font>
+    <span class="cigo-button-label">
         <slot></slot>
-        <icon-font class="cigo-button-icon-left" :iconFlag="icon"></icon-font>
-        <span class="cigo-button-label">
-            <slot></slot>
-        </span>
-        <icon-font class="cigo-button-icon-right" :iconFlag="icon"></icon-font>
-    </div>
+    </span>
+    <cigo-icon-font class="cigo-button-icon-right" :name="icon"></cigo-icon-font>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import IconFont from "@/components/cigo-admin-core/other/IconFont.vue";
+import {
+    defineComponent
+} from "vue";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 
 export default defineComponent({
     name: "CigoButton",
     components: {
-        IconFont
+        CigoIconFont
     },
     props: {
         icon: {

@@ -1,8 +1,16 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
-    <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
-    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
-        <component :is="componentRaw" :data="data" @notify="notify" @close="delayHide" />
+<div :id="'cigo-confirm-'+layerIndex" class="cigo-confirm">
+    <cigo-mask :id="'confirm-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
+    <div :id="'confirm-content-'+layerIndex" class="cigo-confirm-content">
+        <div class="title-area">
+            <span>{{title}}</span>
+        </div>
+        <div class="content-area">
+            <span>{{msg}}</span>
+        </div>
+        <div class="btn-area">
+            <a-button type="primary" size="small" @click.stop="delayHide">确 定</a-button>
+        </div>
     </div>
 </div>
 </template>
@@ -12,9 +20,7 @@ import {
     defineComponent,
     ref,
     onMounted,
-    reactive,
-    markRaw,
-    computed
+    reactive
 } from "vue";
 import CigoMask from "./mask.vue";
 import cigoLayer from "@/components/cigo-layer/index";
@@ -23,49 +29,42 @@ import {
 } from "gsap";
 
 export default defineComponent({
-    name: "CigoPopWindow",
+    name: "CigoConfirm",
     props: {
         layerIndex: {
             type: Number,
             default: ""
         },
-        component: {
-            type: Object,
-            default: {}
-        },
         width: {
             type: String,
-            default: "500px"
+            default: "300px"
         },
         height: {
             type: String,
-            default: "400px"
+            default: "170px"
         },
-        data: {
-            type: Object,
-            default: {}
+        title: {
+            type: String,
+            default: "提 示"
         },
-        notify: {
-            type: Function,
-            default: () => {}
+        msg: {
+            type: String,
+            default: ""
         }
     },
     components: {
         CigoMask
     },
     setup(props) {
-        let componentRaw = computed(() => {
-            return markRaw(props.component);
-        });
         onMounted(() => {
             delayShow();
         });
 
         const delayShow = () => {
-            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
+            TweenMax.to("#confirm-mask-" + props.layerIndex, 0.5, {
                 opacity: 0.6
             });
-            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
+            TweenMax.to("#confirm-content-" + props.layerIndex, 0.5, {
                 opacity: 1,
                 width: props.width,
                 height: props.height
@@ -73,10 +72,10 @@ export default defineComponent({
         };
 
         const delayHide = () => {
-            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
+            TweenMax.to("#confirm-mask-" + props.layerIndex, 0.5, {
                 opacity: 0
             });
-            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
+            TweenMax.to("#confirm-content-" + props.layerIndex, 0.5, {
                 opacity: 0,
                 width: "0px",
                 height: "0px",
@@ -90,7 +89,6 @@ export default defineComponent({
         };
 
         return {
-            componentRaw,
             clickMask,
             delayHide
         };
@@ -99,7 +97,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.cigo-pop-window {
+.cigo-confirm {
     width: 100vw;
     height: 100vh;
     opacity: 1;
@@ -112,14 +110,40 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
 
-    .cigo-pop-window-content {
+    .cigo-confirm-content {
         position: relative;
         width: 0px;
         height: 0px;
         opacity: 0;
         display: flex;
+        flex-direction: column;
         border-radius: 8px;
         background-color: #fff;
+        padding: 8px 0px;
+        overflow: hidden;
+
+        .title-area {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .content-area {
+            padding: 20px 12px;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+
+        .btn-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 15px 12px;
+            border-top: 1px solid #f0f0f0;
+        }
     }
 }
 </style>

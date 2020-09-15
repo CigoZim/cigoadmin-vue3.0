@@ -127,11 +127,6 @@ export default defineComponent({
                 width: "150px"
             },
             {
-                title: "组件显示名称",
-                dataIndex: "component_label",
-                width: "150px"
-            },
-            {
                 title: "分组",
                 dataIndex: "group",
                 width: "100px"
@@ -219,18 +214,23 @@ export default defineComponent({
 
         const ctrlAddSub = (menu: Menu) => {
             console.log("ctrlAddSub", menu);
+            cigoLayer.confirm("确认操作");
         };
         const ctrlView = (menu: Menu) => {
             console.log("ctrlView", menu);
+            cigoLayer.confirm({
+                title: "确认提示",
+                msg: "我是提示内容"
+            });
         };
 
         const ctrlNew = () => {
             cigoLayer.window({
                 component: EditRule,
-                width: "600px",
-                height: "500px",
+                width: "800px",
+                height: "600px",
                 data: {
-                    mode: "add"
+                    title: "添加节点"
                 },
                 notify: (flag: string, data: object) => {
                     console.log(flag, data);

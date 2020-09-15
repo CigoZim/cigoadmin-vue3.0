@@ -44,9 +44,9 @@ export interface Menu {
 	target_type?: string;
 	url?: string;
 	component_name?: string;
-	component_label?: string;
-	can_close_tab?: boolean;
-	can_cache?: boolean;
+	can_not_close_opentab?: boolean;
+	can_not_record_opentab?: boolean;
+	can_not_cache?: boolean;
 	path?: string;
 	pid?: number;
 	group?: string;

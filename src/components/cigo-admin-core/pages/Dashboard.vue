@@ -15,7 +15,7 @@ import {
 
 export default defineComponent({
     name: "CigoDashboard",
-    notShowTab: false,
+    notRecordOpentabs: false,
     setup() {
         onMounted(() => {
             console.log("dashboard mounted");
