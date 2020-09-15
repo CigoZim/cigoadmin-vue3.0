@@ -60,6 +60,7 @@ export interface Menu {
 	//后端动态添加
 	group_flag?: string;
 	// 前端动态添加
+	level?: number;
 	color?: string;
 }
 

@@ -28,8 +28,8 @@ import {
 export default defineComponent({
     name: "CigoBreadCrumb",
     setup() {
-        let menuIdBaseMapRef: any = inject("menuIdBaseMapRef");
-        let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");
+        let menuBaseListIdMapRef: any = inject("menuBaseListIdMapRef");
+        let menuBaseListNameMapRef: any = inject("menuBaseListNameMapRef");
         let currComponent = toRef(
             systemStore.getState().systemState,
             "currComponent"
@@ -37,10 +37,10 @@ export default defineComponent({
         let breadCrumbList = computed(() => {
             let list: Menu[] = [];
             if (
-                menuNameBaseMapRef.value &&
-                menuNameBaseMapRef.value.has(currComponent.value)
+                menuBaseListNameMapRef.value &&
+                menuBaseListNameMapRef.value.has(currComponent.value)
             ) {
-                let currRuterItem = menuNameBaseMapRef.value.get(
+                let currRuterItem = menuBaseListNameMapRef.value.get(
                     currComponent.value
                 );
                 let ids = currRuterItem.path.split(",");
@@ -49,10 +49,12 @@ export default defineComponent({
                     if (
                         id != "" &&
                         id != "0" &&
-                        menuIdBaseMapRef.value &&
-                        menuIdBaseMapRef.value.has("id_" + id)
+                        menuBaseListIdMapRef.value &&
+                        menuBaseListIdMapRef.value.has("id_" + id)
                     ) {
-                        let menuItem = menuIdBaseMapRef.value.get("id_" + id);
+                        let menuItem = menuBaseListIdMapRef.value.get(
+                            "id_" + id
+                        );
                         if (menuItem) {
                             list = [...list, menuItem];
                         }

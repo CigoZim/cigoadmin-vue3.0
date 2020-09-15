@@ -16,3 +16,7 @@ p {
 	top: 0px;
 	z-index: 10000;
 }
+
+.ant-select-dropdown {
+	z-index: 11000;
+}

@@ -22,7 +22,7 @@
         </a-button-group>
     </div>
 
-    <a-table class="auth-rule-list" :rowKey="'id'" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuList" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
+    <a-table class="auth-rule-list" :rowKey="'id'" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
         <template v-slot:icon="{ txt, record }">
             <span v-if="txt"></span>
             <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
@@ -69,9 +69,12 @@
 import {
     defineComponent,
     inject,
+    isRef,
     markRaw,
     onMounted,
     ref,
+    toRaw,
+    unref,
     watch
 } from "vue";
 import {
@@ -87,7 +90,22 @@ export default defineComponent({
         CigoIconFont
     },
     setup(props, context) {
-        let menuList = inject("menuTreeListForEdit");
+        let menuTreeListForEditRef: any = inject("menuTreeListForEditRef");
+        let menuBaseListForEditRef: any = inject("menuBaseListForEditRef");
+        let menuBaseList: Menu[] = [];
+
+        //Tips_Flag 深刻理解ref、unref、reacte、toRaw、;、Proxy和RefImpl对象
+        watch(menuBaseListForEditRef, (newVal, preVal) => {
+            // console.log("newVal:", newVal); //新旧值都是Proxy对象
+            // console.log("preVal:", newVal);
+            // console.log("menuBaseListForEditRef:", menuBaseListForEditRef); //ref()出来的RefImpl
+            // console.log("menuBaseListForEditRef.value:", menuBaseListForEditRef.value); //Proxy对象，reacte出来的对象
+            // console.log("unref(menuBaseListForEditRef):", unref(menuBaseListForEditRef)); //unref是个获取ref中value的三元运算语法糖
+            // console.log("toRaw(menuBaseListForEditRef.value):", toRaw(menuBaseListForEditRef.value)); //还原Proxy对象
+            menuBaseList = [...toRaw(menuBaseListForEditRef.value)];
+            // console.log("menuBaseList:", menuBaseList);
+        });
+
         const columns = [{
                 title: "权限节点/菜单",
                 dataIndex: "title"
@@ -230,7 +248,8 @@ export default defineComponent({
                 width: "800px",
                 height: "600px",
                 data: {
-                    title: "添加节点"
+                    title: "添加节点",
+                    menuList: menuBaseList
                 },
                 notify: (flag: string, data: object) => {
                     console.log(flag, data);
@@ -247,7 +266,7 @@ export default defineComponent({
         };
 
         return {
-            menuList,
+            menuTreeListForEditRef,
             columns,
             menuType,
             menuTargetType,

@@ -7,7 +7,7 @@
                 <cigo-icon-font class="item-icon" v-if="!item.group_flag" :style="[item.color ? {color: item.color} : {}]" :name="item.icon"></cigo-icon-font>
             </div>
             <div class="item-right">
-                <span class="item-title" :class="[level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
+                <span class="item-title" :class="[item.level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
                 <label class="item-label" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
                 <cigo-icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :name="'cigoadmin-icon-expand'"></cigo-icon-font>
             </div>
@@ -73,7 +73,7 @@ export default defineComponent({
             "sideMenuOpen"
         );
         let titleGoneFlag = ref(false);
-        let menuNameBaseMapRef: any = inject("menuNameBaseMapRef");
+        let menuBaseListNameMapRef: any = inject("menuBaseListNameMapRef");
 
         onMounted(() => {
             menuChange(menuOpenFlag.value);
@@ -117,10 +117,10 @@ export default defineComponent({
         const makeMenuItemContainerClass = (item: Menu) => {
             let classes: string[] = [];
             classes.push(menuOpenFlag.value ? "menu-open" : "menu-close");
-            classes.push(props.level == 0 ? "first-level" : "");
+            classes.push(item.level == 0 ? "first-level" : "");
 
             //左侧栏开启状态：则处理一级菜单展开问题
-            if (menuOpenFlag.value && !item.group_flag && props.level == 0) {
+            if (menuOpenFlag.value && !item.group_flag && item.level == 0) {
                 let flag: string = "close";
                 //分析是否展开
                 switch (systemStore.getState().noCached.modeForMenuExpand) {
@@ -150,12 +150,12 @@ export default defineComponent({
         /** 跳转路由为主：处理 */
         const modeForMenuExpandNowRouter = (item: Menu): string => {
             if (
-                !menuNameBaseMapRef.value ||
-                !menuNameBaseMapRef.value.has(currComponent.value)
+                !menuBaseListNameMapRef.value ||
+                !menuBaseListNameMapRef.value.has(currComponent.value)
             ) {
                 return "close";
             }
-            let routerItem: Menu = menuNameBaseMapRef.value.get(
+            let routerItem: Menu = menuBaseListNameMapRef.value.get(
                 currComponent.value
             );
 
@@ -193,10 +193,10 @@ export default defineComponent({
 
                 //标记当前(根据菜单项级联路径，保证当前级联菜单项的所有父辈都能够高亮)
                 if (
-                    menuNameBaseMapRef.value &&
-                    menuNameBaseMapRef.value.has(currComponent.value)
+                    menuBaseListNameMapRef.value &&
+                    menuBaseListNameMapRef.value.has(currComponent.value)
                 ) {
-                    let nowItem: Menu = menuNameBaseMapRef.value.get(
+                    let nowItem: Menu = menuBaseListNameMapRef.value.get(
                         currComponent.value
                     );
                     if (item.id == nowItem.id) {
@@ -212,7 +212,7 @@ export default defineComponent({
                 }
             } else {
                 classes.push("menu-group");
-                if (props.level == 0 && titleGoneFlag.value) {
+                if (item.level == 0 && titleGoneFlag.value) {
                     classes.push("gone");
                 }
             }
@@ -227,7 +227,7 @@ export default defineComponent({
             }
 
             // 一级菜单&左边栏开启状态下记录点击菜单项
-            if (props.level == 0 && menuOpenFlag.value) {
+            if (item.level == 0 && menuOpenFlag.value) {
                 //记录有效点击菜单
                 recordClickMenu(item);
             }
@@ -254,7 +254,7 @@ export default defineComponent({
 
         /** 鼠标滑入/滑出菜单项 */
         const hoverMenuItem = (item: Menu, inOutFlag: boolean) => {
-            if (props.level == 0 && menuOpenFlag.value) {
+            if (item.level == 0 && menuOpenFlag.value) {
                 return;
             }
             subMenuListAnimation(item, inOutFlag);
@@ -269,6 +269,7 @@ export default defineComponent({
                 subMenuListAnimation(preMenu, false);
             }
         });
+        //TODO 优化菜单管理，level的使用：是用item.level还是props.level
         const subMenuListAnimation = (item: Menu, openFlag: boolean) => {
             if (!item.subList || !item.subList.length) {
                 return;

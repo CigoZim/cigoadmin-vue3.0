@@ -5,6 +5,11 @@
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-form-item label="父级节点：" name="pid">
+                <a-select v-model:value="formData.pid" show-search placeholder="请选择父级节点" not-found-content="当前无父级节点" option-filter-prop="children" :filter-option="filterParentMenuOption" @change="handleParentMenuChange">
+                    <a-select-option v-for="(item,index) in menuList" :key="index" :value="item.id">{{item.title}}</a-select-option>
+                </a-select>
+            </a-form-item>
             <a-form-item label="菜单名：" name="title" v-bind="validateInfos.title">
                 <a-input v-model:value="formData.title" placeholder="请输入菜单名" />
             </a-form-item>
@@ -21,18 +26,18 @@
             <a-form-item label="路由：" name="url">
                 <a-input v-model:value="formData.url" placeholder="请设置路由" />
             </a-form-item>
-            <a-form-item label="排序：" name="sort">
+            <a-form-item label="节点排序：" name="sort">
                 <a-input v-model:value="formData.sort" placeholder="请设置排序" />
             </a-form-item>
-        </a-form>
-        <div class="line"></div>
-        <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="菜单分组：" name="group">
                 <a-input v-model:value="formData.group" placeholder="请设置分组" />
             </a-form-item>
             <a-form-item label="分组排序：" name="group_sort">
                 <a-input v-model:value="formData.group_sort" placeholder="请设置分组排序" />
             </a-form-item>
+        </a-form>
+        <div class="line"></div>
+        <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="节点类型" name="type">
                 <a-radio-group v-model:value="formData.type">
                     <a-radio value="0">菜单</a-radio>
@@ -95,10 +100,13 @@ import {
 } from "lodash";
 import {
     defineComponent,
+    onMounted,
     reactive,
+    ref,
     toRaw,
     toRef,
     toRefs,
+    unref,
     watch
 } from "vue";
 export default defineComponent({
@@ -113,6 +121,9 @@ export default defineComponent({
         }
     },
     setup(props, ctx) {
+        let menuList = [...props.data.menuList];
+        console.log(menuList);
+
         let dataRef = reactive(props.data);
         let formData = reactive({
             type: 0, //节点类型（0-系统菜单；1-权限节点非菜单；2-按钮）
@@ -148,6 +159,19 @@ export default defineComponent({
             validateInfos,
             mergeValidateInfo
         } = useForm(formData, formItemRules);
+        const filterParentMenuOption = (inputVal: string, option: any) => {
+            console.log("inputVal:", inputVal);
+
+            return (
+                option.props.value
+                .toLowerCase()
+                .indexOf(inputVal.toLowerCase()) >= 0
+            );
+        };
+        const handleParentMenuChange = (value: any, option: any) => {
+            console.log("value:", value);
+            console.log("option:", option);
+        };
 
         const doAdd = (e: any) => {
             e.preventDefault();
@@ -176,6 +200,7 @@ export default defineComponent({
         };
 
         return {
+            menuList,
             labelCol: {
                 span: 6
             },
@@ -186,6 +211,8 @@ export default defineComponent({
             formData,
             bindIcon,
             validateInfos,
+            filterParentMenuOption,
+            handleParentMenuChange,
             doAdd,
             cancel
         };
@@ -203,12 +230,13 @@ export default defineComponent({
     .title-area {
         background-color: #f5f5f5;
         border-bottom: 1px solid #f0f0f0;
-        padding: 8px 12px;
+        padding: 15px 12px;
         display: flex;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
         flex-direction: row;
         justify-content: center;
+        font-size: 16px;
     }
 
     .content-area {
