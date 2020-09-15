@@ -23,8 +23,8 @@
             <a-form-item label="菜单名：" name="title" v-bind="validateInfos.title">
                 <a-input v-model:value="formData.title" placeholder="请输入菜单名" />
             </a-form-item>
-            <a-form-item label="组件名：" name="component_name">
-                <a-input v-model:value="formData.component_name" placeholder="请填写组件名" />
+            <a-form-item label="组件名：" name="component_name" v-bind="validateInfos.component_name">
+                <a-input v-model:value="formData.component_name" placeholder="请配置唯一组件/节点名" />
             </a-form-item>
             <a-form-item label="图标：" name="icon">
                 <a-input v-model:value="formData.icon" placeholder="请设置图标">
@@ -101,6 +101,9 @@ import {
     apiSign
 } from "@/common/http";
 import {
+    frameTrans
+} from "@/components/cigo-admin-core/utils/trans";
+import {
     Menu
 } from "@/components/cigo-admin-core/utils/types";
 import cigoLayer from "@/components/cigo-layer";
@@ -167,6 +170,10 @@ export default defineComponent({
             url: [{
                 required: true,
                 message: "请配置路由"
+            }],
+            component_name: [{
+                required: true,
+                message: "请配置唯一组件/节点名"
             }]
         });
         const {
@@ -200,7 +207,12 @@ export default defineComponent({
                             headers: apiSign(params)
                         })
                         .then(response => {
-                            cigoLayer.msg("添加");
+                            //通知刷新菜单
+                            frameTrans.notifyRefreshMenu();
+
+                            //提示及关闭窗口
+                            cigoLayer.msg("添加完成");
+                            // ctx.emit("close");
                         })
                         .catch(apiErrorCatch.v1);
                 })

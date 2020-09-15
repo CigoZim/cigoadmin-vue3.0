@@ -15,6 +15,7 @@ import {
     onBeforeMount,
     provide,
     ref,
+    toRef,
     watch
 } from "vue";
 
@@ -35,6 +36,10 @@ import {
 import {
     makeRandomColor
 } from "./utils/common";
+import {
+    TransStatus,
+    frameTrans
+} from "@/components/cigo-admin-core/utils/trans";
 
 export default defineComponent({
     name: "CigoFrame",
@@ -62,6 +67,16 @@ export default defineComponent({
         provide("menuBaseListIdMapRef", menuBaseListIdMapRef);
 
         onBeforeMount(() => {
+            getMenuList();
+        });
+        let refreshMenuRef = toRef(
+            frameTrans.getTransStatus(),
+            "refreshMenuTrans"
+        );
+
+        watch(refreshMenuRef, (newVal, preVal) => {
+            console.log("newVal:", newVal, "preVal:", preVal);
+
             getMenuList();
         });
 
