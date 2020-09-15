@@ -1,5 +1,8 @@
 module.exports = {
 	lintOnSave: false,
+	publicPath: '/',
+	outputDir: 'dist',
+	assetsDir: './admin/',
 	devServer: {
 		disableHostCheck: true,
 		// proxy: {

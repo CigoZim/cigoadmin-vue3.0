@@ -41,6 +41,10 @@ export default defineComponent({
             type: String,
             default: "400px"
         },
+        maskClose: {
+            type: Boolean,
+            default: true
+        },
         data: {
             type: Object,
             default: {}
@@ -86,7 +90,7 @@ export default defineComponent({
             });
         };
         const clickMask = () => {
-            delayHide();
+            props.maskClose && delayHide(); //Tips_Flag &&创新用法
         };
 
         return {

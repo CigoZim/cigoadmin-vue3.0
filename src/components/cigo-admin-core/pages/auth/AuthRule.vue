@@ -248,6 +248,7 @@ export default defineComponent({
                 component: EditRule,
                 width: "800px",
                 height: "600px",
+                maskClose: false,
                 data: {
                     title: "添加节点",
                     menuList: menuBaseList

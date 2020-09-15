@@ -83,6 +83,7 @@
             <a-form-item label="说明：" name="summary">
                 <a-textarea v-model:value="formData.summary" />
             </a-form-item>
+            <a-form-item v-bind="errorInfos"></a-form-item>
         </a-form>
     </div>
     <div class="btn-area">
@@ -209,6 +210,12 @@ export default defineComponent({
                 });
         };
 
+        const errorInfos = computed(() => {
+            console.log("11111");
+
+            return mergeValidateInfo(...toArray(validateInfos));
+        });
+
         const cancel = () => {
             console.log("取消");
             ctx.emit("close");
@@ -226,6 +233,7 @@ export default defineComponent({
             formData,
             bindIcon,
             validateInfos,
+            errorInfos,
             filterParentMenuOption,
             handleParentMenuChange,
             doAdd,
