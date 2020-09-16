@@ -39,3 +39,14 @@ yarn test:unit
 ```
 yarn lint
 ```
+
+# 鸣谢
+
+## Vue v3.0
+
+- https://v3.vuejs.org
+- https://vue-composition-api-rfc.netlify.app
+
+## AntDesign v2.0(基于 vue3.0)
+
+- https://2x.antdv.com/
