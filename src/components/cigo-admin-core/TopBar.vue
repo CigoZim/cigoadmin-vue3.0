@@ -81,7 +81,7 @@ export default defineComponent({
                 transition: all 0.8s ease-in-out;
             }
 
-            .left-menu-toggle-icon.close {
+            .left-menu-toggle-icon.open {
                 -moz-transform: rotate(900deg);
                 -webkit-transform: rotate(900deg);
                 -o-transform: rotate(900deg);
