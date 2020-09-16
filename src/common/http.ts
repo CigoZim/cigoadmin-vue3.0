@@ -5,11 +5,7 @@ import cigoLayer from "@/components/cigo-layer/index";
 /**
  * 相关域名
  */
-export const enum Domain {
-	apiDomain = "http://api-admin.cigoos.cn",
-	cdnOpen = "http://cdn-open.cigoadmin.com",
-	cdnOpenIcon = "http://cdn-open.cigoadmin.com/icon/",
-}
+export const apiDomain = process.env.VUE_APP_API_DOMAIN;
 export const enum bucket {
 	open = "cigoadmin-open",
 	img = "cigoadmin-img",
@@ -19,7 +15,7 @@ export const enum bucket {
 // 网络请求
 export const apiRequest = {
 	v1: Axios.create({
-		baseURL: Domain.apiDomain + "/v1",
+		baseURL: apiDomain + "/v1",
 	}),
 };
 export const apiErrorCatch = {

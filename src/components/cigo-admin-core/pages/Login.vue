@@ -43,7 +43,6 @@ import {
 } from "vue";
 
 import {
-    Domain,
     apiRequest,
     apiSign,
     apiErrorCatch

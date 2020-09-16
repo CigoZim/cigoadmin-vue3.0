@@ -6,7 +6,7 @@
             <span>我是右侧面板</span>
         </div>
         <div class="right-panel-toggle" :class="[openClass]" @click.stop="systemStore.toggleRightPanel()" @mouseenter="hover(true)" @mouseleave="hover(false)">
-            <img class="right-panel-toggle-icon" :src="panelOpenFlag ? cdnOpenIcon + '/setting.png' : cdnOpenIcon + '/setting-white.png'" />
+            <cigo-icon-font class="right-panel-toggle-icon" :class="[panelOpenFlag ? 'open' : 'close']" :name="'cigoadmin-icon-185094settingsstreamline'"></cigo-icon-font>
         </div>
     </div>
 </div>
@@ -21,10 +21,7 @@ import {
     watch,
     ref
 } from "vue";
-
-import {
-    Domain
-} from "@/common/http";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import {
     systemStore
 } from "@/store/index";
@@ -34,6 +31,9 @@ import {
 
 export default defineComponent({
     name: "RightPanel",
+    components: {
+        CigoIconFont
+    },
     setup(props) {
         let openClass = ref("close");
         let panelOpenFlag = toRef(
@@ -111,7 +111,6 @@ export default defineComponent({
         };
 
         return {
-            cdnOpenIcon: Domain.cdnOpenIcon,
             systemStore,
             hover,
             openClass,
@@ -171,6 +170,11 @@ export default defineComponent({
                 height: 20px;
                 align-self: center;
                 margin-left: 7px;
+                color: #6b9afa;
+            }
+
+            .right-panel-toggle-icon.close {
+                color: #fff;
             }
         }
 

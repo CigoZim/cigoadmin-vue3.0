@@ -1,38 +1,37 @@
 <template>
-    <div class="cigo-top-bar">
-        <div class="top-bar-top">
-            <div class="top-bar-top-left">
-                <img
-                    class="left-menu-toggle-icon"
-                    :class="[sideMenuOpen?'open':'close']"
-                    @click="systemStore.toggleSideMenu()"
-                    :src="cdnOpenIcon + '/menu-close.png'"
-                />
-                <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
-            </div>
-            <div class="top-bar-top-right">
-                <tools-bar class="top-bar-tools-bar"></tools-bar>
-                <manager-icon class="top-bar-manager-icon"></manager-icon>
-            </div>
+<div class="cigo-top-bar">
+    <div class="top-bar-top">
+        <div class="top-bar-top-left">
+            <cigo-icon-font class="left-menu-toggle-icon" :class="[sideMenuOpen ? 'open' : 'close']" @click="systemStore.toggleSideMenu()" :name="'cigoadmin-icon-menufold'"></cigo-icon-font>
+            <bread-crumb class="top-bar-bread-crumb"></bread-crumb>
         </div>
-        <open-pages class="top-bar-open-pages"></open-pages>
+        <div class="top-bar-top-right">
+            <tools-bar class="top-bar-tools-bar"></tools-bar>
+            <manager-icon class="top-bar-manager-icon"></manager-icon>
+        </div>
     </div>
+    <open-pages class="top-bar-open-pages"></open-pages>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from "vue";
-
+import {
+    defineComponent,
+    toRefs
+} from "vue";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import BreadCrumb from "@/components/cigo-admin-core/topBar/BreadCrumb.vue";
 import ToolsBar from "@/components/cigo-admin-core/topBar/ToolsBar.vue";
 import ManagerIcon from "@/components/cigo-admin-core/topBar/ManagerIcon.vue";
 import OpenPages from "@/components/cigo-admin-core/topBar/OpenPages.vue";
-
-import { Domain } from "@/common/http";
-import { systemStore } from "@/store/index";
+import {
+    systemStore
+} from "@/store/index";
 
 export default defineComponent({
     name: "CigoTopBar",
     components: {
+        CigoIconFont,
         BreadCrumb,
         ToolsBar,
         ManagerIcon,
@@ -40,7 +39,6 @@ export default defineComponent({
     },
     setup(props) {
         return {
-            cdnOpenIcon: Domain.cdnOpenIcon,
             systemStore,
             ...toRefs(systemStore.getState().systemState)
         };

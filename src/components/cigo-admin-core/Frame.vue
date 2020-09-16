@@ -27,8 +27,7 @@ import RightPanel from "./RightPanel.vue";
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign,
-    Domain
+    apiSign
 } from "@/common/http";
 import {
     Menu
