@@ -1,5 +1,6 @@
 import {
 	createRouter,
+	createWebHashHistory,
 	createWebHistory,
 	ErrorHandler,
 	RouteRecordRaw,
@@ -27,7 +28,9 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-	history: createWebHistory(process.env.BASE_URL),
+	//Tips_Flag 两种路由mode，hash和history
+	// history: createWebHistory(process.env.BASE_URL),
+	history: createWebHashHistory(process.env.BASE_URL),
 	routes,
 });
 

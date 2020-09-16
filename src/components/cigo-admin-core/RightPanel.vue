@@ -166,10 +166,10 @@ export default defineComponent({
             border-bottom-left-radius: 20px;
 
             .right-panel-toggle-icon {
-                width: 20px;
-                height: 20px;
+                width: 17px;
+                height: 17px;
                 align-self: center;
-                margin-left: 7px;
+                margin-left: 8px;
                 color: #6b9afa;
             }
 
