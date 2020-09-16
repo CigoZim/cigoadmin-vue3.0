@@ -83,6 +83,14 @@ import {
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import cigoLayer from "@/components/cigo-layer";
 import EditRule from "@/components/cigo-admin-core/pages/auth/auth-rule/EditRule.vue";
+import {
+    apiErrorCatch,
+    apiRequest,
+    apiSign
+} from "@/common/http";
+import {
+    frameTrans
+} from "../../utils/trans";
 
 export default defineComponent({
     name: "CigoAuthRule",
@@ -226,20 +234,59 @@ export default defineComponent({
             }
         };
 
+        const statusAuth = (id: number, status: number) => {
+            let params = toRaw({
+                id: id,
+                status: status
+            });
+            apiRequest.v1
+                .post("/statusRule", params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    //TODO 优化速度
+                    //通知刷新菜单
+                    frameTrans.notifyRefreshMenu();
+                    //提示
+                    cigoLayer.msg(response.data.msg);
+                })
+                .catch(apiErrorCatch.v1);
+        };
+
         const ctrlStatus = (menu: Menu) => {
-            console.log("ctrlStatus:", menu);
-            cigoLayer.msg("我来测试弹出消息");
+            statusAuth(menu.id, menu.status == 0 ? 1 : 0);
         };
 
         const ctrlAddSub = (menu: Menu) => {
-            console.log("ctrlAddSub", menu);
-            cigoLayer.confirm("确认操作");
+            cigoLayer.window({
+                component: EditRule,
+                width: "800px",
+                height: "600px",
+                maskClose: false,
+                data: {
+                    title: "添加节点",
+                    menuList: menuBaseList,
+                    menuParent: menu
+                },
+                notify: (flag: string, data: object) => {
+                    console.log(flag, data);
+                }
+            });
         };
         const ctrlView = (menu: Menu) => {
-            console.log("ctrlView", menu);
-            cigoLayer.confirm({
-                title: "确认提示",
-                msg: "我是提示内容"
+            cigoLayer.window({
+                component: EditRule,
+                width: "800px",
+                height: "600px",
+                data: {
+                    title: "查看节点",
+                    menuList: menuBaseList,
+                    menuCurr: menu,
+                    viewFlag: true
+                },
+                notify: (flag: string, data: object) => {
+                    console.log(flag, data);
+                }
             });
         };
 
@@ -260,11 +307,25 @@ export default defineComponent({
         };
 
         const ctrlEdit = (menu: Menu) => {
-            console.log("ctrlView", menu);
+            cigoLayer.window({
+                component: EditRule,
+                width: "800px",
+                height: "600px",
+                maskClose: false,
+                data: {
+                    title: "修改节点",
+                    menuList: menuBaseList,
+                    menuCurr: menu
+                },
+                notify: (flag: string, data: object) => {
+                    console.log(flag, data);
+                }
+            });
         };
 
         const ctrlDelete = (menu: Menu) => {
-            console.log("ctrlDelete", menu);
+            //TODO 确认框
+            statusAuth(menu.id, -1);
         };
 
         return {

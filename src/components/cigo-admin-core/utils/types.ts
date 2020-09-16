@@ -36,7 +36,7 @@ export interface LoginUserInfo {
  */
 export interface Menu {
 	// 默认属性
-	id?: number;
+	id: number;
 	title: string;
 	icon?: string;
 	subList?: Menu[];

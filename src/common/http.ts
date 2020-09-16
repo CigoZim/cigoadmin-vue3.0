@@ -81,6 +81,9 @@ export const enum ApiErrorCode {
 
 	// 服务器错误
 	ServerError_AliCloudSendMsg = "20001", // 阿里短信发送错误
+	ServerError_PATH_AUTH = 20002, // 服务器目录权限问题
+	ServerError_DB_ERROR = 20003, // 服务器数据库错误
+	ServerError_OTHER_ERROR = 20004, // 服务器其它错误
 	// 客户端错误
 	ClientError_ArgsWrong = "30001", // 参数错误
 	ClientError_TokenError = "30002", // Token无效
