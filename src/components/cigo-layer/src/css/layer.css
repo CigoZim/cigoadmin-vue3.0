@@ -1,0 +1,22 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+p {
+	margin: 0px;
+}
+
+.cigo-layer-item {
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #2c3e50;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	z-index: 10000;
+}
+
+.ant-select-dropdown {
+	z-index: 11000;
+}
