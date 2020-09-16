@@ -6,9 +6,9 @@
 
 - https://www.cigoadmin.com
 
-### admin
+- 账号：admin
 
-### 123456
+- 密码：123456
 
 ## Project setup
 
