@@ -1,29 +1,30 @@
-# cigoadmin-front-rear
+# CigoAdmin-Vue3.0
 
-## Project setup
+## 西谷后台-前端仓库（基于 Vue3.0）
+
+## 演示地址：
+
+- https://www.cigoadmin.com
+
+- 账号：admin
+
+- 密码：123456
+
+## 项目运行及打包
+
 ```
 yarn install
-```
-
-### Compiles and hot-reloads for development
-```
 yarn serve
-```
-
-### Compiles and minifies for production
-```
 yarn build
 ```
 
-### Run your unit tests
-```
-yarn test:unit
-```
+# 鸣谢
 
-### Lints and fixes files
-```
-yarn lint
-```
+### Vue v3.0
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- https://v3.vuejs.org
+- https://vue-composition-api-rfc.netlify.app
+
+### AntDesign v2.0(基于 vue3.0)
+
+- https://2x.antdv.com/
