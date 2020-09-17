@@ -22,34 +22,15 @@ export default defineComponent({
             type: String,
             default: ""
         },
-        bindIcon: {
-            type: Function
-        },
         color: {
             type: String,
             default: "#ffffff"
         }
     },
     setup(props) {
-        let iconName = ref("");
-        let iconRef: any;
-        onMounted(() => {
-            if (props.bindIcon) {
-                iconRef = props.bindIcon(); //Tips_FLAG 父变子变示例2/3：props绑定函数传入ref响应式对象 注：还剩一种父级主动调用子级函数式
-                iconName.value = `#${iconRef.value}`;
-                watch(iconRef, (newVal, preVal) => {
-                    iconName.value = `#${iconRef.value}`;
-                });
-                //TODO 此处computed不好使
-                // computed(() => {
-                //     console.log("1111");
-                //     return iconRef.value;
-                // });
-            } else {
-                iconName.value = `#${props.name}`;
-            }
+        let iconName = computed(() => {
+            return `#${props.name}`;
         });
-
         return {
             iconName
         };

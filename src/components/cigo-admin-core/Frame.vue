@@ -74,8 +74,6 @@ export default defineComponent({
         );
 
         watch(refreshMenuRef, (newVal, preVal) => {
-            console.log("newVal:", newVal, "preVal:", preVal);
-
             getMenuList();
         });
 
@@ -87,12 +85,14 @@ export default defineComponent({
                 })
                 .then(response => {
                     //初始化层级菜单数据
-                    let treeList: Menu[] = response.data.data;
+                    let srcTreeList: Menu[] = response.data.data;
+                    let treeList: Menu[] = [];
                     let treeListForEdit: Menu[] = [];
                     let baseListForEdit: Menu[] = [];
                     let idMap = new Map();
                     let nameMap = new Map();
                     initTreeMenuList(
+                        srcTreeList,
                         treeList,
                         baseListForEdit,
                         treeListForEdit,
@@ -111,14 +111,15 @@ export default defineComponent({
         };
 
         const initTreeMenuList = (
-            list: Menu[],
+            srcTreeList: Menu[],
+            treeList: Menu[] | null,
             baseListForEdit: Menu[],
             treeListForEdit: Menu[],
             idMap: Map < string, Menu > ,
             nameMap: Map < string, Menu > ,
             level: number
         ) => {
-            list.every((item: Menu, index: number, arr) => {
+            srcTreeList.every((item: Menu, index: number, arr) => {
                 /** 创建动态颜色 */
                 item.color = makeRandomColor(1, 100, 250);
 
@@ -137,6 +138,10 @@ export default defineComponent({
                 }
 
                 /** 同步编辑菜单数据 */
+                let itemForTree: Menu = {
+                    id: 0,
+                    title: ""
+                };
                 let itemForBase: Menu = {
                     id: 0,
                     title: ""
@@ -147,23 +152,31 @@ export default defineComponent({
                 };
                 //添加当前菜单项
                 if (!item.group_flag) {
-                    //编辑基础菜单数组
+                    //左侧sider级联菜单数据
+                    if (treeList && item.status) {
+                        Object.assign(itemForTree, item);
+                        delete itemForTree.subList; //避免空数组字段出现
+                        treeList.push(itemForTree);
+                    }
+                    //编辑页面基础菜单数组
                     Object.assign(itemForBase, item); //Tips_Flag 知识点：深拷贝vs浅拷贝
                     delete itemForBase.subList; //避免空数组字段出现
                     baseListForEdit.push(itemForBase);
                     idMap.set("id_" + itemForBase.id, itemForBase);
                     if (itemForBase.component_name)
                         nameMap.set(itemForBase.component_name, itemForBase);
-                    //编辑级联菜单数组
+                    //编辑页面级联菜单数组
                     Object.assign(itemForEdit, item);
                     delete itemForEdit.subList; //避免空数组字段出现
                     treeListForEdit.push(itemForEdit);
                 }
                 //处理子级
                 if (item.subList && item.subList.length) {
+                    itemForTree.id ? (itemForTree.subList = []) : false;
                     itemForEdit.subList = [];
                     initTreeMenuList(
                         item.subList,
+                        itemForTree.subList ? itemForTree.subList : null,
                         baseListForEdit,
                         itemForEdit.subList,
                         idMap,

@@ -39,7 +39,8 @@ import {
     onMounted,
     readonly,
     toRaw,
-    onUnmounted
+    onUnmounted,
+    computed
 } from "vue";
 
 import {
@@ -125,9 +126,6 @@ export default defineComponent({
                 })
                 .catch(err => {
                     console.log("error", err);
-                    let help: any = mergeValidateInfo(...toArray(validateInfos))
-                        .help;
-                    cigoLayer.msg(help);
                 });
         };
 

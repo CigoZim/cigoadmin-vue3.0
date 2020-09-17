@@ -29,7 +29,7 @@
             <a-form-item label="图标：" name="icon">
                 <a-input v-model:value="formData.icon" placeholder="请设置图标" :disabled="dataRef.viewFlag">
                     <template v-slot:suffix>
-                        <cigo-icon-font class="btn-icon" :bindIcon="bindIcon" :color="'blue'"></cigo-icon-font>
+                        <cigo-icon-font class="btn-icon" :name="formData.icon" :color="'blue'"></cigo-icon-font>
                     </template>
                 </a-input>
             </a-form-item>
@@ -178,10 +178,6 @@ export default defineComponent({
             group_sort: dataRef.menuCurr ? dataRef.menuCurr.group_sort : 100,
             sort: dataRef.menuCurr ? dataRef.menuCurr.sort : 100
         });
-        let iconRef = toRef(formData, "icon");
-        const bindIcon = () => {
-            return iconRef;
-        };
         const formItemRules = reactive({
             title: [{
                 required: true,
@@ -282,7 +278,6 @@ export default defineComponent({
             },
             dataRef,
             formData,
-            bindIcon,
             validateInfos,
             filterParentMenuOption,
             handleParentMenuChange,

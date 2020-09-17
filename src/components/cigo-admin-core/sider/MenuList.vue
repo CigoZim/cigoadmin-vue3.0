@@ -8,7 +8,7 @@
             </div>
             <div class="item-right">
                 <span class="item-title" :class="[item.level==0 && !item.group_flag && titleGoneFlag ? 'gone' : '']">{{item.title}}</span>
-                <label class="item-label" :style="[item.color ? {backgroundColor: item.color} : {}]">22</label>
+                <label v-if="item.id%100" class="item-label" :style="[item.color ? {backgroundColor: item.color} : {}]">{{item.id%100}}</label>
                 <cigo-icon-font class="item-more" :class="[!item.group_flag && item.subList && item.subList.length ? 'show' : 'hide']" :name="'cigoadmin-icon-expand'"></cigo-icon-font>
             </div>
         </div>
