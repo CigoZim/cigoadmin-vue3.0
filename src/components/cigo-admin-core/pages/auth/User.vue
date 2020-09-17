@@ -1,6 +1,6 @@
 <template>
 <div class="cigo-user">
-    <span>用户管理1</span>
+    <span>用户管理2</span>
 </div>
 </template>
 
