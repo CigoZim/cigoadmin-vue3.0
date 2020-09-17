@@ -9,7 +9,6 @@ import PopWindow from "./pop-window.vue";
 import "ant-design-vue/dist/antd.css";
 import "../css/layer.css";
 import { isString } from "lodash";
-import { string } from "locutus/python";
 
 class CigoLayer {
 	private countFlag: number = 0;

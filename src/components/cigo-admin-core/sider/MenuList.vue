@@ -25,7 +25,9 @@ import {
     toRef,
     watch,
     onBeforeMount,
-    inject
+    inject,
+    onUpdated,
+    onBeforeUpdate
 } from "vue";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import {
@@ -59,6 +61,17 @@ export default defineComponent({
         }
     },
     setup(props) {
+        let menuTreeListRef: any = inject("menuTreeListRef"); //Tips_FLAG 父变子变示例1/3：provide & inject
+        onBeforeMount(() => {
+            if (props.level == 0) {
+                watch(menuTreeListRef, (newVal, preVal) => {
+                    expandMenuItem.value = {
+                        id: 0,
+                        title: ""
+                    };
+                });
+            }
+        });
         let currComponent = toRef(
             systemStore.getState().systemState,
             "currComponent"

@@ -127,7 +127,7 @@ import {
     watch
 } from "vue";
 export default defineComponent({
-    name: "EditRule",
+    name: "CigoEditManager",
     components: {
         CigoIconFont
     },

@@ -3,7 +3,7 @@
     <cigo-icon-font class="more-icon left-more" :name="'cigoadmin-icon-zuo'"></cigo-icon-font>
     <div class="open-tabs-container">
         <div class="open-tabs" @click.stop="openPage(item)" :class="[currComponent == item ? 'curr' : '']" v-for="(item, index) in openTabsRef" :key="index" :style="{'--tabBgColor':getDotColor(item)}">
-            <span class="tab-dot"></span>
+            <span class="tab-dot" :style="{'--dotBgColor':getDotColor(item)}"></span>
             <span class="tab-name">{{makeTabName(item)}}</span>
             <cigo-icon-font v-if="menuBaseListNameMapRef.has(item) && !menuBaseListNameMapRef.get(item).can_not_close_opentab" class="close-tab-icon" @click.stop="closePage(item)" :name="'cigoadmin-icon-shanchu'"></cigo-icon-font>
         </div>
@@ -178,7 +178,7 @@ export default defineComponent({
             opacity: 0.5;
 
             .tab-dot {
-                background-color: #fff;
+                background-color: var(--dotBgColor);
                 width: 0px;
                 height: 0px;
                 border-radius: 0px;
