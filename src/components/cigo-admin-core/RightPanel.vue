@@ -51,7 +51,7 @@ export default defineComponent({
 
         const hover = (flag: boolean) => {
             TweenMax.to(".right-panel-toggle", 0.5, {
-                left: flag ? "-27px" : "-9px",
+                left: flag ? "-30px" : "-9px",
                 opacity: flag ? 1 : 0.5
             });
         };
@@ -60,7 +60,7 @@ export default defineComponent({
             setTimeout(() => {
                 if (!panelOpenFlag.value) {
                     TweenMax.to(".right-panel-toggle", 0.8, {
-                        left: "-27px",
+                        left: "-30px",
                         opacity: 1,
                         onComplete: () => {
                             TweenMax.to(".right-panel-toggle", 0.8, {
@@ -155,7 +155,7 @@ export default defineComponent({
 
         .right-panel-toggle {
             cursor: pointer;
-            width: 27px;
+            width: 30px;
             height: 40px;
             position: absolute;
             align-self: center;
@@ -169,7 +169,7 @@ export default defineComponent({
                 width: 17px;
                 height: 17px;
                 align-self: center;
-                margin-left: 8px;
+                margin-left: 9px;
                 color: #6b9afa;
             }
 
@@ -180,7 +180,7 @@ export default defineComponent({
 
         .right-panel-toggle.open {
             background-color: #fff;
-            left: -27px !important;
+            left: -30px !important;
         }
     }
 }

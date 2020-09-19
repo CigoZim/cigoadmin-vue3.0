@@ -20,7 +20,11 @@ export const apiRequest = {
 };
 export const apiErrorCatch = {
 	v1: (error: any) => {
-		console.log("error:", error.response);
+		console.log("error:", error, error.response);
+		if (!error.response || !error.response.status) {
+			cigoLayer.msg("网络异常");
+			return;
+		}
 
 		let responseStatus = Math.floor(error.response.status / 100);
 

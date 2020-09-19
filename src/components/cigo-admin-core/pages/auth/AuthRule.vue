@@ -22,7 +22,7 @@
         </a-button-group>
     </div>
 
-    <a-table class="auth-rule-list" :rowKey="'id'" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
+    <a-table class="auth-rule-list" :rowKey="'id'" :locale="{emptyText:'暂无节点数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
         <template v-slot:icon="{ txt, record }">
             <span v-if="txt"></span>
             <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
@@ -38,7 +38,7 @@
         </template>
         <template v-slot:operation="{ txt, record }">
             <span v-if="txt"></span>
-            <a-button class="opt-btn" @click.stop="ctrlStatus(record)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-xinjianzixiang'" class="opt-icon opt-sub"></cigo-icon-font>
@@ -55,7 +55,7 @@
                     <cigo-icon-font :name="'cigoadmin-icon-bianji'" class="opt-icon opt-primary opt-edit"></cigo-icon-font>
                 </template>
             </a-button>
-            <a-button class="opt-btn" @click.stop="ctrlDelete(record)" type="danger" shape="circle" size="small" title="删除">
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, -1)" type="danger" shape="circle" size="small" title="删除">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-shanchu1'" class="opt-icon opt-primary opt-del"></cigo-icon-font>
                 </template>
@@ -100,8 +100,7 @@ export default defineComponent({
     setup(props, context) {
         let menuTreeListForEditRef: any = inject("menuTreeListForEditRef");
         let menuBaseListForEditRef: any = inject("menuBaseListForEditRef");
-        let menuBaseList: Menu[] = [];
-        menuBaseList = [...toRaw(menuBaseListForEditRef.value)];
+        let menuBaseList: Menu[] = [...toRaw(menuBaseListForEditRef.value)];
 
         //Tips_Flag 深刻理解ref、unref、reacte、toRaw、;、Proxy和RefImpl对象
         watch(menuBaseListForEditRef, (newVal, preVal) => {
@@ -234,9 +233,11 @@ export default defineComponent({
             }
         };
 
-        const statusAuth = (id: number, status: number) => {
+        const statusAuth = (id: number, status: number) => {};
+
+        const ctrlStatus = (menu: Menu, status: number) => {
             let params = toRaw({
-                id: id,
+                id: menu.id,
                 status: status
             });
             apiRequest.v1
@@ -244,17 +245,19 @@ export default defineComponent({
                     headers: apiSign(params)
                 })
                 .then(response => {
-                    //TODO 优化速度
-                    //通知刷新菜单
-                    frameTrans.notifyRefreshMenu();
+                    notify("refresh");
                     //提示
                     cigoLayer.msg(response.data.msg);
                 })
                 .catch(apiErrorCatch.v1);
         };
 
-        const ctrlStatus = (menu: Menu) => {
-            statusAuth(menu.id, menu.status == 0 ? 1 : 0);
+        const notify = (flag: string, data ? : object) => {
+            if (flag == "refresh") {
+                //TODO 优化速度
+                //通知刷新菜单
+                frameTrans.notifyRefreshMenu();
+            }
         };
 
         const ctrlAddSub = (menu: Menu) => {
@@ -263,14 +266,12 @@ export default defineComponent({
                 width: "800px",
                 height: "600px",
                 maskClose: false,
-                data: {
+                layerData: {
                     title: "添加节点",
                     menuList: menuBaseList,
                     menuParent: menu
                 },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
-                }
+                notify: notify
             });
         };
         const ctrlView = (menu: Menu) => {
@@ -278,14 +279,11 @@ export default defineComponent({
                 component: EditRule,
                 width: "800px",
                 height: "600px",
-                data: {
+                layerData: {
                     title: "查看节点",
                     menuList: menuBaseList,
                     menuCurr: menu,
                     viewFlag: true
-                },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
                 }
             });
         };
@@ -296,13 +294,11 @@ export default defineComponent({
                 width: "800px",
                 height: "600px",
                 maskClose: false,
-                data: {
+                layerData: {
                     title: "添加节点",
                     menuList: menuBaseList
                 },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
-                }
+                notify: notify
             });
         };
 
@@ -312,20 +308,13 @@ export default defineComponent({
                 width: "800px",
                 height: "600px",
                 maskClose: false,
-                data: {
+                layerData: {
                     title: "修改节点",
                     menuList: menuBaseList,
                     menuCurr: menu
                 },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
-                }
+                notify: notify
             });
-        };
-
-        const ctrlDelete = (menu: Menu) => {
-            //TODO 确认框
-            statusAuth(menu.id, -1);
         };
 
         return {
@@ -338,8 +327,7 @@ export default defineComponent({
             ctrlAddSub,
             ctrlNew,
             ctrlView,
-            ctrlEdit,
-            ctrlDelete
+            ctrlEdit
         };
     }
 });

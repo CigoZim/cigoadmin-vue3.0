@@ -10,7 +10,7 @@
             <a-button type="primary" @click.stop="ctrlNew">
                 <template v-slot:icon>
                     <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
-                </template>新建菜单/节点
+                </template>新建角色
             </a-button>
         </a-button-group>
         <a-button-group class="right">
@@ -22,29 +22,15 @@
         </a-button-group>
     </div>
 
-    <a-table class="auth-rule-list" :rowKey="'id'" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
-        <template v-slot:icon="{ txt, record }">
-            <span v-if="txt"></span>
-            <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
-        </template>
-        <template v-slot:type="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{menuType(record)}}</span>
-        </template>
-
-        <template v-slot:targetType="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{menuTargetType(record)}}</span>
-        </template>
+    <a-table class="auth-rule-group-list" :rowKey="'id'" :locale="{emptyText:'暂无角色数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="groupTreeListRef" :scroll="{ x: 1300 , y: 'max-content'}">
         <template v-slot:operation="{ txt, record }">
             <span v-if="txt"></span>
-            <a-button class="opt-btn" @click.stop="ctrlStatus(record)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-xinjianzixiang'" class="opt-icon opt-sub"></cigo-icon-font>
                 </template>
             </a-button>
-
             <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-liulan'" class="opt-icon opt-primary opt-view"></cigo-icon-font>
@@ -55,7 +41,7 @@
                     <cigo-icon-font :name="'cigoadmin-icon-bianji'" class="opt-icon opt-primary opt-edit"></cigo-icon-font>
                 </template>
             </a-button>
-            <a-button class="opt-btn" @click.stop="ctrlDelete(record)" type="danger" shape="circle" size="small" title="删除">
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, -1)" type="danger" shape="circle" size="small" title="删除">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-shanchu1'" class="opt-icon opt-primary opt-del"></cigo-icon-font>
                 </template>
@@ -71,13 +57,16 @@ import {
     inject,
     isRef,
     markRaw,
+    onBeforeMount,
     onMounted,
+    reactive,
     ref,
     toRaw,
     unref,
     watch
 } from "vue";
 import {
+    AuthGroup,
     Menu
 } from "@/components/cigo-admin-core/utils/types";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
@@ -88,9 +77,6 @@ import {
     apiRequest,
     apiSign
 } from "@/common/http";
-import {
-    frameTrans
-} from "../../utils/trans";
 
 export default defineComponent({
     name: "CigoAuthRuleGroup",
@@ -98,75 +84,46 @@ export default defineComponent({
         CigoIconFont
     },
     setup(props, context) {
-        let menuTreeListForEditRef: any = inject("menuTreeListForEditRef");
-        let menuBaseListForEditRef: any = inject("menuBaseListForEditRef");
-        let menuBaseList: Menu[] = [];
-        menuBaseList = [...toRaw(menuBaseListForEditRef.value)];
+        let page = 0;
+        let groupTreeListRef: any = ref([]);
+        onBeforeMount(() => {
+            requestGroupList();
+        });
+        const requestGroupList = () => {
+            page++;
+            let params = {
+                module: "admin"
+            };
+            apiRequest.v1
+                .post("/groupList", params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    //属性角色列表
+                    groupTreeListRef.value = [...response.data.data];
+                })
+                .catch(apiErrorCatch.v1);
+        };
 
-        //Tips_Flag 深刻理解ref、unref、reacte、toRaw、;、Proxy和RefImpl对象
-        watch(menuBaseListForEditRef, (newVal, preVal) => {
-            // console.log("newVal:", newVal); //新旧值都是Proxy对象
-            // console.log("preVal:", newVal);
-            // console.log("menuBaseListForEditRef:", menuBaseListForEditRef); //ref()出来的RefImpl
-            // console.log("menuBaseListForEditRef.value:", menuBaseListForEditRef.value); //Proxy对象，reacte出来的对象
-            // console.log("unref(menuBaseListForEditRef):", unref(menuBaseListForEditRef)); //unref是个获取ref中value的三元运算语法糖
-            // console.log("toRaw(menuBaseListForEditRef.value):", toRaw(menuBaseListForEditRef.value)); //还原Proxy对象
-            menuBaseList = [...toRaw(menuBaseListForEditRef.value)];
-            // console.log("menuBaseList:", menuBaseList);
+        let menuTreeListForEditRef: any = inject("menuTreeListForEditRef");
+        let menuList: Menu[] = [...toRaw(menuTreeListForEditRef.value)];
+        watch(menuTreeListForEditRef, (newVal, preVal) => {
+            menuList = [...toRaw(menuTreeListForEditRef.value)];
         });
 
         const columns = [{
-                title: "权限节点/菜单",
+                title: "角色",
                 dataIndex: "title"
-            },
-            {
-                title: "图标",
-                dataIndex: "icon",
-                width: "80px",
-                slots: {
-                    customRender: "icon"
-                }
-            },
-            {
-                title: "节点类型",
-                dataIndex: "type",
-                width: "90px",
-                slots: {
-                    customRender: "type"
-                }
-            },
-            {
-                title: "跳转路由/URL",
-                dataIndex: "url",
-                width: "200px"
-            },
-            {
-                title: "跳转类型",
-                dataIndex: "target_type",
-                width: "150px",
-                slots: {
-                    customRender: "targetType"
-                }
-            },
-            {
-                title: "对应组件名",
-                dataIndex: "component_name",
-                width: "150px"
-            },
-            {
-                title: "分组",
-                dataIndex: "group",
-                width: "100px"
-            },
-            {
-                title: "分组排序",
-                dataIndex: "group_sort",
-                width: "90px"
             },
             {
                 title: "排序",
                 dataIndex: "sort",
                 width: "90px"
+            },
+            {
+                title: "说明",
+                dataIndex: "summary",
+                width: "400px"
             },
             {
                 title: "操作",
@@ -179,113 +136,104 @@ export default defineComponent({
             }
         ];
 
-        const menuType = (menu: Menu) => {
-            let type = "";
-            switch (menu.type) {
-                case 1:
-                    type = "权限节点";
-                    break;
-                case 2:
-                    type = "操作按钮";
-                    break;
-                case 0:
-                default:
-                    type = "系统菜单";
-                    break;
-            }
-            return type;
-        };
-        const menuTargetType = (menu: Menu) => {
-            let type = "";
-            switch (menu.target_type) {
-                case "layer-win":
-                    type = "弹窗动态组件";
-                    break;
-                case "_blank":
-                    type = "新窗口";
-                    break;
-                case "content-page":
-                default:
-                    type = "右侧动态组件";
-                    break;
-            }
-            return type;
-        };
-
-        const rowSelection = {
-            fixed: true,
-            type: "radio",
-            onChange: (selectedRowKeys: any, selectedRows: any) => {
-                console.log(
-                    `selectedRowKeys: ${selectedRowKeys}`,
-                    "selectedRows: ",
-                    selectedRows
-                );
-            },
-            onSelect: (record: any, selected: any, selectedRows: any) => {
-                console.log(record, selected, selectedRows);
-            },
-            onSelectAll: (
-                selected: any,
-                selectedRows: any,
-                changeRows: any
-            ) => {
-                console.log(selected, selectedRows, changeRows);
-            }
-        };
-
-        const statusAuth = (id: number, status: number) => {
+        const ctrlStatus = (group: AuthGroup, status: number) => {
             let params = toRaw({
-                id: id,
+                id: group.id,
                 status: status
             });
             apiRequest.v1
-                .post("/statusRule", params, {
+                .post("/statusGroup", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {
-                    //TODO 优化速度
-                    //通知刷新菜单
-                    frameTrans.notifyRefreshMenu();
-                    //提示
+                    // 提示
                     cigoLayer.msg(response.data.msg);
+                    // 处理数据
+                    if (status != -1) {
+                        group.status = status;
+                    } else {
+                        let tmpGroup: any = reactive({
+                            id: 0,
+                            subList: groupTreeListRef.value
+                        });
+                        deleteGroupLocal(tmpGroup, group, 0);
+                        if (tmpGroup.subList && tmpGroup.subList.length) {
+                            groupTreeListRef.value = [...tmpGroup.subList];
+                        } else {
+                            groupTreeListRef.value = [];
+                        }
+                    }
                 })
                 .catch(apiErrorCatch.v1);
         };
 
-        const ctrlStatus = (menu: Menu) => {
-            statusAuth(menu.id, menu.status == 0 ? 1 : 0);
+        const deleteGroupLocal = (groupItem: AuthGroup, group: AuthGroup, level: number): boolean => {
+            if (!groupItem.subList || !groupItem.subList.length) {
+                delete groupItem.subList;
+                return false;
+            }
+            let hasFlag = false;
+            let hasIndex = -1;
+            groupItem.subList.every((item: AuthGroup, index: number) => {
+                // 判断当前项
+                if (item.id == group.id) {
+                    hasFlag = true;
+                    hasIndex = index;
+                    return false;
+                }
+                // 判断子级
+                if (deleteGroupLocal(item, group, level + 1)) {
+                    hasFlag = true;
+                    return false;
+                }
+                // 都不存在，继续
+                return true;
+            });
+            if (hasFlag && hasIndex > -1) {
+                let tmpSubList = [...groupItem.subList];
+                tmpSubList.splice(hasIndex, 1);
+                tmpSubList.length ?
+                    groupItem.subList = [...tmpSubList] :
+                    delete groupItem.subList;
+            }
+            return hasFlag;
         };
 
-        const ctrlAddSub = (menu: Menu) => {
+        const ctrlView = (group: AuthGroup) => {
             cigoLayer.window({
                 component: EditRuleGroup,
                 width: "800px",
                 height: "600px",
                 maskClose: false,
-                data: {
-                    title: "添加节点",
-                    menuList: menuBaseList,
-                    menuParent: menu
-                },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
+                layerData: {
+                    title: "查看角色",
+                    groupCurr: group,
+                    viewFlag: true,
+                    menuList: menuList,
+                    groupTreeListRef: groupTreeListRef,
                 }
             });
         };
-        const ctrlView = (menu: Menu) => {
+
+        const notify = (flag: string, data ? : any) => {
+            switch (flag) {
+                case 'refresh':
+                    groupTreeListRef.value = [...data];
+                    break;
+            }
+        };
+
+        const ctrlAddSub = (group: AuthGroup) => {
             cigoLayer.window({
                 component: EditRuleGroup,
                 width: "800px",
                 height: "600px",
-                data: {
-                    title: "查看节点",
-                    menuList: menuBaseList,
-                    menuCurr: menu,
-                    viewFlag: true
-                },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
+                maskClose: false,
+                layerData: {
+                    title: "添加角色",
+                    groupParent: group,
+                    menuList: menuList,
+                    groupTreeListRef: groupTreeListRef,
                 }
             });
         };
@@ -294,52 +242,41 @@ export default defineComponent({
             cigoLayer.window({
                 component: EditRuleGroup,
                 width: "800px",
-                height: "600px",
+                height: "650px",
                 maskClose: false,
-                data: {
-                    title: "添加节点",
-                    menuList: menuBaseList
+                layerData: {
+                    title: "添加角色",
+                    menuList: menuList,
+                    groupTreeListRef: groupTreeListRef,
                 },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
-                }
+                notify: notify
             });
         };
 
-        const ctrlEdit = (menu: Menu) => {
+        const ctrlEdit = (group: AuthGroup) => {
             cigoLayer.window({
                 component: EditRuleGroup,
                 width: "800px",
                 height: "600px",
                 maskClose: false,
-                data: {
-                    title: "修改节点",
-                    menuList: menuBaseList,
-                    menuCurr: menu
+                layerData: {
+                    title: "修改角色",
+                    groupCurr: group,
+                    menuList: menuList,
+                    groupTreeListRef: groupTreeListRef,
                 },
-                notify: (flag: string, data: object) => {
-                    console.log(flag, data);
-                }
+                notify: notify
             });
         };
 
-        const ctrlDelete = (menu: Menu) => {
-            //TODO 确认框
-            statusAuth(menu.id, -1);
-        };
-
         return {
-            menuTreeListForEditRef,
+            groupTreeListRef,
             columns,
-            menuType,
-            menuTargetType,
-            rowSelection,
             ctrlStatus,
             ctrlAddSub,
             ctrlNew,
             ctrlView,
-            ctrlEdit,
-            ctrlDelete
+            ctrlEdit
         };
     }
 });
@@ -367,12 +304,7 @@ export default defineComponent({
         }
     }
 
-    .auth-rule-list {
-        .menu-icon {
-            width: 16px;
-            height: 16px;
-        }
-
+    .auth-rule-group-list {
         .opt-btn {
             margin-right: 5px;
         }

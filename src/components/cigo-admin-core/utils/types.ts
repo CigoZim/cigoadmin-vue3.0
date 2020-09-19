@@ -66,6 +66,23 @@ export interface Menu {
 }
 
 /**
+ *
+ */
+export interface AuthGroup {
+	id: number;
+	title: string;
+	pid: number;
+	path: string;
+	rules: number[];
+	subList?: AuthGroup[];
+	module?: string;
+	sort?: number;
+	status?: number;
+
+	level?: number;
+}
+
+/**
  * 菜单展开形式
  */
 export const enum ModeFormMenuExpand {

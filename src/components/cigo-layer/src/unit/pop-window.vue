@@ -2,7 +2,7 @@
 <div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
     <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
     <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
-        <component :is="componentRaw" :data="data" @notify="notify" @close="delayHide" />
+        <component :is="componentRaw" :layerData="layerData" @notify="notify" @close="delayHide" />
     </div>
 </div>
 </template>
@@ -45,7 +45,7 @@ export default defineComponent({
             type: Boolean,
             default: true
         },
-        data: {
+        layerData: {
             type: Object,
             default: {}
         },
