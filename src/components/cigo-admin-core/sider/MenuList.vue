@@ -122,7 +122,7 @@ export default defineComponent({
             });
             //如果左侧菜单为关闭状态，则闭合当前正展开的一级菜单
             if (!openFlag && expandMenuItem.value.id) {
-                recordClickMenu(expandMenuItem.value); // 清空当前菜单
+                recordClickMenu(expandMenuItem.value, false); // 清空当前菜单
             }
         };
 
@@ -242,7 +242,7 @@ export default defineComponent({
             // 一级菜单&左边栏开启状态下记录点击菜单项
             if (item.level == 0 && menuOpenFlag.value) {
                 //记录有效点击菜单
-                recordClickMenu(item);
+                recordClickMenu(item, true);
             }
 
             // 无子菜单直接跳转
@@ -252,17 +252,19 @@ export default defineComponent({
         };
 
         /** 记录点击菜单项 */
-        const recordClickMenu = (item: Menu) => {
+        const recordClickMenu = (item: Menu, changeMode: boolean) => {
             // 记录点击菜单项
             expandMenuItem.value =
-                item.id == expandMenuItem.value.id ?
-                {
+                item.id == expandMenuItem.value.id ? {
                     id: 0,
                     title: ""
                 } :
                 item;
-            //修改菜单展开模式为点击展开模式
-            systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU);
+
+            if (changeMode) {
+                //修改菜单展开模式为点击展开模式
+                systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU);
+            }
         };
 
         /** 鼠标滑入/滑出菜单项 */
