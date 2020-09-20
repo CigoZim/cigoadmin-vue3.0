@@ -6,9 +6,6 @@
 
 <script lang="ts">
 import {
-    systemStore
-} from "@/store";
-import {
     defineComponent,
     onMounted,
     ref

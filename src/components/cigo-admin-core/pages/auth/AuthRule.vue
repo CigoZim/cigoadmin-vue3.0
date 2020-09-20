@@ -137,7 +137,6 @@ export default defineComponent({
             {
                 title: "跳转路由/URL",
                 dataIndex: "url",
-                width: "200px"
             },
             {
                 title: "跳转类型",

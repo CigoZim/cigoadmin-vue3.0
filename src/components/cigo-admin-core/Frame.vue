@@ -112,7 +112,7 @@ export default defineComponent({
 
         const initTreeMenuList = (
             srcTreeList: Menu[],
-            treeList: Menu[] | null,
+            treeList: Menu[],
             baseListForEdit: Menu[],
             treeListForEdit: Menu[],
             idMap: Map < string, Menu > ,
@@ -150,10 +150,16 @@ export default defineComponent({
                     id: 0,
                     title: ""
                 };
-                //添加当前菜单项
-                if (!item.group_flag) {
+
+                //其它纯菜单数据
+                if (item.group_flag) {
                     //左侧sider级联菜单数据
-                    if (treeList && item.status) {
+                    Object.assign(itemForTree, item);
+                    delete itemForTree.subList; //避免空数组字段出现
+                    treeList.push(itemForTree);
+                } else {
+                    //左侧sider级联菜单数据
+                    if (item.status) {
                         Object.assign(itemForTree, item);
                         delete itemForTree.subList; //避免空数组字段出现
                         treeList.push(itemForTree);
@@ -169,20 +175,20 @@ export default defineComponent({
                     Object.assign(itemForEdit, item);
                     delete itemForEdit.subList; //避免空数组字段出现
                     treeListForEdit.push(itemForEdit);
-                }
-                //处理子级
-                if (item.subList && item.subList.length) {
-                    itemForTree.id ? (itemForTree.subList = []) : false;
-                    itemForEdit.subList = [];
-                    initTreeMenuList(
-                        item.subList,
-                        itemForTree.subList ? itemForTree.subList : null,
-                        baseListForEdit,
-                        itemForEdit.subList,
-                        idMap,
-                        nameMap,
-                        level + 1
-                    );
+                    //处理子级
+                    if (item.subList && item.subList.length) {
+                        itemForTree.subList = [];
+                        itemForEdit.subList = [];
+                        initTreeMenuList(
+                            item.subList,
+                            itemForTree.subList,
+                            baseListForEdit,
+                            itemForEdit.subList,
+                            idMap,
+                            nameMap,
+                            level + 1
+                        );
+                    }
                 }
 
                 return true;

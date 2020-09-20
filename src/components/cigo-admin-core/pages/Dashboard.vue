@@ -1,6 +1,8 @@
 <template>
 <div class="cigo-dashboard">
-    <span>数据中心面板</span>
+    <h1>数据中心面板</h1>
+    <br />
+    <h3>即将跳转到温度计页面：{{delayTime}}s后跳转...</h3>
 </div>
 </template>
 
@@ -8,34 +10,36 @@
 import {
     defineComponent,
     onMounted,
-    onUnmounted,
-    onActivated,
-    onDeactivated
+    ref
 } from "vue";
-
+import router from "@/router";
 export default defineComponent({
     name: "CigoDashboard",
-    notRecordOpentabs: false,
+    notRecordOpentabs: true,
     setup() {
+        let delayTime = ref(3);
+
         onMounted(() => {
-            console.log("dashboard mounted");
+            delayJump();
         });
-        onActivated(() => {
-            console.log("dashboard onActivated");
-        });
-        onDeactivated(() => {
-            console.log("dashboard onDeactivated");
-        });
-        onUnmounted(() => {
-            console.log("dashboard unmounted");
-        });
+
+        const delayJump = () => {
+            setTimeout(() => {
+                if (--delayTime.value > 0) {
+                    delayJump();
+                    return;
+                }
+                router.push("/frame/demos/thermometer/one");
+            }, 1000);
+        };
+
+        return {
+            delayTime
+        };
     }
 });
 </script>
 
 <style lang="scss">
-.cigo-dashboard {
-    display: flex;
-    flex: 1;
-}
+.cigo-dashboard {}
 </style>

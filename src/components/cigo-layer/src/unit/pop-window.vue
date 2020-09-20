@@ -1,7 +1,7 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-pop-window">
+<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" @mousemove="mouseMoving" @mouseUp="stopDrag">
     <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
-    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content">
+    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
         <component :is="componentRaw" :layerData="layerData" @notify="notify" @close="delayHide" />
     </div>
 </div>
@@ -14,7 +14,8 @@ import {
     onMounted,
     reactive,
     markRaw,
-    computed
+    computed,
+    toRefs
 } from "vue";
 import CigoMask from "./mask.vue";
 import cigoLayer from "@/components/cigo-layer/index";
@@ -93,10 +94,45 @@ export default defineComponent({
             props.maskClose && delayHide(); //Tips_Flag &&创新用法
         };
 
+        let moveX = ref(0);
+        let moveY = ref(0);
+        let dragedX = 0;
+        let dragedY = 0;
+        let dragging = ref(false);
+        let startX = 0;
+        let startY = 0;
+        const startDrag = (e: any) => {
+            dragging.value = true;
+            startX = e.pageX;
+            startY = e.pageY;
+            dragedX = moveX.value;
+            dragedY = moveY.value;
+        };
+        const stopDrag = () => {
+            dragging.value = false;
+        };
+        const mouseMoving = (e: any) => {
+            if (dragging.value) {
+                moveX.value = e.pageX - startX + dragedX;
+                moveY.value = e.pageY - startY + dragedY;
+            }
+        };
+        let targetPos = computed(() => {
+            return {
+                targetX: Math.round(moveX.value) + 'px',
+                targetY: Math.round(moveY.value) + 'px',
+            }
+        });
+
         return {
             componentRaw,
             clickMask,
-            delayHide
+            delayHide,
+            targetPos,
+            startDrag,
+            dragging,
+            stopDrag,
+            mouseMoving
         };
     }
 });
@@ -122,8 +158,19 @@ export default defineComponent({
         height: 0px;
         opacity: 0;
         display: flex;
+        left: var(--left);
+        top: var(--top);
         border-radius: 8px;
         background-color: #fff;
+        cursor: grab;
+        cursor: -webkit-grab;
+        cursor: -moz-grab;
+    }
+
+    .cigo-pop-window-content.grabbing {
+        cursor: grabbing;
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
     }
 }
 </style>

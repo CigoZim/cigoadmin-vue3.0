@@ -65,10 +65,11 @@ export default defineComponent({
         onBeforeMount(() => {
             if (props.level == 0) {
                 watch(menuTreeListRef, (newVal, preVal) => {
-                    expandMenuItem.value = {
-                        id: 0,
-                        title: ""
-                    };
+                    //TODO 刷新数据导致当前路由应该展开root菜单未展开
+                    // 须重新梳理菜单展开及相关逻辑
+                    if (!menuOpenFlag.value && expandMenuItem.value.id) {
+                        recordClickMenu(expandMenuItem.value, false); // 清空当前菜单
+                    }
                 });
             }
         });
@@ -262,8 +263,7 @@ export default defineComponent({
                 item;
 
             if (changeMode) {
-                //修改菜单展开模式为点击展开模式
-                systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU);
+                systemStore.setModeForMenuExpand(ModeFormMenuExpand.CLICK_MENU); //修改菜单展开模式为点击展开模式
             }
         };
 

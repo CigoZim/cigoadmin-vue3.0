@@ -115,7 +115,6 @@ import {
     toArray
 } from "lodash";
 import {
-    computed,
     defineComponent,
     onMounted,
     reactive,
@@ -144,35 +143,25 @@ export default defineComponent({
             id: dataRef.menuCurr ? dataRef.menuCurr.id : null,
             type: dataRef.menuCurr ? dataRef.menuCurr.type : 0, //节点类型（0-系统菜单；1-权限节点非菜单；2-按钮）
             pid: dataRef.menuCurr ?
-                dataRef.menuCurr.pid :
-                dataRef.menuParent ?
-                dataRef.menuParent.id :
-                0,
+                dataRef.menuCurr.pid : dataRef.menuParent ?
+                dataRef.menuParent.id : 0,
             path: dataRef.menuCurr ?
-                dataRef.menuCurr.path :
-                dataRef.menuParent ?
-                dataRef.menuParent.path + dataRef.menuParent.id + "," :
-                "0,",
+                dataRef.menuCurr.path : dataRef.menuParent ?
+                dataRef.menuParent.path + dataRef.menuParent.id + "," : "0,",
             title: dataRef.menuCurr ? dataRef.menuCurr.title : "",
             icon: dataRef.menuCurr ?
-                dataRef.menuCurr.icon :
-                "cigoadmin-icon-menu",
+                dataRef.menuCurr.icon : "cigoadmin-icon-menu",
             component_name: dataRef.menuCurr ?
-                dataRef.menuCurr.component_name :
-                "",
+                dataRef.menuCurr.component_name : "",
             can_not_close_opentab: dataRef.menuCurr ?
-                dataRef.menuCurr.can_not_close_opentab :
-                0,
+                dataRef.menuCurr.can_not_close_opentab : 0,
             can_not_record_opentab: dataRef.menuCurr ?
-                dataRef.menuCurr.can_not_record_opentab :
-                0,
+                dataRef.menuCurr.can_not_record_opentab : 0,
             can_not_cache: dataRef.menuCurr ?
-                dataRef.menuCurr.can_not_cache :
-                0,
+                dataRef.menuCurr.can_not_cache : 0,
             url: dataRef.menuCurr ? dataRef.menuCurr.url : "",
             target_type: dataRef.menuCurr ?
-                dataRef.menuCurr.target_type :
-                "content-page", //content-page：右侧页面；layer-win：弹窗窗口；_blank：新打开页面
+                dataRef.menuCurr.target_type : "content-page", //content-page：右侧页面；layer-win：弹窗窗口；_blank：新打开页面
             summary: dataRef.menuCurr ? dataRef.menuCurr.summary : "",
             group: dataRef.menuCurr ? dataRef.menuCurr.group : "",
             group_sort: dataRef.menuCurr ? dataRef.menuCurr.group_sort : 100,
