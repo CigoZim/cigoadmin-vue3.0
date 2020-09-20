@@ -8,7 +8,7 @@
             <a-form-item label="父级角色：" name="pid">
                 <a-select v-model:value="formDataRef.pid" show-search placeholder="请选择父级角色" not-found-content="当前无父级角色" :filter-option="filterParentGroupOption" @change="pGroupChange" :disabled="layerData.viewFlag">
                     <a-select-option :value="0" :itemData="{id:0, title:'', pid:0, path:'0,', rules:[]}">
-                        <span style="color:#666;font-weight:700;">--设为根角色--</span>
+                        <span style="color:#666;font-weight:700;">--设置根角色--</span>
                     </a-select-option>
                     <a-select-option v-for="(item,index) in groupNoTreeListRef" :key="index+1" :value="item.id" :itemData="item" :disabled="layerData.groupCurr && layerData.groupCurr.id == item.id">
                         <span v-if="item.level">
@@ -27,6 +27,10 @@
             </a-form-item>
             <a-form-item label="说明：" name="summary">
                 <a-textarea v-model:value="formDataRef.summary" :disabled="layerData.viewFlag" />
+            </a-form-item>
+            <div class="line"></div>
+            <a-form-item label="权限配置：" name="rules">
+                <a-tree v-model:checkedKeys="formDataRef.rules" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="layerData.menuList" :disabled="layerData.viewFlag" />
             </a-form-item>
         </a-form>
     </div>
@@ -197,7 +201,6 @@ export default defineComponent({
                 .then(() => {
                     let params: any = {};
                     Object.assign(params, toRaw(formDataRef));
-                    params.rules = params.rules.join(',');
                     apiRequest.v1
                         .post(
                             props.layerData.groupCurr ? "/editGroup" : "/addGroup",
@@ -323,16 +326,23 @@ export default defineComponent({
 
     .content-area {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
         width: 100%;
         flex: 1;
         padding: 8px 12px;
+        overflow-x: hidden;
+        overflow-y: scroll;
 
         .form-item {
             width: 100%;
-            height: 100%;
+
+            .line {
+                width: 90%;
+                height: 1px;
+                background-color: #f0f0f0;
+                margin: 0px auto;
+            }
         }
     }
 

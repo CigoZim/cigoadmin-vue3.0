@@ -2,7 +2,7 @@
 <div class="cigo-auth-rule-group">
     <div class="top-bar">
         <a-button-group class="left">
-            <a-button type="primary">
+            <a-button type="primary" @click.stop="requestGroupList">
                 <template v-slot:icon>
                     <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
                 </template>刷新
@@ -270,6 +270,7 @@ export default defineComponent({
         };
 
         return {
+            requestGroupList,
             groupTreeListRef,
             columns,
             ctrlStatus,
