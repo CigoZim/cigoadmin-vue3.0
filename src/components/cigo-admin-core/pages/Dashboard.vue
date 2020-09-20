@@ -15,7 +15,6 @@ import {
 import router from "@/router";
 export default defineComponent({
     name: "CigoDashboard",
-    notRecordOpentabs: true,
     setup() {
         let delayTime = ref(3);
 
