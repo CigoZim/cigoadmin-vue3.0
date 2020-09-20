@@ -1,7 +1,7 @@
 <template>
 <div :id="'pop-win-'+layerIndex" class="cigo-pop-window" @mousemove="mouseMoving" @mouseUp="stopDrag">
     <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
-    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
+    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
         <component v-if="windowSize !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="delayClose" />
         <div class="pop-window-bar" :class="[windowSize=='min' ? 'min' : '']">
             <cigo-icon-font v-if="windowSize !== 'min'" class="pop-window-bar-icon" @click.stop="windowSize = 'min'" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
@@ -49,6 +49,10 @@ export default defineComponent({
         height: {
             type: String,
             default: "400px"
+        },
+        backgroundColor: {
+            type: String,
+            default: '#fff'
         },
         maskClose: {
             type: Boolean,
@@ -201,10 +205,10 @@ export default defineComponent({
         height: 0px;
         opacity: 0;
         display: flex;
+        background-color: var(--backgroundColor);
         left: var(--left);
         top: var(--top);
         border-radius: 8px;
-        background-color: #fff;
         cursor: grab;
         cursor: -webkit-grab;
         cursor: -moz-grab;
