@@ -1,13 +1,13 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" @mousemove="mouseMoving" @mouseUp="stopDrag">
+<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" :class="[windowSize=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
     <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
     <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
         <component v-if="windowSize !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="delayClose" />
-        <div class="pop-window-bar" :class="[windowSize=='min' ? 'min' : '']">
-            <cigo-icon-font v-if="windowSize !== 'min'" class="pop-window-bar-icon" @click.stop="windowSize = 'min'" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSize !== 'common'" class="pop-window-bar-icon" @click.stop="windowSize = 'common'" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSize !== 'max'" class="pop-window-bar-icon" @click.stop="windowSize = 'max'" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
-            <cigo-icon-font class="pop-window-bar-icon" @click.stop="delayClose" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
+        <div class="pop-window-bar">
+            <cigo-icon-font v-if="windowSize !== 'min'" class="pop-window-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
+            <cigo-icon-font v-if="windowSize !== 'common'" class="pop-window-bar-icon" @click.stop="changeWinSie('common')" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
+            <cigo-icon-font v-if="windowSize !== 'max'" class="pop-window-bar-icon" @click.stop="changeWinSie('max')" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
+            <cigo-icon-font class="pop-window-bar-icon" @click.stop="close" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
         </div>
     </div>
 </div>
@@ -80,6 +80,11 @@ export default defineComponent({
         });
 
         let windowSize = ref('common');
+        const changeWinSie = (size: string) => {
+            if (dragFlag == 0) {
+                windowSize.value = size;
+            }
+        };
         watch(windowSize, () => {
             moveX.value = 0;
             moveY.value = 0;
@@ -123,6 +128,12 @@ export default defineComponent({
             TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, showOptions.value.content);
         };
 
+        const close = () => {
+            if (dragFlag != 0) {
+                return;
+            }
+            delayClose();
+        };
         const delayClose = () => {
             TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
                 opacity: 0
@@ -140,27 +151,37 @@ export default defineComponent({
             props.maskClose && delayClose(); //Tips_Flag &&创新用法
         };
 
+        let dragFlag = 0;
         let moveX = ref(0);
         let moveY = ref(0);
         let dragedX = 0;
         let dragedY = 0;
+        let dragStarted = false;
         let dragging = ref(false);
         let startX = 0;
         let startY = 0;
         const startDrag = (e: any) => {
-            dragging.value = true;
+            dragFlag = 0;
+            dragStarted = true;
             startX = e.pageX;
             startY = e.pageY;
             dragedX = moveX.value;
             dragedY = moveY.value;
         };
-        const stopDrag = () => {
-            dragging.value = false;
-        };
         const mouseMoving = (e: any) => {
+            if (!dragStarted) {
+                return;
+            }
+            let xMoveCurr = e.pageX - startX;
+            let yMoveCurr = e.pageY - startY;
+
+            // 开启移动
+            if (Math.abs(xMoveCurr) > 4 || Math.abs(yMoveCurr) > 4) {
+                dragging.value = true;
+            }
             if (dragging.value) {
-                moveX.value = e.pageX - startX + dragedX;
-                moveY.value = e.pageY - startY + dragedY;
+                moveX.value = xMoveCurr + dragedX;
+                moveY.value = yMoveCurr + dragedY;
             }
         };
         let targetPos = computed(() => {
@@ -169,11 +190,20 @@ export default defineComponent({
                 targetY: Math.round(moveY.value) + 'px',
             }
         });
+        const stopDrag = () => {
+            if (dragging.value) {
+                dragFlag = 1;
+            }
+            dragStarted = false;
+            dragging.value = false;
+        };
 
         return {
             componentRaw,
+            changeWinSie,
             windowSize,
             clickMask,
+            close,
             delayClose,
             targetPos,
             startDrag,
@@ -230,15 +260,35 @@ export default defineComponent({
             }
         }
 
-        .pop-window-bar.min {
-            background-color: #f0f0f0;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            padding-left: 5px;
-        }
     }
 
     .cigo-pop-window-content.grabbing {
+        cursor: grabbing;
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+    }
+}
+
+.cigo-pop-window.min {
+    pointer-events: none;
+
+    .cigo-layer-mask {
+        display: none;
+    }
+
+    .pop-window-bar {
+        background-color: #f0f0f0;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding-left: 5px;
+        pointer-events: auto;
+    }
+}
+
+.cigo-pop-window.min.dragging {
+    pointer-events: auto;
+
+    .cigo-pop-window-content>.pop-window-bar>.pop-window-bar-icon {
         cursor: grabbing;
         cursor: -webkit-grabbing;
         cursor: -moz-grabbing;
