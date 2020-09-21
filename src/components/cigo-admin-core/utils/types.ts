@@ -26,7 +26,7 @@ export interface LoginUserInfo {
 	token?: string;
 	phone?: string;
 	username?: string;
-	real_name?: string;
+	realname?: string;
 	nickname?: string;
 	email?: string;
 	role_flag?: number;

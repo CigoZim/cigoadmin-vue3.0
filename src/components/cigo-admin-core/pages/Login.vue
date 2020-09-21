@@ -113,7 +113,7 @@ export default defineComponent({
                                 username: response.data.data.username,
                                 phone: response.data.data.phone,
                                 nickname: response.data.data.nickname,
-                                real_name: response.data.data.real_name,
+                                realname: response.data.data.realname,
                                 email: response.data.data.email,
                                 role_flag: response.data.data.role_flag
                             };
