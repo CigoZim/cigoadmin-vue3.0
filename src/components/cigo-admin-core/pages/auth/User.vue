@@ -23,6 +23,23 @@
     </div>
 
     <a-table class="user-list" :rowKey="'id'" :locale="{emptyText:'暂无用户数据'}" :pagination="false" :columns="columns" :data-source="userListRef" :scroll="{ x: 1300 , y: 'max-content'}">
+        <template v-slot:img="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.is_online ? '在线' : '离线'}}</span>
+        </template>
+        <template v-slot:sex="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{showSex(record)}}</span>
+        </template>
+        <template v-slot:isOnline="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.is_online ? '在线' : '离线'}}</span>
+        </template>
+        <template v-slot:lastLogTime="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
+        </template>
+
         <template v-slot:operation="{ txt, record }">
             <span v-if="txt"></span>
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
@@ -54,15 +71,16 @@ import {
 } from "vue";
 import EditUser from "@/components/cigo-admin-core/pages/auth/edit/EditUser.vue";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
+import dayjs from "dayjs";
 import {
     apiErrorCatch,
     apiRequest,
     apiSign
-} from '@/common/http';
-import cigoLayer from '@/components/cigo-layer';
+} from "@/common/http";
+import cigoLayer from "@/components/cigo-layer";
 import {
     User
-} from '../../utils/types';
+} from "../../utils/types";
 export default defineComponent({
     name: "CigoUser",
     components: {
@@ -99,7 +117,10 @@ export default defineComponent({
             {
                 title: "头像",
                 dataIndex: "img",
-                width: "80px"
+                width: "80px",
+                slots: {
+                    customRender: "img"
+                }
             },
             {
                 title: "用户名",
@@ -109,12 +130,18 @@ export default defineComponent({
             {
                 title: "是否在线",
                 dataIndex: "is_online",
-                width: "100px"
+                width: "100px",
+                slots: {
+                    customRender: "isOnline"
+                }
             },
             {
                 title: "最后登录时间",
                 dataIndex: "last_log_time",
-                width: "150px"
+                width: "180px",
+                slots: {
+                    customRender: "lastLogTime"
+                }
             },
             {
                 title: "手机号",
@@ -139,7 +166,10 @@ export default defineComponent({
             {
                 title: "性别",
                 dataIndex: "sex",
-                width: "100px"
+                width: "100px",
+                slots: {
+                    customRender: "sex"
+                }
             },
             {
                 title: "操作",
@@ -151,6 +181,23 @@ export default defineComponent({
                 }
             }
         ];
+
+        const showSex = (manager: User) => {
+            let sex = "";
+            switch (manager.sex) {
+                case 1:
+                    sex = "男";
+                    break;
+                case 2:
+                    sex = "女";
+                    break;
+                case 0:
+                default:
+                    sex = "保密";
+                    break;
+            }
+            return sex;
+        };
 
         const ctrlStatus = (user: User, status: number) => {
             let params = {
@@ -185,7 +232,7 @@ export default defineComponent({
                 layerData: {
                     title: "查看用户",
                     userCurr: user,
-                    viewFlag: true,
+                    viewFlag: true
                 }
             });
         };
@@ -231,10 +278,12 @@ export default defineComponent({
             requestList,
             userListRef,
             columns,
+            dayjs,
+            showSex,
             ctrlNew,
             ctrlStatus,
             ctrlView,
-            ctrlEdit,
+            ctrlEdit
         };
     }
 });

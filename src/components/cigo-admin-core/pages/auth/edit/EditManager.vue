@@ -21,6 +21,9 @@
                 <a-input v-model:value="formDataRef.email" placeholder="请填写邮箱" :disabled="layerData.viewFlag" />
             </a-form-item>
             <div class="line"></div>
+            <a-form-item label="角色配置：" name="auth_group">
+                <a-tree v-model:checkedKeys="formDataRef.auth_group" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="layerData.groupList" :disabled="layerData.viewFlag" />
+            </a-form-item>
         </a-form>
     </div>
     <div class="btn-area">

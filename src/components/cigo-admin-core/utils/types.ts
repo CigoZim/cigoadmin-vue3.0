@@ -89,6 +89,9 @@ export interface AuthGroup {
 export interface User {
 	id: number;
 	status?: number;
+	sex?: number;
+	auth_group?: [];
+
 	create_time?: number;
 }
 

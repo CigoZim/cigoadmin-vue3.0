@@ -23,6 +23,30 @@
     </div>
 
     <a-table class="manager-list" :rowKey="'id'" :locale="{emptyText:'暂无管理员数据'}" :pagination="true" :columns="columns" :data-source="managerListRef" :scroll="{ x: 2000 , y: 'max-content'}">
+        <template v-slot:img="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.is_online ? '在线' : '离线'}}</span>
+        </template>
+        <template v-slot:roleFlag="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.role_flag == 2 ? '管理员' : '超级管理员'}}</span>
+        </template>
+        <template v-slot:sex="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{showSex(record)}}</span>
+        </template>
+        <template v-slot:isOnline="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.is_online ? '在线' : '离线'}}</span>
+        </template>
+        <template v-slot:lastLogTime="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
+        </template>
+        <template v-slot:authGroup="{ txt, record }">
+            <span v-if="txt"></span>
+            <span>{{showAuthGroup(record)}}</span>
+        </template>
         <template v-slot:operation="{ txt, record }">
             <span v-if="txt"></span>
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
@@ -56,6 +80,7 @@ import {
 } from "vue";
 import EditManager from "@/components/cigo-admin-core/pages/auth/edit/EditManager.vue";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
+import dayjs from "dayjs";
 import {
     apiErrorCatch,
     apiRequest,
@@ -103,7 +128,7 @@ export default defineComponent({
 
         const requestGroupList = () => {
             let params = {
-                status: '1'
+                status: "1"
             };
             apiRequest.v1
                 .post("/groupList", params, {
@@ -119,23 +144,19 @@ export default defineComponent({
                 })
                 .catch(apiErrorCatch.v1);
         };
-        const convertGroupNoTree = (
-            treeList: AuthGroup[],
-            level: number
-        ) => {
-            treeList.every(
-                (item: AuthGroup, index: number) => {
-                    item.level = level;
-                    let tmpGroup: any = {};
-                    Object.assign(tmpGroup, item);
-                    delete tmpGroup.subList;
-                    groupIdMapRef.value.set('id_' + tmpGroup.id, tmpGroup);
-                    if (item.subList && item.subList.length) {
-                        convertGroupNoTree(item.subList, level + 1);
-                    }
+        const convertGroupNoTree = (treeList: AuthGroup[], level: number) => {
+            treeList.every((item: AuthGroup, index: number) => {
+                item.level = level;
+                let tmpGroup: any = {};
+                Object.assign(tmpGroup, item);
+                delete tmpGroup.subList;
+                groupIdMapRef.value.set("id_" + tmpGroup.id, tmpGroup);
+                if (item.subList && item.subList.length) {
+                    convertGroupNoTree(item.subList, level + 1);
+                }
 
-                    return true;
-                });
+                return true;
+            });
         };
 
         const columns = [{
@@ -146,7 +167,10 @@ export default defineComponent({
             {
                 title: "头像",
                 dataIndex: "img",
-                width: "80px"
+                width: "80px",
+                slots: {
+                    customRender: "img"
+                }
             },
             {
                 title: "用户名",
@@ -156,17 +180,26 @@ export default defineComponent({
             {
                 title: "类型",
                 dataIndex: "role_flag",
-                width: "100px"
+                width: "120px",
+                slots: {
+                    customRender: "roleFlag"
+                }
             },
             {
                 title: "是否在线",
                 dataIndex: "is_online",
-                width: "100px"
+                width: "100px",
+                slots: {
+                    customRender: "isOnline"
+                }
             },
             {
                 title: "最后登录时间",
                 dataIndex: "last_log_time",
-                width: "150px"
+                width: "180px",
+                slots: {
+                    customRender: "lastLogTime"
+                }
             },
             {
                 title: "手机号",
@@ -191,11 +224,17 @@ export default defineComponent({
             {
                 title: "性别",
                 dataIndex: "sex",
-                width: "100px"
+                width: "100px",
+                slots: {
+                    customRender: "sex"
+                }
             },
             {
                 title: "角色",
                 dataIndex: "auth_group",
+                slots: {
+                    customRender: "authGroup"
+                }
             },
             {
                 title: "操作",
@@ -207,6 +246,37 @@ export default defineComponent({
                 }
             }
         ];
+
+        const showSex = (manager: User) => {
+            let sex = "";
+            switch (manager.sex) {
+                case 1:
+                    sex = "男";
+                    break;
+                case 2:
+                    sex = "女";
+                    break;
+                case 0:
+                default:
+                    sex = "保密";
+                    break;
+            }
+            return sex;
+        };
+
+        const showAuthGroup = (manager: User) => {
+            if (!manager.auth_group || manager.auth_group.length == 0) {
+                return "";
+            }
+            let authGroup: string[] = [];
+            manager.auth_group.every((item: number, index: number) => {
+                if (groupIdMapRef.value.has("id_" + item)) {
+                    authGroup.push(groupIdMapRef.value.get("id_" + item).title);
+                }
+                return true;
+            });
+            return authGroup.join(",");
+        };
 
         const ctrlStatus = (manager: User, status: number) => {
             let params = {
@@ -242,7 +312,7 @@ export default defineComponent({
                     title: "查看管理员",
                     managerCurr: manager,
                     viewFlag: true,
-                    groupList: [...toRaw(groupTreeListRef.value)],
+                    groupList: [...toRaw(groupTreeListRef.value)]
                 }
             });
         };
@@ -264,15 +334,13 @@ export default defineComponent({
                 layerData: {
                     title: "添加管理员",
                     managerListRef: managerListRef,
-                    groupList: [...toRaw(groupTreeListRef.value)],
+                    groupList: [...toRaw(groupTreeListRef.value)]
                 },
                 notify: notify
             });
         };
 
         const ctrlEdit = (manager: User) => {
-            console.log(groupTreeListRef);
-
             cigoLayer.window({
                 component: EditManager,
                 width: "800px",
@@ -282,7 +350,7 @@ export default defineComponent({
                     title: "修改管理员",
                     managerCurr: manager,
                     managerListRef: managerListRef,
-                    groupList: [...toRaw(groupTreeListRef.value)],
+                    groupList: [...toRaw(groupTreeListRef.value)]
                 },
                 notify: notify
             });
@@ -292,10 +360,13 @@ export default defineComponent({
             requestList,
             managerListRef,
             columns,
+            dayjs,
+            showSex,
+            showAuthGroup,
             ctrlNew,
             ctrlStatus,
             ctrlView,
-            ctrlEdit,
+            ctrlEdit
         };
     }
 });
