@@ -36,7 +36,7 @@
     </div>
     <div class="btn-area">
         <a-button-group>
-            <a-button type="primary" @click.stop="doAdd" v-if="!layerData.viewFlag">{{layerData.groupCurr ? '修 改' : '添 加'}}</a-button>
+            <a-button type="primary" @click.stop="doSubmit" v-if="!layerData.viewFlag">{{layerData.groupCurr ? '修 改' : '添 加'}}</a-button>
             <a-button type="default" @click.stop="cancel">{{layerData.viewFlag ? '关 闭' :'取 消'}}</a-button>
         </a-button-group>
     </div>
@@ -84,7 +84,7 @@ export default defineComponent({
         onBeforeMount(() => {
             initNoTreeList();
             initParentGroup();
-        })
+        });
 
         let groupNoTreeListRef: any = ref([]);
         const initNoTreeList = () => {
@@ -122,40 +122,56 @@ export default defineComponent({
 
         let pOldGroup: AuthGroup = {
             id: 0,
-            title: '',
+            title: "",
             pid: 0,
-            path: '',
+            path: "",
             rules: []
         };
         let pCurrGroup: AuthGroup = pOldGroup;
         const initParentGroup = () => {
             if (props.layerData.groupCurr && props.layerData.groupCurr.pid) {
-                groupNoTreeListRef.value.every((item: AuthGroup, index: number) => {
-                    if (item.id === props.layerData.groupCurr.pid) {
-                        pOldGroup = item;
-                        pCurrGroup = item;
-                        formDataRef.pid = item.id;
-                        formDataRef.path = item.path + item.id + ',';
-                        return false;
+                groupNoTreeListRef.value.every(
+                    (item: AuthGroup, index: number) => {
+                        if (item.id === props.layerData.groupCurr.pid) {
+                            pOldGroup = item;
+                            pCurrGroup = item;
+                            formDataRef.pid = item.id;
+                            formDataRef.path = item.path + item.id + ",";
+                            return false;
+                        }
+                        return true;
                     }
-                    return true;
-                });
-            } else if (props.layerData.groupParent && props.layerData.groupParent.id) {
+                );
+            } else if (
+                props.layerData.groupParent &&
+                props.layerData.groupParent.id
+            ) {
                 pOldGroup = props.layerData.groupParent;
                 pCurrGroup = props.layerData.groupParent;
                 formDataRef.pid = props.layerData.groupParent.id;
-                formDataRef.path = props.layerData.groupParent.path + props.layerData.groupParent.id + ',';
+                formDataRef.path =
+                    props.layerData.groupParent.path +
+                    props.layerData.groupParent.id +
+                    ",";
             }
         };
 
         let formDataRef = reactive({
             id: props.layerData.groupCurr ? props.layerData.groupCurr.id : null,
-            title: props.layerData.groupCurr ? props.layerData.groupCurr.title : "",
-            sort: props.layerData.groupCurr ? props.layerData.groupCurr.sort : 100,
-            summary: props.layerData.groupCurr ? props.layerData.groupCurr.summary : "",
-            rules: props.layerData.groupCurr ? props.layerData.groupCurr.rules : [],
+            title: props.layerData.groupCurr ?
+                props.layerData.groupCurr.title :
+                "",
+            sort: props.layerData.groupCurr ?
+                props.layerData.groupCurr.sort :
+                100,
+            summary: props.layerData.groupCurr ?
+                props.layerData.groupCurr.summary :
+                "",
+            rules: props.layerData.groupCurr ?
+                props.layerData.groupCurr.rules :
+                [],
             pid: pOldGroup.id,
-            path: pOldGroup.path + pOldGroup.id + ",",
+            path: pOldGroup.path + pOldGroup.id + ","
         });
         const formItemRules = reactive({
             title: [{
@@ -194,7 +210,7 @@ export default defineComponent({
                 "0,";
         };
 
-        const doAdd = (e: any) => {
+        const doSubmit = (e: any) => {
             e.preventDefault();
             validate()
                 .then(() => {
@@ -202,19 +218,26 @@ export default defineComponent({
                     Object.assign(params, toRaw(formDataRef));
                     apiRequest.v1
                         .post(
-                            props.layerData.groupCurr ? "/editGroup" : "/addGroup",
+                            props.layerData.groupCurr ?
+                            "/editGroup" :
+                            "/addGroup",
                             params, {
                                 headers: apiSign(params)
                             }
                         )
                         .then(response => {
-                            //无请求刷新本地列表
+                            //更新本地数据
                             if (props.layerData.groupCurr) {
                                 editRefreshLocalList(response.data.data);
                             } else {
                                 addRefreshLocalList(response.data.data);
                             }
-
+                            //刷新列表数据
+                            ctx.emit(
+                                "notify",
+                                "refresh",
+                                toRaw(props.layerData.groupTreeListRef.value)
+                            );
                             //提示及关闭窗口
                             cigoLayer.msg(response.data.msg);
                             ctx.emit("close");
@@ -229,7 +252,6 @@ export default defineComponent({
         const addRefreshLocalList = (newData: AuthGroup) => {
             // 转化为响应式对象
             let newDataRef = reactive(newData);
-
             // 挂载新节点
             if (pCurrGroup.id) {
                 if (!pCurrGroup.subList) {
@@ -237,49 +259,58 @@ export default defineComponent({
                 }
                 pCurrGroup.subList = [...pCurrGroup.subList, newDataRef];
 
-                props.layerData.groupTreeListRef.value = [...props.layerData.groupTreeListRef.value];
+                props.layerData.groupTreeListRef.value = [
+                    ...props.layerData.groupTreeListRef.value
+                ];
             } else {
-                props.layerData.groupTreeListRef.value = [...props.layerData.groupTreeListRef.value, newDataRef];
+                props.layerData.groupTreeListRef.value = [
+                    ...props.layerData.groupTreeListRef.value,
+                    newDataRef
+                ];
             }
-
-            // 新增节点需要刷新列表
-            ctx.emit('notify', 'refresh', toRaw(props.layerData.groupTreeListRef.value))
         };
         const editRefreshLocalList = (newData: AuthGroup) => {
             // 刷新数据
             Object.assign(props.layerData.groupCurr, newData);
-
             // 转移节点
             if (pCurrGroup.id !== pOldGroup.id) {
                 // 移除原位置
                 if (pOldGroup.id) {
                     if (pOldGroup.subList) {
                         let tmpList = [...pOldGroup.subList];
-                        tmpList.splice(tmpList.indexOf(props.layerData.groupCurr), 1);
+                        tmpList.splice(
+                            tmpList.indexOf(props.layerData.groupCurr),
+                            1
+                        );
                         tmpList.length == 0 ?
                             delete pOldGroup.subList :
-                            pOldGroup.subList = [...tmpList];
+                            (pOldGroup.subList = [...tmpList]);
                     }
                 } else {
                     let tmpList = [...props.layerData.groupTreeListRef.value];
-                    tmpList.splice(tmpList.indexOf(props.layerData.groupCurr), 1);
+                    tmpList.splice(
+                        tmpList.indexOf(props.layerData.groupCurr),
+                        1
+                    );
                     props.layerData.groupTreeListRef.value = [...tmpList];
                 }
                 // 加入新位置
-                if (
-                    pCurrGroup.id
-                ) {
+                if (pCurrGroup.id) {
                     if (!pCurrGroup.subList) {
                         pCurrGroup.subList = [];
                     }
-                    pCurrGroup.subList = [...pCurrGroup.subList, props.layerData.groupCurr];
+                    pCurrGroup.subList = [
+                        ...pCurrGroup.subList,
+                        props.layerData.groupCurr
+                    ];
                 } else {
-                    props.layerData.groupTreeListRef.value = [...props.layerData.groupTreeListRef.value, props.layerData.groupCurr];
+                    props.layerData.groupTreeListRef.value = [
+                        ...props.layerData.groupTreeListRef.value,
+                        props.layerData.groupCurr
+                    ];
                 }
             }
-            // 转移节点后需要重新刷新列表
-            ctx.emit('notify', 'refresh', toRaw(props.layerData.groupTreeListRef.value))
-        }
+        };
 
         const cancel = () => {
             ctx.emit("close");
@@ -297,7 +328,7 @@ export default defineComponent({
             pGroupChange,
             groupNoTreeListRef,
             formDataRef,
-            doAdd,
+            doSubmit,
             cancel
         };
     }

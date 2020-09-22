@@ -71,7 +71,6 @@ import {
     inject,
     isRef,
     markRaw,
-    onMounted,
     ref,
     toRaw,
     unref,
@@ -235,10 +234,10 @@ export default defineComponent({
         const statusAuth = (id: number, status: number) => {};
 
         const ctrlStatus = (menu: Menu, status: number) => {
-            let params = toRaw({
+            let params = {
                 id: menu.id,
                 status: status
-            });
+            };
             apiRequest.v1
                 .post("/statusRule", params, {
                     headers: apiSign(params)

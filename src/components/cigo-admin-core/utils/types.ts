@@ -66,7 +66,7 @@ export interface Menu {
 }
 
 /**
- *
+ * 角色分组
  */
 export interface AuthGroup {
 	id: number;
@@ -79,7 +79,17 @@ export interface AuthGroup {
 	sort?: number;
 	status?: number;
 
+	//前端动态添加
 	level?: number;
+}
+
+/**
+ * 用户
+ */
+export interface User {
+	id: number;
+	status?: number;
+	create_time?: number;
 }
 
 /**

@@ -83,14 +83,12 @@ export default defineComponent({
     components: {
         CigoIconFont
     },
-    setup(props, context) {
-        let page = 0;
+    setup(props, ctx) {
         let groupTreeListRef: any = ref([]);
         onBeforeMount(() => {
             requestGroupList();
         });
         const requestGroupList = () => {
-            page++;
             let params = {
                 module: "admin"
             };
@@ -137,10 +135,10 @@ export default defineComponent({
         ];
 
         const ctrlStatus = (group: AuthGroup, status: number) => {
-            let params = toRaw({
+            let params = {
                 id: group.id,
                 status: status
-            });
+            };
             apiRequest.v1
                 .post("/statusGroup", params, {
                     headers: apiSign(params)
