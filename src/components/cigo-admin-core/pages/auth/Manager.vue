@@ -43,6 +43,7 @@
             <span v-if="txt"></span>
             <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
         </template>
+        <!-- //Tips_Flag Ant在authGroup为数组且有值得情况下，如果不用slot自定义视图，Ant将为authGroup数组子元素绑定v-node节点数据，在authGroup传递子组件时将导致长时间卡顿 -->
         <template v-slot:authGroup="{ txt, record }">
             <span v-if="txt"></span>
             <span>{{showAuthGroup(record)}}</span>

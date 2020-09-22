@@ -6,7 +6,7 @@ import cigoLayer from "@/components/cigo-layer/index";
  * 相关域名
  */
 export const apiDomain = process.env.VUE_APP_API_DOMAIN;
-export const enum bucket {
+export enum bucket {
 	open = "cigoadmin-open",
 	img = "cigoadmin-img",
 	video = "cigoadmin-video",
@@ -47,7 +47,7 @@ export const apiErrorCatch = {
 /**
  * 网络请求错误码
  */
-export const enum HttpReponseCode {
+export enum HttpReponseCode {
 	//成功
 	Success_OK = "200", // 请求成功
 	Success_Created = "201", // 请求成功，新资源建立
@@ -75,7 +75,7 @@ export const enum HttpReponseCode {
 /**
  * 接口错误码
  */
-export const enum ApiErrorCode {
+export enum ApiErrorCode {
 	//正确无误
 	OK = "0",
 
