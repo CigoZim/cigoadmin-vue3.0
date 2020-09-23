@@ -3,7 +3,7 @@
     <h1>普通上传</h1>
 
     <div class="upload-form">
-        <a-upload list-type="picture" :multiple="multiple" :fileList="fileListRef" :remove="removeFile" :beforeUpload="beforeUpload" @preview="showPreview">
+        <a-upload list-type="picture" :multiple="true" :fileList="fileListRef" :remove="removeFile" :beforeUpload="beforeUpload" @preview="showPreview">
             <a-button>
                 <upload-outlined />选择文件
             </a-button>
@@ -42,7 +42,6 @@ export default defineComponent({
         UploadOutlined
     },
     setup(props, context) {
-        let multiple = ref(true);
         let fileList: any[] = [];
         let fileListRef = ref(fileList);
         let uploadingNum = ref(0);
@@ -94,7 +93,6 @@ export default defineComponent({
 
         const doUpload = (fileIndex: number) => {
             let file = fileListRef.value[fileIndex];
-
             let paramsToken = {
                 bucket: bucket.img
             };
@@ -117,6 +115,7 @@ export default defineComponent({
                         params: {}, //用来放置自定义变量
                         mimeType: '"image/jpeg", "image/png", "image/gif"' //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
                     };
+
                     var observable = qiniu.upload(
                         file,
                         UUID.generate(),
@@ -170,7 +169,6 @@ export default defineComponent({
         };
 
         return {
-            multiple,
             fileListRef,
             uploadingNum,
 

@@ -5,6 +5,9 @@
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
+            <a-form-item label=" " name="img">
+                <cigo-avatar :avatarInfo="formDataRef.img_info" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
+            </a-form-item>
             <a-form-item label="管理员类型" name="role_flag">
                 <a-radio-group v-model:value="formDataRef.role_flag" :disabled="layerData.viewFlag">
                     <a-radio :value="2">管理员</a-radio>
@@ -39,12 +42,14 @@
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign
+    apiSign,
+    bucket
 } from "@/common/http";
 import {
     User
 } from "@/components/cigo-admin-core/utils/types";
 import cigoLayer from "@/components/cigo-layer";
+import CigoAvatar from "@/components/cigo-ui/unit/form/uploader/cigo-avatar.vue";
 import {
     useForm
 } from "@ant-design-vue/use";
@@ -56,10 +61,16 @@ import {
     onBeforeMount,
     onMounted,
     reactive,
-    toRaw
+    ref,
+    toRaw,
+    toRef,
+    watch
 } from "vue";
 export default defineComponent({
     name: "CigoEditManager",
+    components: {
+        CigoAvatar
+    },
     props: {
         layerData: {
             type: Object,
@@ -69,7 +80,12 @@ export default defineComponent({
     setup(props, ctx) {
         let formDataRef = reactive({
             id: props.layerData.managerCurr ?
-                props.layerData.managerCurr.id : null,
+                props.layerData.managerCurr.id : null, //Tips_Flag PHP后端识别null为空
+            img: props.layerData.managerCurr ?
+                props.layerData.managerCurr.img : 0,
+            img_info: props.layerData.managerCurr &&
+                props.layerData.managerCurr.img_info ?
+                props.layerData.managerCurr.img_info : undefined, //Tips_Flag 前端识别undefined
             role_flag: props.layerData.managerCurr ?
                 props.layerData.managerCurr.role_flag : 2,
             username: props.layerData.managerCurr ?
@@ -111,12 +127,18 @@ export default defineComponent({
             mergeValidateInfo
         } = useForm(formDataRef, formItemRules);
 
+        const updateAvatarInfo = (avatarInfo: any) => {
+            formDataRef.img = avatarInfo.id;
+            formDataRef.img_info = avatarInfo;
+        };
+
         const doSubmit = (e: any) => {
             e.preventDefault();
             validate()
                 .then(() => {
                     let params: any = {};
                     Object.assign(params, toRaw(formDataRef));
+                    delete params.img_info;
                     apiRequest.v1
                         .post(
                             props.layerData.managerCurr ?
@@ -176,6 +198,7 @@ export default defineComponent({
             },
             validateInfos,
             formDataRef,
+            updateAvatarInfo,
             doSubmit,
             cancel
         };

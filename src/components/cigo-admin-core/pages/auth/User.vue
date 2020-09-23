@@ -75,7 +75,8 @@ import dayjs from "dayjs";
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign
+    apiSign,
+    bucket
 } from "@/common/http";
 import cigoLayer from "@/components/cigo-layer";
 import {

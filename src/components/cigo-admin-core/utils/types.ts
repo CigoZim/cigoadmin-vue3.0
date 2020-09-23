@@ -16,8 +16,6 @@ export interface NoCachedState {
 }
 
 /**
-
-/**
  * 登录用户信息
  */
 export interface LoginUserInfo {
@@ -88,6 +86,8 @@ export interface AuthGroup {
  */
 export interface User {
 	id: number;
+	img?: number;
+	img_url?: string;
 	status?: number;
 	sex?: number;
 	auth_group?: [];
@@ -98,7 +98,7 @@ export interface User {
 /**
  * 菜单展开形式
  */
-export const enum ModeFormMenuExpand {
+export enum ModeFormMenuExpand {
 	NONE = "none",
 	CLICK_MENU = "click_menu",
 	NOW_ROUTER = "now_router",
