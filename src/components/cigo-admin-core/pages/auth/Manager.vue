@@ -255,9 +255,9 @@ export default defineComponent({
         const showAvatar = (url: string) => {
             cigoLayer.window({
                 component: CigoPreviewImg,
-                backgroundColor: '#00000000',
+                backgroundColor: "#00000000",
                 maskClose: true,
-                windowSize: 'max',
+                windowSize: "max",
                 showCtrlBar: false,
                 canDragFlag: false,
                 layerData: {

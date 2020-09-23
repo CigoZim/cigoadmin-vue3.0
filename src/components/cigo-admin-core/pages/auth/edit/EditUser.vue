@@ -5,6 +5,9 @@
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
+            <a-form-item label=" " name="img">
+                <cigo-avatar :avatarInfo="formDataRef.img_info" :editable="!layerData.viewFlag" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
+            </a-form-item>
             <a-form-item label="用户名：" name="username" v-bind="validateInfos.username">
                 <a-input v-model:value="formDataRef.username" placeholder="请输入用户名" :disabled="layerData.viewFlag" />
             </a-form-item>
@@ -47,6 +50,7 @@ import {
     User
 } from "@/components/cigo-admin-core/utils/types";
 import cigoLayer from "@/components/cigo-layer";
+import CigoAvatar from "@/components/cigo-ui/unit/form/uploader/cigo-avatar.vue";
 import {
     useForm
 } from "@ant-design-vue/use";
@@ -61,6 +65,9 @@ import {
 } from "vue";
 export default defineComponent({
     name: "CigoEditUser",
+    components: {
+        CigoAvatar
+    },
     props: {
         layerData: {
             type: Object,
@@ -69,16 +76,26 @@ export default defineComponent({
     },
     setup(props, ctx) {
         let formDataRef = reactive({
-            id: props.layerData.userCurr ? props.layerData.userCurr.id : null,
+            id: props.layerData.userCurr ? props.layerData.userCurr.id : null, //Tips_Flag PHP后端识别null为空
+            img: props.layerData.userCurr ? props.layerData.userCurr.img : 0,
+            img_info: props.layerData.userCurr && props.layerData.userCurr.img_info ?
+                props.layerData.userCurr.img_info :
+                {
+                    id: 0
+                }, //Tips_Flag 前端识别undefined
             username: props.layerData.userCurr ?
-                props.layerData.userCurr.username : "",
+                props.layerData.userCurr.username :
+                "",
             password: props.layerData.userCurr ?
-                props.layerData.userCurr.password : 100,
+                props.layerData.userCurr.password :
+                100,
             sex: props.layerData.userCurr ? props.layerData.userCurr.sex : 0,
             phone: props.layerData.userCurr ?
-                props.layerData.userCurr.phone : "",
+                props.layerData.userCurr.phone :
+                "",
             email: props.layerData.userCurr ?
-                props.layerData.userCurr.email : ""
+                props.layerData.userCurr.email :
+                ""
         });
         const formItemRules = reactive({
             username: [{
@@ -120,12 +137,18 @@ export default defineComponent({
             mergeValidateInfo
         } = useForm(formDataRef, formItemRules);
 
+        const updateAvatarInfo = (avatarInfo: any) => {
+            formDataRef.img = avatarInfo.id;
+            formDataRef.img_info = avatarInfo;
+        };
+
         const doSubmit = (e: any) => {
             e.preventDefault();
             validate()
                 .then(() => {
                     let params: any = {};
                     Object.assign(params, toRaw(formDataRef));
+                    delete params.img_info;
                     apiRequest.v1
                         .post(
                             props.layerData.userCurr ? "/editUser" : "/addUser",
@@ -171,8 +194,6 @@ export default defineComponent({
         };
 
         const cancel = () => {
-            console.log(formDataRef);
-
             ctx.emit("close");
         };
 
@@ -185,6 +206,7 @@ export default defineComponent({
             },
             validateInfos,
             formDataRef,
+            updateAvatarInfo,
             doSubmit,
             cancel
         };

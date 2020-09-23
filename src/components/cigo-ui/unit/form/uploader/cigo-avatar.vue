@@ -1,12 +1,12 @@
 <template>
-<div class="cigo-avatar">
+<div class="cigo-avatar" @mouseenter="hover(true)" @mouseleave="hover(false)">
     <input type="file" ref="vFileRef" style="display:none;width:0;height:0;padding:0;" @change="fileSelectChange($event.target.files)" accept="image/x-png, image/jpg, image/jpeg, image/gif" />
     <div class="avatar">
         <img v-if="preViewUrlRef" :src="preViewUrlRef" />
     </div>
-    <div class="ctrl-bar">
+    <div class="ctrl-bar" ref="vCtrlBarRef">
         <cigo-icon-font v-if="preViewUrlRef" class="icon" @click.stop="showPreview" :name="'cigoadmin-icon-liulan'"></cigo-icon-font>
-        <cigo-icon-font class="icon" @click.stop="chooseImg" :name="'cigoadmin-icon-bianji'"></cigo-icon-font>
+        <cigo-icon-font v-if="editable" class="icon" @click.stop="chooseImg" :name="'cigoadmin-icon-bianji'"></cigo-icon-font>
     </div>
 </div>
 </template>
@@ -23,6 +23,9 @@ import {
 } from "vue";
 import * as qiniu from "qiniu-js";
 import UUID from "uuidjs";
+import {
+    TweenMax
+} from "gsap";
 import {
     makeFileExtFilter,
     FileSaved
@@ -42,6 +45,10 @@ export default defineComponent({
         CigoIconFont
     },
     props: {
+        editable: {
+            type: Boolean,
+            default: true
+        },
         avatarInfo: {
             type: Object,
             default: () => {
@@ -54,6 +61,8 @@ export default defineComponent({
     setup(props, ctx) {
         let vFileRefTmp: any = null;
         let vFileRef = ref(vFileRefTmp);
+        let vCtrlBarTmp: any = null;
+        let vCtrlBarRef = ref(vCtrlBarTmp);
 
         let preViewUrlTmp: any;
         let preViewUrlRef = ref(preViewUrlTmp);
@@ -65,8 +74,24 @@ export default defineComponent({
             initFileInfo();
         });
 
+        const hover = (flag: boolean) => {
+            TweenMax.to(".ctrl-bar", 0.5, {
+                opacity: flag ? 1 : 0,
+                onStart: () => {
+                    if (flag) {
+                        vCtrlBarRef.value.style.display = 'flex';
+                    }
+                },
+                onComplete: () => {
+                    if (!flag) {
+                        vCtrlBarRef.value.style.display = 'none';
+                    }
+                }
+            });
+        };
+
         const initFileInfo = () => {
-            if (!props.avatarInfo) {
+            if (props.avatarInfo.id == 0) {
                 return;
             }
             //解析平台
@@ -202,6 +227,8 @@ export default defineComponent({
 
         return {
             vFileRef,
+            vCtrlBarRef,
+            hover,
             preViewUrlRef,
             chooseImg,
             fileSelectChange,
@@ -258,10 +285,5 @@ export default defineComponent({
             color: #f0f0f0;
         }
     }
-}
-
-.cigo-avatar:hover>.ctrl-bar {
-    display: flex;
-    opacity: 0.6;
 }
 </style>

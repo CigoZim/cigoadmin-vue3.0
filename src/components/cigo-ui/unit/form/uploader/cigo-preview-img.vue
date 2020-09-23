@@ -27,8 +27,6 @@ export default defineComponent({
         }
     },
     setup(props, ctx) {
-        console.log(props.layerData.imgList);
-
         let currImgIndex = ref(0);
 
         const changeImg = (step: number) => {

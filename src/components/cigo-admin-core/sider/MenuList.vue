@@ -1,6 +1,6 @@
 <template>
 <div class="cigo-menu-list">
-    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :key="index" @click.stop="clickMenu(item)" @mouseenter="hoverMenuItem(item, true)" @mouseleave="hoverMenuItem(item, false)">
+    <div class="menu-container" :class="makeMenuItemContainerClass(item)" v-for="(item, index) in menuList" :ref="el => { if (el) vMenuListRefs[item.id] = el }" :key="index" @click.stop="clickMenu(item)" @mouseenter="hoverMenuItem(item, true)" @mouseleave="hoverMenuItem(item, false)">
         <div class="menu-common" :class="makeMenuItemClass(item)">
             <div class="item-left">
                 <i class="item-line" v-if="!item.group_flag"></i>
@@ -284,6 +284,12 @@ export default defineComponent({
                 subMenuListAnimation(preMenu, false);
             }
         });
+        //TODO v-for中refs的应用
+        let vMenuListTmp: any[] = [];
+        const vMenuListRefs = ref(vMenuListTmp);
+        onBeforeUpdate(() => {
+            vMenuListRefs.value = [];
+        })
         //TODO 优化菜单管理，level的使用：是用item.level还是props.level
         const subMenuListAnimation = (item: Menu, openFlag: boolean) => {
             if (!item.subList || !item.subList.length) {
@@ -341,6 +347,7 @@ export default defineComponent({
         };
 
         return {
+            vMenuListRefs,
             makeMenuItemContainerClass,
             makeMenuItemClass,
             clickMenu,

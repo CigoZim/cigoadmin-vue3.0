@@ -6,7 +6,7 @@
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
             <a-form-item label=" " name="img">
-                <cigo-avatar :avatarInfo="formDataRef.img_info" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
+                <cigo-avatar :avatarInfo="formDataRef.img_info" :editable="!layerData.viewFlag" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
             </a-form-item>
             <a-form-item label="管理员类型" name="role_flag">
                 <a-radio-group v-model:value="formDataRef.role_flag" :disabled="layerData.viewFlag">
@@ -80,22 +80,32 @@ export default defineComponent({
     setup(props, ctx) {
         let formDataRef = reactive({
             id: props.layerData.managerCurr ?
-                props.layerData.managerCurr.id : null, //Tips_Flag PHP后端识别null为空
+                props.layerData.managerCurr.id :
+                null, //Tips_Flag PHP后端识别null为空
             img: props.layerData.managerCurr ?
-                props.layerData.managerCurr.img : 0,
+                props.layerData.managerCurr.img :
+                0,
             img_info: props.layerData.managerCurr &&
                 props.layerData.managerCurr.img_info ?
-                props.layerData.managerCurr.img_info : undefined, //Tips_Flag 前端识别undefined
+                props.layerData.managerCurr.img_info :
+                {
+                    id: 0
+                }, //Tips_Flag 前端识别undefined
             role_flag: props.layerData.managerCurr ?
-                props.layerData.managerCurr.role_flag : 2,
+                props.layerData.managerCurr.role_flag :
+                2,
             username: props.layerData.managerCurr ?
-                props.layerData.managerCurr.username : "",
+                props.layerData.managerCurr.username :
+                "",
             password: props.layerData.managerCurr ?
-                props.layerData.managerCurr.password : 100,
+                props.layerData.managerCurr.password :
+                100,
             email: props.layerData.managerCurr ?
-                props.layerData.managerCurr.email : "",
+                props.layerData.managerCurr.email :
+                "",
             auth_group: props.layerData.managerCurr ?
-                props.layerData.managerCurr.auth_group : []
+                props.layerData.managerCurr.auth_group :
+                []
         });
         const formItemRules = reactive({
             username: [{
