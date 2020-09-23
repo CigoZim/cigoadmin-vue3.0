@@ -5,8 +5,9 @@
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
-            <span>{{formDataRef.img}}</span>
-            <cigo-avatar v-model:avatarInfo="formDataRef.img_info"></cigo-avatar>
+            <a-form-item label=" " name="img">
+                <cigo-avatar :avatarInfo="formDataRef.img_info" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
+            </a-form-item>
             <a-form-item label="管理员类型" name="role_flag">
                 <a-radio-group v-model:value="formDataRef.role_flag" :disabled="layerData.viewFlag">
                     <a-radio :value="2">管理员</a-radio>
@@ -41,7 +42,8 @@
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign
+    apiSign,
+    bucket
 } from "@/common/http";
 import {
     User
@@ -60,7 +62,9 @@ import {
     onMounted,
     reactive,
     ref,
-    toRaw
+    toRaw,
+    toRef,
+    watch
 } from "vue";
 export default defineComponent({
     name: "CigoEditManager",
@@ -123,12 +127,18 @@ export default defineComponent({
             mergeValidateInfo
         } = useForm(formDataRef, formItemRules);
 
+        const updateAvatarInfo = (avatarInfo: any) => {
+            formDataRef.img = avatarInfo.id;
+            formDataRef.img_info = avatarInfo;
+        };
+
         const doSubmit = (e: any) => {
             e.preventDefault();
             validate()
                 .then(() => {
                     let params: any = {};
                     Object.assign(params, toRaw(formDataRef));
+                    delete params.img_info;
                     apiRequest.v1
                         .post(
                             props.layerData.managerCurr ?
@@ -188,6 +198,7 @@ export default defineComponent({
             },
             validateInfos,
             formDataRef,
+            updateAvatarInfo,
             doSubmit,
             cancel
         };

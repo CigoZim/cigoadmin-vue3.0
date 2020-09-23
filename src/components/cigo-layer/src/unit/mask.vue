@@ -1,14 +1,17 @@
 <template>
-    <div class="cigo-layer-mask-content" @click="click"></div>
+<div class="cigo-layer-mask-content" @click="click"></div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import {
+    defineComponent,
+    onMounted
+} from "vue";
 export default defineComponent({
     name: "CigoLayerMask",
-    setup(props, context) {
+    setup(props, ctx) {
         const click = () => {
-            context.emit("clickMask");
+            ctx.emit("clickMask");
         };
 
         return {

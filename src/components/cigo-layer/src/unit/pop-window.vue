@@ -1,13 +1,13 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" :class="[windowSize=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
+<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" :class="[windowSizeRef=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
     <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
     <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
-        <component v-if="windowSize !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="delayClose" />
-        <div class="pop-window-bar">
-            <cigo-icon-font v-if="windowSize !== 'min'" class="pop-window-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSize !== 'common'" class="pop-window-bar-icon" @click.stop="changeWinSie('common')" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSize !== 'max'" class="pop-window-bar-icon" @click.stop="changeWinSie('max')" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
-            <cigo-icon-font class="pop-window-bar-icon" @click.stop="close" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
+        <component v-if="windowSizeRef !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="notifyClose" />
+        <div v-if="showCtrlBar" class="pop-window-bar">
+            <cigo-icon-font v-if="windowSizeRef !== 'min'" class="pop-window-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
+            <cigo-icon-font v-if="windowSizeRef !== 'common'" class="pop-window-bar-icon" @click.stop="changeWinSie('common')" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
+            <cigo-icon-font v-if="windowSizeRef !== 'max'" class="pop-window-bar-icon" @click.stop="changeWinSie('max')" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
+            <cigo-icon-font class="pop-window-bar-icon" @click.stop="clickClose" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
         </div>
     </div>
 </div>
@@ -50,6 +50,18 @@ export default defineComponent({
             type: String,
             default: "400px"
         },
+        windowSize: {
+            type: String,
+            default: "common"
+        },
+        showCtrlBar: {
+            type: Boolean,
+            default: true
+        },
+        canDragFlag: {
+            type: Boolean,
+            default: true
+        },
         backgroundColor: {
             type: String,
             default: '#fff'
@@ -78,14 +90,13 @@ export default defineComponent({
         onMounted(() => {
             winResize();
         });
-
-        let windowSize = ref('common');
+        let windowSizeRef = ref(props.windowSize);
         const changeWinSie = (size: string) => {
             if (dragFlag == 0) {
-                windowSize.value = size;
+                windowSizeRef.value = size;
             }
         };
-        watch(windowSize, () => {
+        watch(windowSizeRef, () => {
             moveX.value = 0;
             moveY.value = 0;
             dragedX = 0;
@@ -97,7 +108,7 @@ export default defineComponent({
             let contentOpacity = 1;
             let contentWidth = props.width;
             let contentHeight = props.height;
-            switch (windowSize.value) {
+            switch (windowSizeRef.value) {
                 case 'max':
                     contentWidth = '100%';
                     contentHeight = '100%';
@@ -128,7 +139,10 @@ export default defineComponent({
             TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, showOptions.value.content);
         };
 
-        const close = () => {
+        const notifyClose = () => {
+            delayClose();
+        };
+        const clickClose = () => {
             if (dragFlag != 0) {
                 return;
             }
@@ -161,6 +175,9 @@ export default defineComponent({
         let startX = 0;
         let startY = 0;
         const startDrag = (e: any) => {
+            if (!props.canDragFlag) {
+                return;
+            }
             dragFlag = 0;
             dragStarted = true;
             startX = e.pageX;
@@ -169,6 +186,9 @@ export default defineComponent({
             dragedY = moveY.value;
         };
         const mouseMoving = (e: any) => {
+            if (!props.canDragFlag) {
+                return;
+            }
             if (!dragStarted) {
                 return;
             }
@@ -191,6 +211,9 @@ export default defineComponent({
             }
         });
         const stopDrag = () => {
+            if (!props.canDragFlag) {
+                return;
+            }
             if (dragging.value) {
                 dragFlag = 1;
             }
@@ -201,9 +224,10 @@ export default defineComponent({
         return {
             componentRaw,
             changeWinSie,
-            windowSize,
+            windowSizeRef,
             clickMask,
-            close,
+            notifyClose,
+            clickClose,
             delayClose,
             targetPos,
             startDrag,

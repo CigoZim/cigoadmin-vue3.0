@@ -92,12 +92,7 @@ export default defineComponent({
         };
 
         const doUpload = (fileIndex: number) => {
-            console.log('111111');
-
             let file = fileListRef.value[fileIndex];
-            console.log('file:', file);
-            return;
-
             let paramsToken = {
                 bucket: bucket.img
             };

@@ -39,7 +39,8 @@
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign
+    apiSign,
+    bucket
 } from "@/common/http";
 import {
     AuthGroup,

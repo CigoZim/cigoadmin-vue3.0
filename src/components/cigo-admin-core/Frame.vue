@@ -10,6 +10,8 @@
 </template>
 
 <script lang="ts">
+import "./css/index.css";
+
 import {
     defineComponent,
     onBeforeMount,

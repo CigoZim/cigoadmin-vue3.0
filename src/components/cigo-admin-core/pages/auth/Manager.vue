@@ -25,7 +25,9 @@
     <a-table class="manager-list" :rowKey="'id'" :locale="{emptyText:'暂无管理员数据'}" :pagination="true" :columns="columns" :data-source="managerListRef" :scroll="{ x: 2000 , y: 'max-content'}">
         <template v-slot:img="{ txt, record }">
             <span v-if="txt"></span>
-            <span>{{record.is_online ? '在线' : '离线'}}</span>
+            <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
+                <img class="avatar" :src="record.img_info.signed_url" />
+            </div>
         </template>
         <template v-slot:roleFlag="{ txt, record }">
             <span v-if="txt"></span>
@@ -85,13 +87,15 @@ import dayjs from "dayjs";
 import {
     apiErrorCatch,
     apiRequest,
-    apiSign
+    apiSign,
+    bucket
 } from "@/common/http";
 import {
     AuthGroup,
     User
 } from "../../utils/types";
 import cigoLayer from "@/components/cigo-layer";
+import CigoPreviewImg from "@/components/cigo-ui/unit/form/uploader/cigo-preview-img.vue";
 export default defineComponent({
     name: "CigoManager",
     components: {
@@ -248,6 +252,20 @@ export default defineComponent({
             }
         ];
 
+        const showAvatar = (url: string) => {
+            cigoLayer.window({
+                component: CigoPreviewImg,
+                backgroundColor: '#00000000',
+                maskClose: true,
+                windowSize: 'max',
+                showCtrlBar: false,
+                canDragFlag: false,
+                layerData: {
+                    imgList: url ? [url] : []
+                }
+            });
+        };
+
         const showSex = (manager: User) => {
             let sex = "";
             switch (manager.sex) {
@@ -361,6 +379,7 @@ export default defineComponent({
             requestList,
             managerListRef,
             columns,
+            showAvatar,
             dayjs,
             showSex,
             showAuthGroup,
@@ -396,6 +415,22 @@ export default defineComponent({
     }
 
     .manager-list {
+        .avatar-layer {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 1px;
+            border: 1px solid #f0f0f055;
+            cursor: pointer;
+            box-shadow: 0px 2px 3px #ccc;
+
+            .avatar {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+
         .opt-btn {
             margin-right: 5px;
         }
