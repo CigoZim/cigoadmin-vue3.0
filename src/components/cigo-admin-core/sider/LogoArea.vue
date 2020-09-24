@@ -1,6 +1,6 @@
 <template>
 <div class="cigo-logo-area">
-    <p class="short-title">C</p>
+    <p class="short-title">{{Env.VUE_APP_SHORT_TAG}}</p>
     <p class="full-title">{{Env.VUE_APP_PROJECT_NAME_EN +" "+Env.VUE_APP_PROJECT_NAME_CN}}</p>
 </div>
 </template>
