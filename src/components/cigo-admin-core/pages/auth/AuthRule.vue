@@ -239,7 +239,7 @@ export default defineComponent({
                 status: status
             };
             apiRequest.v1
-                .post("/statusRule", params, {
+                .post("/status/Rule", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {

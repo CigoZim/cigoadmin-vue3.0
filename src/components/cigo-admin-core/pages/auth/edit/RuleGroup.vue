@@ -159,17 +159,13 @@ export default defineComponent({
         let formDataRef = reactive({
             id: props.layerData.groupCurr ? props.layerData.groupCurr.id : null,
             title: props.layerData.groupCurr ?
-                props.layerData.groupCurr.title :
-                "",
+                props.layerData.groupCurr.title : "",
             sort: props.layerData.groupCurr ?
-                props.layerData.groupCurr.sort :
-                100,
+                props.layerData.groupCurr.sort : 100,
             summary: props.layerData.groupCurr ?
-                props.layerData.groupCurr.summary :
-                "",
+                props.layerData.groupCurr.summary : "",
             rules: props.layerData.groupCurr ?
-                props.layerData.groupCurr.rules :
-                [],
+                props.layerData.groupCurr.rules : [],
             pid: pOldGroup.id,
             path: pOldGroup.path + pOldGroup.id + ","
         });
@@ -219,8 +215,8 @@ export default defineComponent({
                     apiRequest.v1
                         .post(
                             props.layerData.groupCurr ?
-                            "/editGroup" :
-                            "/addGroup",
+                            "/edit/Group" :
+                            "/add/Group",
                             params, {
                                 headers: apiSign(params)
                             }

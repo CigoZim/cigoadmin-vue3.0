@@ -232,7 +232,7 @@ export default defineComponent({
                     let params = toRaw(formDataRef);
                     apiRequest.v1
                         .post(
-                            props.layerData.menuCurr ? "/editRule" : "/addRule",
+                            props.layerData.menuCurr ? "/edit/Rule" : "/add/Rule",
                             params, {
                                 headers: apiSign(params)
                             }

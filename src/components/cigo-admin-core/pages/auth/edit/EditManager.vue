@@ -148,8 +148,8 @@ export default defineComponent({
                     apiRequest.v1
                         .post(
                             props.layerData.managerCurr ?
-                            "/editManager" :
-                            "/addManager",
+                            "/edit/Manager" :
+                            "/add/Manager",
                             params, {
                                 headers: apiSign(params)
                             }

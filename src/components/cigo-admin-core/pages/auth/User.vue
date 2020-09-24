@@ -223,7 +223,7 @@ export default defineComponent({
                 status: status
             };
             apiRequest.v1
-                .post("/statusUser", params, {
+                .post("/status/User", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {

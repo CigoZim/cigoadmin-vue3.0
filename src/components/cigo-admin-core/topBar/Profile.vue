@@ -160,7 +160,7 @@ export default defineComponent({
                     delete params.img_info;
                     apiRequest.v1
                         .post(
-                            "/editManager",
+                            "/edit/Manager",
                             params, {
                                 headers: apiSign(params)
                             }

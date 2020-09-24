@@ -140,7 +140,7 @@ export default defineComponent({
                 status: status
             };
             apiRequest.v1
-                .post("/statusGroup", params, {
+                .post("/status/Group", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {

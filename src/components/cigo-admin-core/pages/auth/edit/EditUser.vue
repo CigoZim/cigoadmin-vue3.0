@@ -150,7 +150,7 @@ export default defineComponent({
                     delete params.img_info;
                     apiRequest.v1
                         .post(
-                            props.layerData.userCurr ? "/editUser" : "/addUser",
+                            props.layerData.userCurr ? "/edit/User" : "/add/User",
                             params, {
                                 headers: apiSign(params)
                             }

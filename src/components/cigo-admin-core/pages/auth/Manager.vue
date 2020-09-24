@@ -303,7 +303,7 @@ export default defineComponent({
                 status: status
             };
             apiRequest.v1
-                .post("/statusManager", params, {
+                .post("/status/Manager", params, {
                     headers: apiSign(params)
                 })
                 .then(response => {
