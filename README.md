@@ -10,6 +10,10 @@
 
 - 密码：123456
 
+## 后端仓库
+
+-- https://gitee.com/cigozim/cigoadmin-tp6.0
+
 ## 项目运行及打包
 
 ```
@@ -17,6 +21,10 @@ yarn install
 yarn serve
 yarn build
 ```
+
+## 交流群
+
+- 291297156
 
 # 鸣谢
 
