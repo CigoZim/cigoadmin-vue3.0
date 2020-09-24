@@ -5,8 +5,8 @@
         <div class="form-layer shadow two"></div>
         <div class="form-layer shadow one">
             <div class="adv-content">
-                <p class="title">CigoAdmin：西谷后台</p>
-                <p class="sub-title">——西谷开源出品</p>
+                <p class="title">{{Env.VUE_APP_PROJECT_NAME_EN +"："+Env.VUE_APP_PROJECT_NAME_CN}}</p>
+                <p class="sub-title">——{{Env.VUE_APP_COMPANY_SHORT}}出品</p>
             </div>
         </div>
         <div class="form-layer content">
@@ -39,7 +39,7 @@ import {
     onMounted,
     readonly,
     toRaw,
-    onUnmounted,
+    onUnmounted
 } from "vue";
 
 import {
@@ -61,11 +61,12 @@ import {
     useForm
 } from "@ant-design-vue/use";
 import cigoLayer from "@/components/cigo-layer";
-import router from '@/router';
+import router from "@/router";
 
 export default defineComponent({
     name: "Login",
     setup(props) {
+        let Env = reactive(process.env);
         const modelRef = reactive({
             username: "admin",
             password: "123456",
@@ -112,7 +113,7 @@ export default defineComponent({
                             cigoLayer.msg("登录成功");
                             systemStore.saveUserInfo(userInfo);
 
-                            router.push('/');
+                            router.push("/");
                         })
                         .catch(apiErrorCatch.v1);
                 })
@@ -122,6 +123,7 @@ export default defineComponent({
         };
 
         return {
+            Env,
             labelCol: {
                 span: 6
             },

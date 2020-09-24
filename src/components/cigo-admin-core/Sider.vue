@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="copy-right">
-        <span>@西谷开源 出品</span>
+        <span>@{{Env.VUE_APP_COMPANY_SHORT}} 出品</span>
     </div>
 </div>
 </template>
@@ -21,6 +21,7 @@ import {
     toRefs,
     inject,
     ref,
+    reactive
 } from "vue";
 import LogoArea from "./sider/LogoArea.vue";
 import MenuList from "./sider/MenuList.vue";
@@ -41,6 +42,7 @@ export default defineComponent({
         MenuList
     },
     setup(props, context) {
+        let Env = reactive(process.env);
         let menuTreeListRef: any = inject("menuTreeListRef"); //Tips_FLAG 父变子变示例1/3：provide & inject
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
@@ -80,6 +82,7 @@ export default defineComponent({
         };
 
         return {
+            Env,
             ...toRefs(systemStore.getState().systemState),
             menuTreeListRef
         };
