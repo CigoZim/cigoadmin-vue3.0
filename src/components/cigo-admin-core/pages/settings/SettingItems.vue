@@ -1,6 +1,6 @@
 <template>
-<div class="cigo-files">
-    <h1>上传文件管理</h1>
+<div class="cigo-settign-items">
+    <h1>系统配置项管理</h1>
 </div>
 </template>
 
@@ -9,7 +9,7 @@ import {
     defineComponent,
 } from "vue";
 export default defineComponent({
-    name: "CigoUploadFiles",
+    name: "CigoSettingItems",
     setup() {
         return {};
     }
@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.cigo-files {
+.cigo-settign-items {
     display: flex;
 }
 </style>
