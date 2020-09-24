@@ -222,6 +222,7 @@ export default defineComponent({
                 id: user.id,
                 status: status
             };
+
             apiRequest.v1
                 .post("/status/User", params, {
                     headers: apiSign(params)
