@@ -1,14 +1,13 @@
 <template>
 <div class="cigo-manager-icon">
     <div class="line"></div>
-    <cigo-icon-font class="icon avatar" @click.stop="jumpTo('/frame/profile')" :name="'cigoadmin-icon-touxiangtongyong'" title="管理员"></cigo-icon-font>
-    <span class="user-name" @click.stop="jumpTo('/frame/profile')">管理员</span>
+    <cigo-icon-font v-if="!userInfo.img_info || !userInfo.img_info.signed_url" class="icon avatar" @click.stop="profile" :name="'cigoadmin-icon-touxiangtongyong'" title="管理员"></cigo-icon-font>
+    <img v-if="userInfo.img_info && userInfo.img_info.signed_url" class="icon avatar" :src="userInfo.img_info.signed_url" @click.stop="profile" title="管理员" />
+    <span class="user-name" @click.stop="profile">{{userInfo.nickname || userInfo.username}}</span>
     <div class="menu-list-container" @mouseenter="hoverMoreIcon(true)" @mouseleave="hoverMoreIcon(false)">
         <cigo-icon-font class="icon more" :name="'cigoadmin-icon-gengduo'" title="更多"></cigo-icon-font>
         <div class="menu-list">
-            <span class="menu-item" @click="jumpTo('/frame/profile')">个人信息</span>
-            <span class="menu-item" @click="jumpTo('/frame/modifyIcon')">修改头像</span>
-            <span class="menu-item" @click="jumpTo('/frame/modifyPwd')">修改密码</span>
+            <span class="menu-item" @click="profile">个人信息</span>
             <span class="divider"></span>
             <span class="menu-item" @click="jumpTo('/frame/manager')">管理员</span>
             <span class="menu-item" @click="jumpTo('/frame/authGroup')">角色管理</span>
@@ -22,7 +21,8 @@
 
 <script lang="ts">
 import {
-    defineComponent
+    defineComponent,
+    toRefs
 } from "vue";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 
@@ -33,6 +33,8 @@ import router from "@/router/index";
 import {
     TweenMax
 } from "gsap";
+import Profile from "@/components/cigo-admin-core/topBar/Profile.vue";
+import cigoLayer from "@/components/cigo-layer";
 
 export default defineComponent({
     name: "CigoManagerIcon",
@@ -40,8 +42,20 @@ export default defineComponent({
         CigoIconFont
     },
     setup() {
+        const profile = () => {
+            cigoLayer.window({
+                component: Profile,
+                width: "800px",
+                height: "600px",
+                maskClose: false,
+                layerData: {
+                    title: "个人信息"
+                }
+            });
+        };
         const jumpTo = (path: string) => {
             console.log("跳转:", path);
+            router.push(path);
         };
         const hoverMoreIcon = (inOutFlag: boolean) => {
             TweenMax.to(
@@ -68,6 +82,8 @@ export default defineComponent({
         };
 
         return {
+            ...toRefs(systemStore.getState()),
+            profile,
             jumpTo,
             hoverMoreIcon,
             logout

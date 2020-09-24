@@ -48,7 +48,7 @@ import {
     apiErrorCatch
 } from "@/common/http";
 import {
-    LoginUserInfo
+    User
 } from "@/components/cigo-admin-core/utils/types";
 import {
     systemStore
@@ -61,6 +61,7 @@ import {
     useForm
 } from "@ant-design-vue/use";
 import cigoLayer from "@/components/cigo-layer";
+import router from '@/router';
 
 export default defineComponent({
     name: "Login",
@@ -106,20 +107,12 @@ export default defineComponent({
                             headers: apiSign(params)
                         })
                         .then(response => {
-                            let userInfo: LoginUserInfo = {
-                                isLogin: true,
-                                id: response.data.data.id,
-                                token: response.data.data.token,
-                                username: response.data.data.username,
-                                phone: response.data.data.phone,
-                                nickname: response.data.data.nickname,
-                                realname: response.data.data.realname,
-                                email: response.data.data.email,
-                                role_flag: response.data.data.role_flag
-                            };
+                            let userInfo: User = response.data.data;
+                            userInfo.isLogin = true;
                             cigoLayer.msg("登录成功");
-
                             systemStore.saveUserInfo(userInfo);
+
+                            router.push('/');
                         })
                         .catch(apiErrorCatch.v1);
                 })

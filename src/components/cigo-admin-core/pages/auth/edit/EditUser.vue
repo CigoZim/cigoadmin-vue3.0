@@ -21,6 +21,9 @@
                     <a-radio :value="2">女</a-radio>
                 </a-radio-group>
             </a-form-item>
+            <a-form-item label="昵称：" name="nickname">
+                <a-input v-model:value="formDataRef.nickname" placeholder="请设置昵称" :disabled="layerData.viewFlag" />
+            </a-form-item>
             <a-form-item label="手机号：" name="phone" v-bind="validateInfos.phone">
                 <a-input v-model:value="formDataRef.phone" placeholder="请输入手机号" :disabled="layerData.viewFlag" />
             </a-form-item>
@@ -79,23 +82,19 @@ export default defineComponent({
             id: props.layerData.userCurr ? props.layerData.userCurr.id : null, //Tips_Flag PHP后端识别null为空
             img: props.layerData.userCurr ? props.layerData.userCurr.img : 0,
             img_info: props.layerData.userCurr && props.layerData.userCurr.img_info ?
-                props.layerData.userCurr.img_info :
-                {
+                props.layerData.userCurr.img_info : {
                     id: 0
                 }, //Tips_Flag 前端识别undefined
             username: props.layerData.userCurr ?
-                props.layerData.userCurr.username :
-                "",
-            password: props.layerData.userCurr ?
-                props.layerData.userCurr.password :
-                100,
+                props.layerData.userCurr.username : "",
+            nickname: props.layerData.userCurr ?
+                props.layerData.userCurr.nickname : "",
+            password: "",
             sex: props.layerData.userCurr ? props.layerData.userCurr.sex : 0,
             phone: props.layerData.userCurr ?
-                props.layerData.userCurr.phone :
-                "",
+                props.layerData.userCurr.phone : "",
             email: props.layerData.userCurr ?
-                props.layerData.userCurr.email :
-                ""
+                props.layerData.userCurr.email : ""
         });
         const formItemRules = reactive({
             username: [{

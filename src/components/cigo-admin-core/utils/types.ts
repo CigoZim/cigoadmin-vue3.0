@@ -16,20 +16,6 @@ export interface NoCachedState {
 }
 
 /**
- * 登录用户信息
- */
-export interface LoginUserInfo {
-	isLogin: boolean;
-	id?: number;
-	token?: string;
-	phone?: string;
-	username?: string;
-	realname?: string;
-	nickname?: string;
-	email?: string;
-	role_flag?: number;
-}
-/**
  * 菜单类型
  */
 export interface Menu {
@@ -86,13 +72,22 @@ export interface AuthGroup {
  */
 export interface User {
 	id: number;
+	role_flag?: number;
 	img?: number;
-	img_url?: string;
+	img_info?: Object;
 	status?: number;
 	sex?: number;
 	auth_group?: [];
-
+	username?: string;
+	realname?: string;
+	nickname?: string;
+	phone?: string;
+	email?: string;
+	token?: string;
 	create_time?: number;
+
+	//前端动态添加
+	isLogin?: boolean;
 }
 
 /**

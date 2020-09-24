@@ -3,7 +3,7 @@ import router from "@/router/index";
 import {
 	SystemState,
 	NoCachedState,
-	LoginUserInfo,
+	User,
 	Menu,
 	ModeFormMenuExpand,
 } from "@/components/cigo-admin-core/utils/types";
@@ -12,7 +12,7 @@ import cigoLayer from "@/components/cigo-layer";
 interface State {
 	systemState: SystemState;
 	noCached: NoCachedState;
-	userInfo: LoginUserInfo;
+	userInfo: User;
 	openTabs: string[];
 }
 class Store {
@@ -110,13 +110,11 @@ class Store {
 	/**
 	 * 保存用户信息
 	 */
-	public saveUserInfo(userInfo: LoginUserInfo): void {
+	public saveUserInfo(userInfo: User): void {
 		this.state = reactive(initialState());
 		this.state.userInfo = userInfo;
 		localStorage.clear();
 		this.synchronizeData();
-
-		router.push("/");
 	}
 
 	/**
@@ -211,7 +209,7 @@ const initialState = (): State => {
 	let noCached: NoCachedState = {
 		modeForMenuExpand: ModeFormMenuExpand.NOW_ROUTER,
 	};
-	let userInfo: LoginUserInfo = { isLogin: false };
+	let userInfo: User = { isLogin: false, id: 0 };
 	let tabs: string[] = [];
 	return {
 		systemState: systemState,

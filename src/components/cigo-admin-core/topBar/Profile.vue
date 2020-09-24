@@ -1,41 +1,41 @@
 <template>
-<div class="edit-manager">
+<div class="cigo-profile">
     <div class="title-area">
         <span>{{layerData.title}}</span>
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
             <a-form-item label=" " name="img">
-                <cigo-avatar :avatarInfo="formDataRef.img_info" :editable="!layerData.viewFlag" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
+                <cigo-avatar :avatarInfo="formDataRef.img_info" @update:avatarInfo="updateAvatarInfo"></cigo-avatar>
             </a-form-item>
             <a-form-item label="管理员类型" name="role_flag">
-                <a-radio-group v-model:value="formDataRef.role_flag" :disabled="layerData.viewFlag">
+                <a-radio-group v-model:value="formDataRef.role_flag">
                     <a-radio :value="2">管理员</a-radio>
                     <a-radio :value="4">超级管理员</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item label="用户名：" name="username" v-bind="validateInfos.username">
-                <a-input v-model:value="formDataRef.username" placeholder="请输入用户名" :disabled="layerData.viewFlag" />
+            <a-form-item label="用户名：">
+                <span>{{formDataRef.username}}</span>
             </a-form-item>
             <a-form-item label="密码：" name="password" v-bind="validateInfos.password">
-                <a-input v-model:value="formDataRef.password" type="password" placeholder="请设置密码" :disabled="layerData.viewFlag" />
+                <a-input v-model:value="formDataRef.password" type="password" placeholder="请设置密码" />
             </a-form-item>
             <a-form-item label="昵称：" name="nickname">
-                <a-input v-model:value="formDataRef.nickname" placeholder="请设置昵称" :disabled="layerData.viewFlag" />
+                <a-input v-model:value="formDataRef.nickname" type="nickname" placeholder="请设置昵称" />
             </a-form-item>
             <a-form-item label="邮箱：" name="email" v-bind="validateInfos.email">
-                <a-input v-model:value="formDataRef.email" placeholder="请填写邮箱" :disabled="layerData.viewFlag" />
+                <a-input v-model:value="formDataRef.email" placeholder="请填写邮箱" />
             </a-form-item>
             <div class="line"></div>
             <a-form-item label="角色配置：" name="auth_group">
-                <a-tree v-model:checkedKeys="formDataRef.auth_group" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="layerData.groupList" :disabled="layerData.viewFlag" />
+                <a-tree v-model:checkedKeys="formDataRef.auth_group" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="groupList" />
             </a-form-item>
         </a-form>
     </div>
     <div class="btn-area">
         <a-button-group>
-            <a-button type="primary" @click.stop="doSubmit" v-if="!layerData.viewFlag">{{layerData.managerCurr ? '修 改' : '添 加'}}</a-button>
-            <a-button type="default" @click.stop="cancel">{{layerData.viewFlag ? '关 闭' :'取 消'}}</a-button>
+            <a-button type="primary" @click.stop="doSubmit">{{'修 改'}}</a-button>
+            <a-button type="default" @click.stop="cancel">{{'关 闭'}}</a-button>
         </a-button-group>
     </div>
 </div>
@@ -62,15 +62,18 @@ import {
 import {
     defineComponent,
     onBeforeMount,
-    onMounted,
     reactive,
     ref,
     toRaw,
     toRef,
     watch
 } from "vue";
+import {
+    systemStore
+} from "@/store/index";
+
 export default defineComponent({
-    name: "CigoEditManager",
+    name: "CigoProfile",
     components: {
         CigoAvatar
     },
@@ -81,33 +84,43 @@ export default defineComponent({
         }
     },
     setup(props, ctx) {
+        let userInfo = toRef(systemStore.getState(), 'userInfo');
+        let groupList: any = ref([]);
+
+        onBeforeMount(() => {
+            requestGroupList();
+        });
+
+        const requestGroupList = () => {
+            let params = {
+                status: "1"
+            };
+            apiRequest.v1
+                .post("/groupList", params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    //更新本地角色分组数据
+                    groupList.value = [...response.data.data];
+                })
+                .catch(apiErrorCatch.v1);
+        };
+
         let formDataRef = reactive({
-            id: props.layerData.managerCurr ?
-                props.layerData.managerCurr.id : null, //Tips_Flag PHP后端识别null为空
-            img: props.layerData.managerCurr ?
-                props.layerData.managerCurr.img : 0,
-            img_info: props.layerData.managerCurr &&
-                props.layerData.managerCurr.img_info ?
-                props.layerData.managerCurr.img_info : {
+            id: userInfo.value.id,
+            img: userInfo.value.img,
+            img_info: userInfo.value.img_info ?
+                userInfo.value.img_info : {
                     id: 0
                 }, //Tips_Flag 前端识别undefined
-            role_flag: props.layerData.managerCurr ?
-                props.layerData.managerCurr.role_flag : 2,
-            username: props.layerData.managerCurr ?
-                props.layerData.managerCurr.username : "",
-            nickname: props.layerData.managerCurr ?
-                props.layerData.managerCurr.nickname : "",
-            password: "",
-            email: props.layerData.managerCurr ?
-                props.layerData.managerCurr.email : "",
-            auth_group: props.layerData.managerCurr ?
-                props.layerData.managerCurr.auth_group : []
+            role_flag: userInfo.value.role_flag,
+            username: userInfo.value.username,
+            nickname: userInfo.value.nickname,
+            password: '',
+            email: userInfo.value.email,
+            auth_group: userInfo.value.auth_group
         });
         const formItemRules = reactive({
-            username: [{
-                required: true,
-                message: "请输入用户名"
-            }],
             password: [{
                     required: true,
                     message: "请设置密码"
@@ -147,26 +160,17 @@ export default defineComponent({
                     delete params.img_info;
                     apiRequest.v1
                         .post(
-                            props.layerData.managerCurr ?
-                            "/editManager" :
-                            "/addManager",
+                            "/editManager",
                             params, {
                                 headers: apiSign(params)
                             }
                         )
                         .then(response => {
-                            //更新本地数据
-                            if (props.layerData.managerCurr) {
-                                editRefreshLocalList(response.data.data);
-                            } else {
-                                addRefreshLocalList(response.data.data);
-                            }
-                            //刷新列表数据
-                            ctx.emit(
-                                "notify",
-                                "refresh",
-                                toRaw(props.layerData.managerListRef.value)
-                            );
+                            let userInfoTmp: User = response.data.data;
+                            userInfoTmp.isLogin = true;
+                            userInfo.value = userInfoTmp;
+                            systemStore.saveUserInfo(userInfoTmp);
+
                             //提示及关闭窗口
                             cigoLayer.msg(response.data.msg);
                             ctx.emit("close");
@@ -176,19 +180,6 @@ export default defineComponent({
                 .catch(err => {
                     console.log("error", err);
                 });
-        };
-
-        const editRefreshLocalList = (newData: User) => {
-            Object.assign(props.layerData.managerCurr, newData);
-        };
-        const addRefreshLocalList = (newData: User) => {
-            // 转化为响应式对象
-            let newDataRef = reactive(newData);
-            // 挂载新节点
-            props.layerData.managerListRef.value = [
-                newDataRef,
-                ...props.layerData.managerListRef.value
-            ];
         };
 
         const cancel = () => {
@@ -203,6 +194,7 @@ export default defineComponent({
                 span: 19
             },
             validateInfos,
+            groupList,
             formDataRef,
             updateAvatarInfo,
             doSubmit,
@@ -213,7 +205,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.edit-manager {
+.cigo-profile {
     width: 100%;
     height: 100%;
     display: flex;
