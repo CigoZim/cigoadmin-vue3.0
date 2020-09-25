@@ -23,8 +23,7 @@
     </div>
 
     <a-table class="auth-rule-group-list" :rowKey="'id'" :locale="{emptyText:'暂无角色数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="groupTreeListRef" :scroll="{ x: 1300 , y: 'max-content'}">
-        <template v-slot:operation="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:operation="{ record }">
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
                 <template v-slot:icon>

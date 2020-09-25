@@ -35,6 +35,8 @@ import {
     Menu
 } from "./utils/types";
 
+//TODO 待增加菜单尺寸调整功能：大、中、小
+
 export default defineComponent({
     name: "CigoSider",
     components: {

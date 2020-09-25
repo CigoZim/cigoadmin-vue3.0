@@ -23,27 +23,22 @@
     </div>
 
     <a-table class="user-list" :rowKey="'id'" :locale="{emptyText:'暂无用户数据'}" :pagination="false" :columns="columns" :data-source="userListRef" :scroll="{ x: 1300 , y: 'max-content'}">
-        <template v-slot:img="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:img="{ record }">
             <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
                 <img class="avatar" :src="record.img_info.signed_url" />
             </div>
         </template>
-        <template v-slot:sex="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:sex="{ record }">
             <span>{{showSex(record)}}</span>
         </template>
-        <template v-slot:isOnline="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:isOnline="{ record }">
             <span>{{record.is_online ? '在线' : '离线'}}</span>
         </template>
-        <template v-slot:lastLogTime="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:lastLogTime="{ record }">
             <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
         </template>
 
-        <template v-slot:operation="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:operation="{ record }">
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
                 <template v-slot:icon>

@@ -1,0 +1,345 @@
+<template>
+<div class="cigo-list-manager">
+    <div class="top-bar">
+        <a-button-group class="left">
+            <a-button type="primary" @click.stop="requestList">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
+                </template>
+                {{refreshLabel}}
+            </a-button>
+            <a-button type="primary" @click.stop="ctrlNew">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
+                </template>
+                {{addLabel}}
+            </a-button>
+        </a-button-group>
+        <a-button-group class="right">
+            <a-button type="primary">
+                <template v-slot:icon>
+                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-daochu'"></cigo-icon-font>
+                </template>
+                {{exportLabel}}
+            </a-button>
+        </a-button-group>
+    </div>
+
+    <a-table class="cigo-data-list" :rowKey="rowKey" :locale="{emptyText:emptyText}" :pagination="pagination" :columns="columnsRef" :data-source="dataListRef" :scroll="tableScroll">
+        <template v-for="(item,index) in columnsSlots" :key="index" v-slot:[item.slot]="{record}">
+            <!-- //Tips_Flag 具名插槽嵌套 -->
+            <slot :name="item.slotContent" :record="record"></slot>
+        </template>
+
+        <template v-if="useDefaultOperation" v-slot:operation="{ record }">
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
+            <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-liulan'" class="opt-icon opt-primary opt-view"></cigo-icon-font>
+                </template>
+            </a-button>
+            <a-button class="opt-btn" @click.stop="ctrlEdit(record)" type="primary" shape="circle" size="small" title="编辑">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-bianji'" class="opt-icon opt-primary opt-edit"></cigo-icon-font>
+                </template>
+            </a-button>
+            <a-button class="opt-btn" @click.stop="ctrlStatus(record, -1)" type="danger" shape="circle" size="small" title="删除">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-shanchu1'" class="opt-icon opt-primary opt-del"></cigo-icon-font>
+                </template>
+            </a-button>
+        </template>
+    </a-table>
+</div>
+</template>
+
+<script lang="ts">
+import {
+    computed,
+    defineComponent,
+    onBeforeMount,
+    ref
+} from "vue";
+import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
+import dayjs from "dayjs";
+import {
+    apiErrorCatch,
+    apiRequest,
+    apiSign,
+    bucket
+} from "@/common/http";
+import cigoLayer from "@/components/cigo-layer";
+export default defineComponent({
+    name: "CigoListManager",
+    components: {
+        CigoIconFont
+    },
+    props: {
+        refreshLabel: {
+            type: String,
+            default: '刷新'
+        },
+        addLabel: {
+            type: String,
+            default: '新建'
+        },
+        exportLabel: {
+            type: String,
+            default: '导出数据'
+        },
+        rowKey: {
+            type: String,
+            default: 'id'
+        },
+        emptyText: {
+            type: String,
+            default: '暂无数据'
+        },
+        pagination: {
+            type: Boolean,
+            default: false,
+        },
+        tableScroll: {
+            type: Object,
+            default: {
+                x: 1300,
+                y: 'max-content'
+            },
+        },
+        dataUrl: {
+            type: String,
+            default: '',
+        },
+        statusUrl: {
+            type: String,
+            default: '',
+        },
+        addUrl: {
+            type: String,
+            default: '',
+        },
+        editUrl: {
+            type: String,
+            default: '',
+        },
+        viewWinTitle: {
+            title: String,
+            default: '查看'
+        },
+        addWinTitle: {
+            title: String,
+            default: '新增'
+        },
+        editWinTitle: {
+            title: String,
+            default: '修改'
+        },
+        editWinW: {
+            type: String,
+            default: '600px'
+        },
+        editWinH: {
+            type: String,
+            default: '600px'
+        },
+        columns: {
+            type: Array,
+            default: [{
+                title: '编号',
+                dataIndex: 'id',
+                width: 80,
+            }]
+        },
+        useDefaultOperation: {
+            type: Boolean,
+            default: true,
+        },
+        columnsSlots: {
+            type: Array,
+            default: []
+        },
+        editComponent: {
+            type: Object,
+            default: {}
+        },
+    },
+    setup(props) {
+        let defaultOperationOption = {
+            title: "操作",
+            key: "operation",
+            fixed: "right",
+            width: 145,
+            slots: {
+                customRender: "operation"
+            }
+        };
+        let columnsRef = computed(() => {
+            return props.useDefaultOperation ? [...props.columns, defaultOperationOption] : [...props.columns];
+        });
+
+        let page = 1;
+        let dataListRef: any = ref([]);
+
+        onBeforeMount(() => {
+            requestList();
+        });
+
+        const requestList = () => {
+            let params = {
+                page: page,
+                pageSize: 15
+            };
+            apiRequest.v1
+                .post(props.dataUrl, params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    dataListRef.value = [...response.data.data];
+                })
+                .catch(apiErrorCatch.v1);
+        };
+
+        const ctrlStatus = (record: any, status: number) => {
+            let params = {
+                id: record.id,
+                status: status
+            };
+
+            apiRequest.v1
+                .post(props.statusUrl, params, {
+                    headers: apiSign(params)
+                })
+                .then(response => {
+                    // 提示
+                    cigoLayer.msg(response.data.msg);
+                    // 处理数据
+                    if (status != -1) {
+                        record.status = status;
+                    } else {
+                        let tmpSubList = [...dataListRef.value];
+                        tmpSubList.splice(tmpSubList.indexOf(record), 1);
+                        dataListRef.value = [...tmpSubList];
+                    }
+                })
+                .catch(apiErrorCatch.v1);
+        };
+
+        const ctrlView = (record: any) => {
+            cigoLayer.window({
+                component: props.editComponent,
+                width: props.editWinW,
+                height: props.editWinH,
+                maskClose: false,
+                layerData: {
+                    title: props.viewWinTitle,
+                    recordCurr: record,
+                    viewFlag: true
+                }
+            });
+        };
+
+        const notify = (flag: string, data ? : any) => {
+            switch (flag) {
+                case "refresh":
+                    dataListRef.value = [...data];
+                    break;
+            }
+        };
+
+        const ctrlNew = () => {
+            cigoLayer.window({
+                component: props.editComponent,
+                width: props.editWinW,
+                height: props.editWinH,
+                maskClose: false,
+                layerData: {
+                    title: props.addWinTitle,
+                    dataListRef: dataListRef
+                },
+                notify: notify
+            });
+        };
+
+        const ctrlEdit = (record: any) => {
+            cigoLayer.window({
+                component: props.editComponent,
+                width: props.editWinW,
+                height: props.editWinH,
+                maskClose: false,
+                layerData: {
+                    title: props.editWinTitle,
+                    userCurr: record,
+                    dataListRef: dataListRef
+                },
+                notify: notify
+            });
+        };
+
+        return {
+            columnsRef,
+            requestList,
+            dataListRef,
+            dayjs,
+            ctrlNew,
+            ctrlStatus,
+            ctrlView,
+            ctrlEdit
+        };
+    }
+});
+</script>
+
+<style lang="scss">
+.cigo-list-manager {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .top-bar {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+
+        .btn-icon {
+            margin-right: 5px;
+            width: 15px;
+            height: 15px;
+        }
+    }
+
+    .cigo-data-list {
+        .opt-btn {
+            margin-right: 5px;
+        }
+
+        .opt-btn:last-child {
+            margin-right: 0px;
+        }
+
+        .opt-icon {
+            color: #666;
+            padding: 1px;
+        }
+
+        .opt-primary {
+            color: #fff;
+        }
+
+        .opt-icon:hover {
+            color: #1890ff;
+        }
+
+        .opt-primary:hover {
+            color: #fff !important;
+        }
+    }
+}
+
+.cigo-list-manager::-webkit-scrollbar {
+    width: 0;
+}
+</style>

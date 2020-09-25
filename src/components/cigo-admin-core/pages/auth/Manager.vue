@@ -23,35 +23,28 @@
     </div>
 
     <a-table class="manager-list" :rowKey="'id'" :locale="{emptyText:'暂无管理员数据'}" :pagination="true" :columns="columns" :data-source="managerListRef" :scroll="{ x: 2000 , y: 'max-content'}">
-        <template v-slot:img="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:img="{ record }">
             <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
                 <img class="avatar" :src="record.img_info.signed_url" />
             </div>
         </template>
-        <template v-slot:roleFlag="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:roleFlag="{ record }">
             <span>{{record.role_flag == 2 ? '管理员' : '超级管理员'}}</span>
         </template>
-        <template v-slot:sex="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:sex="{ record }">
             <span>{{showSex(record)}}</span>
         </template>
-        <template v-slot:isOnline="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:isOnline="{ record }">
             <span>{{record.is_online ? '在线' : '离线'}}</span>
         </template>
-        <template v-slot:lastLogTime="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:lastLogTime="{ record }">
             <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
         </template>
         <!-- //Tips_Flag Ant在authGroup为数组且有值得情况下，如果不用slot自定义视图，Ant将为authGroup数组子元素绑定v-node节点数据，在authGroup传递子组件时将导致长时间卡顿 -->
-        <template v-slot:authGroup="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:authGroup="{ record }">
             <span>{{showAuthGroup(record)}}</span>
         </template>
-        <template v-slot:operation="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:operation="{ record }">
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
                 <template v-slot:icon>
