@@ -306,9 +306,9 @@ export default defineComponent({
                     if (status != -1) {
                         manager.status = status;
                     } else {
-                        let tmpSubList = [...managerListRef.value];
-                        tmpSubList.splice(tmpSubList.indexOf(manager), 1);
-                        managerListRef.value = [...tmpSubList];
+                        let tmpList = [...managerListRef.value];
+                        tmpList.splice(tmpList.indexOf(manager), 1);
+                        managerListRef.value = [...tmpList];
                     }
                 })
                 .catch(apiErrorCatch.v1);

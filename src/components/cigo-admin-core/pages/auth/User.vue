@@ -229,9 +229,9 @@ export default defineComponent({
                     if (status != -1) {
                         user.status = status;
                     } else {
-                        let tmpSubList = [...userListRef.value];
-                        tmpSubList.splice(tmpSubList.indexOf(user), 1);
-                        userListRef.value = [...tmpSubList];
+                        let tmpList = [...userListRef.value];
+                        tmpList.splice(tmpList.indexOf(user), 1);
+                        userListRef.value = [...tmpList];
                     }
                 })
                 .catch(apiErrorCatch.v1);

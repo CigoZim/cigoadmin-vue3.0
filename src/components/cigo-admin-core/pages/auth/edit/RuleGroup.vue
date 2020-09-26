@@ -8,7 +8,7 @@
             <a-form-item label="父级角色：" name="pid">
                 <a-select v-model:value="formDataRef.pid" show-search placeholder="请选择父级角色" not-found-content="当前无父级角色" :filter-option="filterParentGroupOption" @change="pGroupChange" :disabled="layerData.viewFlag">
                     <a-select-option :value="0" :itemData="{id:0, title:'', pid:0, path:'0,', rules:[]}">
-                        <span style="color:#666;font-weight:700;">--设置根角色--</span>
+                        <span style="color:#666;font-weight:700;">--设置根科室--</span>
                     </a-select-option>
                     <a-select-option v-for="(item,index) in groupNoTreeListRef" :key="index+1" :value="item.id" :itemData="item" :disabled="layerData.groupCurr && layerData.groupCurr.id == item.id">
                         <span v-if="item.level">

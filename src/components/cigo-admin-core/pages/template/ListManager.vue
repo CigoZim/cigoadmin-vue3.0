@@ -25,14 +25,19 @@
         </a-button-group>
     </div>
 
-    <a-table class="cigo-data-list" :rowKey="rowKey" :locale="{emptyText:emptyText}" :pagination="pagination" :columns="columnsRef" :data-source="dataListRef" :scroll="tableScroll">
+    <a-table class="cigo-data-list" :rowKey="rowKey" :locale="{emptyText:emptyText}" :columns="columnsRef" :data-source="dataListRef" :pagination="showPage" :children-column-name="'subList'" :scroll="tableScroll">
         <template v-for="(item,index) in columnsSlots" :key="index" v-slot:[item.slot]="{record}">
             <!-- //Tips_Flag 具名插槽嵌套 -->
-            <slot :name="item.slotContent" :record="record"></slot>
+            <slot :name="item.slot+'Tpl'" :record="record"></slot>
         </template>
 
         <template v-if="useDefaultOperation" v-slot:operation="{ record }">
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
+            <a-button v-if="treeFlag" class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
+                <template v-slot:icon>
+                    <cigo-icon-font :name="'cigoadmin-icon-xinjianzixiang'" class="opt-icon opt-sub"></cigo-icon-font>
+                </template>
+            </a-button>
             <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
                 <template v-slot:icon>
                     <cigo-icon-font :name="'cigoadmin-icon-liulan'" class="opt-icon opt-primary opt-view"></cigo-icon-font>
@@ -95,10 +100,6 @@ export default defineComponent({
             type: String,
             default: '暂无数据'
         },
-        pagination: {
-            type: Boolean,
-            default: false,
-        },
         tableScroll: {
             type: Object,
             default: {
@@ -158,13 +159,21 @@ export default defineComponent({
             type: Boolean,
             default: false
         },
+        treeFlag: {
+            type: Boolean,
+            default: false
+        },
+        showPage: {
+            type: Boolean,
+            default: false
+        },
     },
     setup(props) {
         let defaultOperationOption = {
             title: "操作",
             key: "operation",
             fixed: "right",
-            width: 145,
+            width: 180,
             slots: {
                 customRender: "operation"
             }
@@ -212,9 +221,9 @@ export default defineComponent({
                     if (status != -1) {
                         record.status = status;
                     } else {
-                        let tmpSubList = [...dataListRef.value];
-                        tmpSubList.splice(tmpSubList.indexOf(record), 1);
-                        dataListRef.value = [...tmpSubList];
+                        let tmpList = [...dataListRef.value];
+                        tmpList.splice(tmpList.indexOf(record), 1);
+                        dataListRef.value = [...tmpList];
                     }
                 })
                 .catch(apiErrorCatch.v1);
@@ -225,19 +234,20 @@ export default defineComponent({
                 component: props.editComponent,
                 width: props.editWinW,
                 height: props.editWinH,
-                maskClose: false,
+                maskClose: true,
                 layerData: {
                     title: props.viewWinTitle,
                     recordCurr: record,
-                    viewFlag: true
+                    viewFlag: true,
+                    dataListRef: dataListRef
                 }
             });
         };
 
-        const notify = (flag: string, data ? : any) => {
+        const notify = (flag: string, dataList ? : any) => {
             switch (flag) {
                 case "refresh":
-                    dataListRef.value = [...data];
+                    dataListRef.value = [...dataList];
                     break;
             }
         };
@@ -251,6 +261,21 @@ export default defineComponent({
                 layerData: {
                     newDataPushFlag: props.newDataPushFlag,
                     title: props.addWinTitle,
+                    dataListRef: dataListRef
+                },
+                notify: notify
+            });
+        };
+        const ctrlAddSub = (record: any) => {
+            cigoLayer.window({
+                component: props.editComponent,
+                width: props.editWinW,
+                height: props.editWinH,
+                maskClose: false,
+                layerData: {
+                    newDataPushFlag: props.newDataPushFlag,
+                    title: props.addWinTitle,
+                    recordParent: record,
                     dataListRef: dataListRef
                 },
                 notify: notify
@@ -278,6 +303,7 @@ export default defineComponent({
             dataListRef,
             dayjs,
             ctrlNew,
+            ctrlAddSub,
             ctrlStatus,
             ctrlView,
             ctrlEdit

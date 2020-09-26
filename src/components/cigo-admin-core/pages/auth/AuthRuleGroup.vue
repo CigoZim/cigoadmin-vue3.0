@@ -212,12 +212,27 @@ export default defineComponent({
             });
         };
 
-        const notify = (flag: string, data ? : any) => {
+        const notify = (flag: string, dataList ? : any) => {
             switch (flag) {
                 case 'refresh':
-                    groupTreeListRef.value = [...data];
+                    groupTreeListRef.value = [...dataList];
                     break;
             }
+        };
+
+        const ctrlNew = () => {
+            cigoLayer.window({
+                component: EditRuleGroup,
+                width: "800px",
+                height: "650px",
+                maskClose: false,
+                layerData: {
+                    title: "添加角色",
+                    menuList: menuList,
+                    groupTreeListRef: groupTreeListRef,
+                },
+                notify: notify
+            });
         };
 
         const ctrlAddSub = (group: AuthGroup) => {
@@ -229,20 +244,6 @@ export default defineComponent({
                 layerData: {
                     title: "添加角色",
                     groupParent: group,
-                    menuList: menuList,
-                    groupTreeListRef: groupTreeListRef,
-                }
-            });
-        };
-
-        const ctrlNew = () => {
-            cigoLayer.window({
-                component: EditRuleGroup,
-                width: "800px",
-                height: "650px",
-                maskClose: false,
-                layerData: {
-                    title: "添加角色",
                     menuList: menuList,
                     groupTreeListRef: groupTreeListRef,
                 },
