@@ -114,14 +114,6 @@ export default defineComponent({
             type: String,
             default: '',
         },
-        addUrl: {
-            type: String,
-            default: '',
-        },
-        editUrl: {
-            type: String,
-            default: '',
-        },
         viewWinTitle: {
             title: String,
             default: '查看'
@@ -161,6 +153,10 @@ export default defineComponent({
         editComponent: {
             type: Object,
             default: {}
+        },
+        newDataPushFlag: {
+            type: Boolean,
+            default: false
         },
     },
     setup(props) {
@@ -253,6 +249,7 @@ export default defineComponent({
                 height: props.editWinH,
                 maskClose: false,
                 layerData: {
+                    newDataPushFlag: props.newDataPushFlag,
                     title: props.addWinTitle,
                     dataListRef: dataListRef
                 },
@@ -268,7 +265,7 @@ export default defineComponent({
                 maskClose: false,
                 layerData: {
                     title: props.editWinTitle,
-                    userCurr: record,
+                    recordCurr: record,
                     dataListRef: dataListRef
                 },
                 notify: notify
