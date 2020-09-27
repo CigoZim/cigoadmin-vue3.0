@@ -77,7 +77,7 @@ import {
 } from "@/components/cigo-admin-core/utils/types";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import cigoLayer from "@/components/cigo-layer";
-import EditRule from "@/components/cigo-admin-core/pages/auth/edit/Rule.vue";
+import EditRule from "@/components/cigo-admin-core/pages/auth/edit/EditRule.vue";
 import {
     apiErrorCatch,
     apiRequest,

@@ -63,6 +63,7 @@ import {
     computed,
     defineComponent,
     onBeforeMount,
+    reactive,
     ref
 } from "vue";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
@@ -100,6 +101,7 @@ export default defineComponent({
             type: String,
             default: '暂无数据'
         },
+        //Tips_Flag 如果出现某个字段不显示考虑这里宽度是否设置小了
         tableScroll: {
             type: Object,
             default: {
@@ -155,10 +157,6 @@ export default defineComponent({
             type: Object,
             default: {}
         },
-        newDataPushFlag: {
-            type: Boolean,
-            default: false
-        },
         treeFlag: {
             type: Boolean,
             default: false
@@ -166,6 +164,10 @@ export default defineComponent({
         showPage: {
             type: Boolean,
             default: false
+        },
+        attachDataForEdit: {
+            type: Object,
+            default: {}
         },
     },
     setup(props) {
@@ -220,6 +222,17 @@ export default defineComponent({
                     // 处理数据
                     if (status != -1) {
                         record.status = status;
+                    } else if (props.treeFlag) {
+                        let tmpItem: any = reactive({
+                            id: 0,
+                            subList: dataListRef.value
+                        });
+                        deleteLocal(tmpItem, record, 0);
+                        if (tmpItem.subList && tmpItem.subList.length) {
+                            dataListRef.value = [...tmpItem.subList];
+                        } else {
+                            dataListRef.value = [];
+                        }
                     } else {
                         let tmpList = [...dataListRef.value];
                         tmpList.splice(tmpList.indexOf(record), 1);
@@ -227,6 +240,38 @@ export default defineComponent({
                     }
                 })
                 .catch(apiErrorCatch.v1);
+        };
+
+        const deleteLocal = (item: any, record: any, level: number): boolean => {
+            if (!item.subList || !item.subList.length) {
+                delete item.subList;
+                return false;
+            }
+            let hasFlag = false;
+            let hasIndex = -1;
+            item.subList.every((item: any, index: number) => {
+                // 判断当前项
+                if (item.id == record.id) {
+                    hasFlag = true;
+                    hasIndex = index;
+                    return false;
+                }
+                // 判断子级
+                if (deleteLocal(item, record, level + 1)) {
+                    hasFlag = true;
+                    return false;
+                }
+                // 都不存在，继续
+                return true;
+            });
+            if (hasFlag && hasIndex > -1) {
+                let tmpSubList = [...item.subList];
+                tmpSubList.splice(hasIndex, 1);
+                tmpSubList.length ?
+                    item.subList = [...tmpSubList] :
+                    delete item.subList;
+            }
+            return hasFlag;
         };
 
         const ctrlView = (record: any) => {
@@ -239,7 +284,8 @@ export default defineComponent({
                     title: props.viewWinTitle,
                     recordCurr: record,
                     viewFlag: true,
-                    dataListRef: dataListRef
+                    ataListRef: dataListRef,
+                    ...props.attachDataForEdit,
                 }
             });
         };
@@ -259,9 +305,9 @@ export default defineComponent({
                 height: props.editWinH,
                 maskClose: false,
                 layerData: {
-                    newDataPushFlag: props.newDataPushFlag,
                     title: props.addWinTitle,
-                    dataListRef: dataListRef
+                    dataListRef: dataListRef,
+                    ...props.attachDataForEdit,
                 },
                 notify: notify
             });
@@ -273,10 +319,10 @@ export default defineComponent({
                 height: props.editWinH,
                 maskClose: false,
                 layerData: {
-                    newDataPushFlag: props.newDataPushFlag,
                     title: props.addWinTitle,
                     recordParent: record,
-                    dataListRef: dataListRef
+                    dataListRef: dataListRef,
+                    ...props.attachDataForEdit,
                 },
                 notify: notify
             });
@@ -291,7 +337,8 @@ export default defineComponent({
                 layerData: {
                     title: props.editWinTitle,
                     recordCurr: record,
-                    dataListRef: dataListRef
+                    dataListRef: dataListRef,
+                    ...props.attachDataForEdit,
                 },
                 notify: notify
             });

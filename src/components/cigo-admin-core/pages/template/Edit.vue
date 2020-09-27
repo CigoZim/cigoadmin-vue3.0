@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+//TODO 页面按键监听：回车键、ESC 
 import {
     apiErrorCatch,
     apiRequest,
@@ -82,6 +83,14 @@ export default defineComponent({
             type: String,
             required: true,
             default: ""
+        },
+        newDataPushFlag: {
+            type: Boolean,
+            default: false
+        },
+        beforeEdit: {
+            type: Function,
+            default: () => {}
         }
     },
     setup(props, ctx) {
@@ -169,6 +178,7 @@ export default defineComponent({
                 .then(() => {
                     let params: any = {};
                     Object.assign(params, toRaw(formDataProxy));
+                    props.beforeEdit(params);
                     apiRequest.v1
                         .post(
                             props.layerData.recordCurr ?
@@ -208,7 +218,7 @@ export default defineComponent({
 
         const addRefreshNoTree = (newData: any) => {
             let newDataRef = reactive(newData);
-            props.layerData.dataListRef.value = props.layerData.newDataPushFlag ? [...props.layerData.dataListRef.value, newDataRef] : [newDataRef, ...props.layerData.dataListRef.value];
+            props.layerData.dataListRef.value = props.newDataPushFlag ? [...props.layerData.dataListRef.value, newDataRef] : [newDataRef, ...props.layerData.dataListRef.value];
         };
         const addRefreshTree = (newData: any) => {
             let newDataRef = reactive(newData);
@@ -216,13 +226,12 @@ export default defineComponent({
                 if (!parentCurr.subList) {
                     parentCurr.subList = [];
                 }
-                parentCurr.subList = props.layerData.newDataPushFlag ? [...parentCurr.subList, newDataRef] : [newDataRef, ...parentCurr.subList];
+                parentCurr.subList = props.newDataPushFlag ? [...parentCurr.subList, newDataRef] : [newDataRef, ...parentCurr.subList];
                 props.layerData.dataListRef.value = [
                     ...props.layerData.dataListRef.value
                 ];
             } else {
-                props.layerData.dataListRef.value = props.layerData
-                    .newDataPushFlag ? [...props.layerData.dataListRef.value, newDataRef] : [newDataRef, ...props.layerData.dataListRef.value];
+                props.layerData.dataListRef.value = props.newDataPushFlag ? [...props.layerData.dataListRef.value, newDataRef] : [newDataRef, ...props.layerData.dataListRef.value];
             }
         };
 
@@ -257,19 +266,18 @@ export default defineComponent({
                     if (!parentCurr.subList) {
                         parentCurr.subList = [];
                     }
-                    parentCurr.subList = props.layerData.newDataPushFlag ? [...parentCurr.subList, props.layerData.recordCurr] : [props.layerData.recordCurr, ...parentCurr.subList];
+                    parentCurr.subList = props.newDataPushFlag ? [...parentCurr.subList, props.layerData.recordCurr] : [props.layerData.recordCurr, ...parentCurr.subList];
                     props.layerData.dataListRef.value = [
                         ...props.layerData.dataListRef.value
                     ];
                 } else {
-                    props.layerData.dataListRef.value = props.layerData
-                        .newDataPushFlag ? [
-                            ...props.layerData.dataListRef.value,
-                            props.layerData.recordCurr
-                        ] : [
-                            props.layerData.recordCurr,
-                            ...props.layerData.dataListRef.value
-                        ];
+                    props.layerData.dataListRef.value = props.newDataPushFlag ? [
+                        ...props.layerData.dataListRef.value,
+                        props.layerData.recordCurr
+                    ] : [
+                        props.layerData.recordCurr,
+                        ...props.layerData.dataListRef.value
+                    ];
                 }
             }
         };
