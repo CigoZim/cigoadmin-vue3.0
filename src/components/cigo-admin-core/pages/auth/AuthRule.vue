@@ -22,7 +22,7 @@
         </a-button-group>
     </div>
 
-    <a-table class="auth-rule-list" :rowKey="'id'" :locale="{emptyText:'暂无节点数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
+    <a-table class="auth-rule-list" :rowKey="'id'" :locale="{emptyText:'暂无节点数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :scroll="{ x: 1800 , y: 'max-content'}">
         <template v-slot:icon="{ record }">
             <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
         </template>
@@ -205,28 +205,6 @@ export default defineComponent({
             return type;
         };
 
-        const rowSelection = {
-            fixed: true,
-            type: "radio",
-            onChange: (selectedRowKeys: any, selectedRows: any) => {
-                console.log(
-                    `selectedRowKeys: ${selectedRowKeys}`,
-                    "selectedRows: ",
-                    selectedRows
-                );
-            },
-            onSelect: (record: any, selected: any, selectedRows: any) => {
-                console.log(record, selected, selectedRows);
-            },
-            onSelectAll: (
-                selected: any,
-                selectedRows: any,
-                changeRows: any
-            ) => {
-                console.log(selected, selectedRows, changeRows);
-            }
-        };
-
         const statusAuth = (id: number, status: number) => {};
 
         const ctrlStatus = (menu: Menu, status: number) => {
@@ -316,7 +294,6 @@ export default defineComponent({
             columns,
             menuType,
             menuTargetType,
-            rowSelection,
             ctrlStatus,
             ctrlAddSub,
             ctrlNew,
