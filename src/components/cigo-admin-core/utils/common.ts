@@ -2,6 +2,39 @@ import { Menu } from "./types";
 import router from "@/router/index";
 
 /**
+ * 
+ * @param treeList 将父级树形菜单转化为非树形
+ * @param noTreeList 
+ * @param level 
+ */
+export function convertTreeToNoTree(
+	treeList: any[],
+	noTreeList: any[],
+	level: number
+):void {
+	treeList.every((item: any, index: number) => {
+		//去除删除状态数据
+		if (item.status == -1) {
+			treeList.splice(index, 1);
+			return true;
+		}
+		//补充层级标识
+		item.level = level;
+		noTreeList.push(item);
+		//递归处理子级
+		if (item.subList && item.subList.length) {
+			convertTreeToNoTree(
+				item.subList,
+				noTreeList,
+				level + 1
+			);
+		}
+
+		return true;
+	});
+}
+
+/**
  * 创建标签随机颜色
  * @param opacity
  * @param start

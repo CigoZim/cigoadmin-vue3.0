@@ -28,7 +28,7 @@ export default defineComponent({
                     delayJump();
                     return;
                 }
-                router.push("/frame/demos/thermometer/one");
+                router.push("/frame/animation/thermometer/one");
             }, 1000);
         };
 

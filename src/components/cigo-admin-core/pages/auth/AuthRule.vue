@@ -23,21 +23,17 @@
     </div>
 
     <a-table class="auth-rule-list" :rowKey="'id'" :locale="{emptyText:'暂无节点数据'}" :pagination="false" :columns="columns" :children-column-name="'subList'" :data-source="menuTreeListForEditRef" :row-selection="rowSelection" :scroll="{ x: 1800 , y: 'max-content'}">
-        <template v-slot:icon="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:icon="{ record }">
             <cigo-icon-font class="menu-icon" :name="record.icon" :style="[{color:record.color}]"></cigo-icon-font>
         </template>
-        <template v-slot:type="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:type="{ record }">
             <span>{{menuType(record)}}</span>
         </template>
 
-        <template v-slot:targetType="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:targetType="{ record }">
             <span>{{menuTargetType(record)}}</span>
         </template>
-        <template v-slot:operation="{ txt, record }">
-            <span v-if="txt"></span>
+        <template v-slot:operation="{ record }">
             <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
             <a-button class="opt-btn" @click.stop="ctrlAddSub(record)" type="default" shape="circle" size="small" title="添加子项">
                 <template v-slot:icon>
@@ -81,7 +77,7 @@ import {
 } from "@/components/cigo-admin-core/utils/types";
 import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import cigoLayer from "@/components/cigo-layer";
-import EditRule from "@/components/cigo-admin-core/pages/auth/edit/Rule.vue";
+import EditRule from "@/components/cigo-admin-core/pages/auth/edit/EditRule.vue";
 import {
     apiErrorCatch,
     apiRequest,

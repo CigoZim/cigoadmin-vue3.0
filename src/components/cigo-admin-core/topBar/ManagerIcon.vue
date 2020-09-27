@@ -62,7 +62,7 @@ export default defineComponent({
                 ".cigo-manager-icon>.menu-list-container>.menu-list",
                 0.5, {
                     width: inOutFlag ? "130px" : "0px",
-                    height: inOutFlag ? "270px" : "0px",
+                    height: inOutFlag ? "190px" : "0px",
                     opacity: inOutFlag ? 1 : 0,
                     delay: inOutFlag ? 0 : 0.1
                 }

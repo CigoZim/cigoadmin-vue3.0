@@ -1,7 +1,7 @@
 <template>
 <div class="cigo-logo-area">
-    <p class="short-title">C</p>
-    <p class="full-title">CigoAdmin 西谷后台</p>
+    <p class="short-title">{{Env.VUE_APP_SHORT_TAG}}</p>
+    <p class="full-title">{{Env.VUE_APP_PROJECT_NAME_EN +" "+Env.VUE_APP_PROJECT_NAME_CN}}</p>
 </div>
 </template>
 
@@ -11,7 +11,8 @@ import {
     onMounted,
     watch,
     ref,
-    toRef
+    toRef,
+    reactive
 } from "vue";
 
 import {
@@ -24,6 +25,7 @@ import {
 export default defineComponent({
     name: "LogoArea",
     setup() {
+        let Env = reactive(process.env);
         let menuOpenFlag = toRef(
             systemStore.getState().systemState,
             "sideMenuOpen"
@@ -49,6 +51,10 @@ export default defineComponent({
                 delay: openFlag ? 0.2 : 0
             });
         };
+
+        return {
+            Env
+        }
     }
 });
 </script>
