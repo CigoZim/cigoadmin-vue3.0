@@ -1,136 +1,66 @@
 <template>
-<div class="cigo-manager">
-    <div class="top-bar">
-        <a-button-group class="left">
-            <a-button type="primary" @click.stop="requestList">
-                <template v-slot:icon>
-                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-shuaxin1'"></cigo-icon-font>
-                </template>刷新
-            </a-button>
-            <a-button type="primary" @click.stop="ctrlNew">
-                <template v-slot:icon>
-                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-add'"></cigo-icon-font>
-                </template>新建管理员
-            </a-button>
-        </a-button-group>
-        <a-button-group class="right">
-            <a-button type="primary">
-                <template v-slot:icon>
-                    <cigo-icon-font class="btn-icon" :name="'cigoadmin-icon-daochu'"></cigo-icon-font>
-                </template>导出数据
-            </a-button>
-        </a-button-group>
-    </div>
-
-    <a-table class="manager-list" :rowKey="'id'" :locale="{emptyText:'暂无管理员数据'}" :pagination="true" :columns="columns" :data-source="managerListRef" :scroll="{ x: 2000 , y: 'max-content'}">
-        <template v-slot:img="{ txt, record }">
-            <span v-if="txt"></span>
-            <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
-                <img class="avatar" :src="record.img_info.signed_url" />
-            </div>
-        </template>
-        <template v-slot:roleFlag="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{record.role_flag == 2 ? '管理员' : '超级管理员'}}</span>
-        </template>
-        <template v-slot:sex="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{showSex(record)}}</span>
-        </template>
-        <template v-slot:isOnline="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{record.is_online ? '在线' : '离线'}}</span>
-        </template>
-        <template v-slot:lastLogTime="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : '未登录'}}</span>
-        </template>
-        <!-- //Tips_Flag Ant在authGroup为数组且有值得情况下，如果不用slot自定义视图，Ant将为authGroup数组子元素绑定v-node节点数据，在authGroup传递子组件时将导致长时间卡顿 -->
-        <template v-slot:authGroup="{ txt, record }">
-            <span v-if="txt"></span>
-            <span>{{showAuthGroup(record)}}</span>
-        </template>
-        <template v-slot:operation="{ txt, record }">
-            <span v-if="txt"></span>
-            <a-button class="opt-btn" @click.stop="ctrlStatus(record, record.status == 0 ? 1 : 0)" type="default" shape="circle" size="small">{{record.status ? '禁':'启'}}</a-button>
-            <a-button class="opt-btn" @click.stop="ctrlView(record)" type="primary" shape="circle" size="small" title="查看">
-                <template v-slot:icon>
-                    <cigo-icon-font :name="'cigoadmin-icon-liulan'" class="opt-icon opt-primary opt-view"></cigo-icon-font>
-                </template>
-            </a-button>
-            <a-button class="opt-btn" @click.stop="ctrlEdit(record)" type="primary" shape="circle" size="small" title="编辑">
-                <template v-slot:icon>
-                    <cigo-icon-font :name="'cigoadmin-icon-bianji'" class="opt-icon opt-primary opt-edit"></cigo-icon-font>
-                </template>
-            </a-button>
-            <a-button class="opt-btn" @click.stop="ctrlStatus(record, -1)" type="danger" shape="circle" size="small" title="删除">
-                <template v-slot:icon>
-                    <cigo-icon-font :name="'cigoadmin-icon-shanchu1'" class="opt-icon opt-primary opt-del"></cigo-icon-font>
-                </template>
-            </a-button>
-        </template>
-    </a-table>
-</div>
+<list-manager class="cigo-manager" :add-label="'新建管理员'" :dataUrl="'/managerList'" :statusUrl="'/status/Manager'" :columns="columns" :columnsSlots="columnsSlots" :editComponent="EditManager" :editWinW="'700px'" :editWinH="'650px'" :tableScroll="{x: 2000, y: 'max-content'}" :attachDataForEdit="{groupList: groupTreeListProxy}">
+    <template v-slot:imgTpl="{ record }">
+        <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
+            <img class="avatar" :src="record.img_info.signed_url" />
+        </div>
+    </template>
+    <template v-slot:roleFlagTpl="{ record }">
+        <span>{{record.role_flag == 2 ? '管理员' : '超级管理员'}}</span>
+    </template>
+    <template v-slot:sexTpl="{ record }">
+        <span>{{showSex(record)}}</span>
+    </template>
+    <template v-slot:isOnlineTpl="{ record }">
+        <span>{{record.is_online ? '在线' : '离线'}}</span>
+    </template>
+    <template v-slot:lastLogTimeTpl="{record}">
+        <span>{{record.last_log_time ? dayjs.unix(record.last_log_time).format('YYYY-MM-DD HH:mm:ss') : ''}}</span>
+    </template>
+    <!-- //Tips_Flag Ant在authGroup为数组且有值得情况下，如果不用slot自定义视图，Ant将为authGroup数组子元素绑定v-node节点数据，在authGroup传递子组件时将导致长时间卡顿 -->
+    <template v-slot:authGroupTpl="{ record }">
+        <span>{{showAuthGroup(record)}}</span>
+    </template>
+</list-manager>
 </template>
 
 <script lang="ts">
 import {
     defineComponent,
     onBeforeMount,
-    reactive,
-    ref,
-    toRaw
+    ref
 } from "vue";
-import EditManager from "@/components/cigo-admin-core/pages/auth/edit/EditManager.vue";
-import CigoIconFont from "@/components/cigo-ui/unit/basic/cigo-icon-font.vue";
 import dayjs from "dayjs";
-import {
-    apiErrorCatch,
-    apiRequest,
-    apiSign,
-    bucket
-} from "@/common/http";
+import cigoLayer from "@/components/cigo-layer";
+import CigoPreviewImg from "@/components/cigo-ui/unit/form/uploader/cigo-preview-img.vue";
+import ListManager from "@/components/cigo-admin-core/pages/template/ListManager.vue";
+import EditManager from "@/components/cigo-admin-core/pages/auth/edit/EditManager.vue";
 import {
     AuthGroup,
     User
-} from "../../utils/types";
-import cigoLayer from "@/components/cigo-layer";
-import CigoPreviewImg from "@/components/cigo-ui/unit/form/uploader/cigo-preview-img.vue";
+} from "@/components/cigo-admin-core/utils/types";
+import {
+    showAvatar,
+    showSex
+} from "@/components/cigo-admin-core/utils/edit";
+import {
+    apiErrorCatch,
+    apiRequest,
+    apiSign
+} from "@/common/http";
+
 export default defineComponent({
     name: "CigoManager",
     components: {
-        CigoIconFont
+        ListManager
     },
     setup(props) {
-        let groupTreeListRef: any = ref([]);
+        let groupTreeListProxy: any = ref([]);
         let groupIdMapRef = ref(new Map());
-        let page = 1;
-        let managerListRef: any = ref([]);
-
         onBeforeMount(() => {
-            requestList();
-        });
-
-        const requestList = () => {
             // 获取角色分组数据
             requestGroupList();
-
-            //获取管理员数据
-            let params = {
-                page: page,
-                pageSize: 15
-            };
-            apiRequest.v1
-                .post("/managerList", params, {
-                    headers: apiSign(params)
-                })
-                .then(response => {
-                    //属性角色列表
-                    managerListRef.value = [...response.data.data];
-                })
-                .catch(apiErrorCatch.v1);
-        };
-
+        });
         const requestGroupList = () => {
             let params = {
                 status: "1"
@@ -141,11 +71,11 @@ export default defineComponent({
                 })
                 .then(response => {
                     //更新本地角色分组数据
-                    groupTreeListRef.value = [...response.data.data];
+                    groupTreeListProxy.value = [...response.data.data];
 
                     // 转换无层级角色数据
                     groupIdMapRef.value.clear();
-                    convertGroupNoTree(groupTreeListRef.value, 0);
+                    convertGroupNoTree(groupTreeListProxy.value, 0);
                 })
                 .catch(apiErrorCatch.v1);
         };
@@ -159,7 +89,6 @@ export default defineComponent({
                 if (item.subList && item.subList.length) {
                     convertGroupNoTree(item.subList, level + 1);
                 }
-
                 return true;
             });
         };
@@ -240,48 +169,27 @@ export default defineComponent({
                 slots: {
                     customRender: "authGroup"
                 }
-            },
-            {
-                title: "操作",
-                key: "operation",
-                fixed: "right",
-                width: 145,
-                slots: {
-                    customRender: "operation"
-                }
             }
         ];
-
-        const showAvatar = (url: string) => {
-            cigoLayer.window({
-                component: CigoPreviewImg,
-                backgroundColor: "#00000000",
-                maskClose: true,
-                windowSize: "max",
-                showCtrlBar: false,
-                canDragFlag: false,
-                layerData: {
-                    imgList: url ? [url] : []
-                }
-            });
-        };
-
-        const showSex = (manager: User) => {
-            let sex = "";
-            switch (manager.sex) {
-                case 1:
-                    sex = "男";
-                    break;
-                case 2:
-                    sex = "女";
-                    break;
-                case 0:
-                default:
-                    sex = "保密";
-                    break;
+        let columnsSlots = [{
+                slot: "img"
+            },
+            {
+                slot: "roleFlag"
+            },
+            {
+                slot: "isOnline"
+            },
+            {
+                slot: "lastLogTime"
+            },
+            {
+                slot: "sex"
+            },
+            {
+                slot: "authGroup"
             }
-            return sex;
-        };
+        ];
 
         const showAuthGroup = (manager: User) => {
             if (!manager.auth_group || manager.auth_group.length == 0) {
@@ -297,96 +205,15 @@ export default defineComponent({
             return authGroup.join(",");
         };
 
-        const ctrlStatus = (manager: User, status: number) => {
-            let params = {
-                id: manager.id,
-                status: status
-            };
-            apiRequest.v1
-                .post("/status/Manager", params, {
-                    headers: apiSign(params)
-                })
-                .then(response => {
-                    // 提示
-                    cigoLayer.msg(response.data.msg);
-                    // 处理数据
-                    if (status != -1) {
-                        manager.status = status;
-                    } else {
-                        let tmpSubList = [...managerListRef.value];
-                        tmpSubList.splice(tmpSubList.indexOf(manager), 1);
-                        managerListRef.value = [...tmpSubList];
-                    }
-                })
-                .catch(apiErrorCatch.v1);
-        };
-
-        const ctrlView = (manager: User) => {
-            cigoLayer.window({
-                component: EditManager,
-                width: "800px",
-                height: "600px",
-                maskClose: true,
-                layerData: {
-                    title: "查看管理员",
-                    managerCurr: manager,
-                    viewFlag: true,
-                    groupList: [...toRaw(groupTreeListRef.value)]
-                }
-            });
-        };
-
-        const notify = (flag: string, data ? : any) => {
-            switch (flag) {
-                case "refresh":
-                    managerListRef.value = [...data];
-                    break;
-            }
-        };
-
-        const ctrlNew = () => {
-            cigoLayer.window({
-                component: EditManager,
-                width: "800px",
-                height: "650px",
-                maskClose: false,
-                layerData: {
-                    title: "添加管理员",
-                    managerListRef: managerListRef,
-                    groupList: [...toRaw(groupTreeListRef.value)]
-                },
-                notify: notify
-            });
-        };
-
-        const ctrlEdit = (manager: User) => {
-            cigoLayer.window({
-                component: EditManager,
-                width: "800px",
-                height: "600px",
-                maskClose: false,
-                layerData: {
-                    title: "修改管理员",
-                    managerCurr: manager,
-                    managerListRef: managerListRef,
-                    groupList: [...toRaw(groupTreeListRef.value)]
-                },
-                notify: notify
-            });
-        };
-
         return {
-            requestList,
-            managerListRef,
-            columns,
-            showAvatar,
             dayjs,
-            showSex,
+            columns,
+            columnsSlots,
             showAuthGroup,
-            ctrlNew,
-            ctrlStatus,
-            ctrlView,
-            ctrlEdit
+            EditManager,
+            showSex,
+            showAvatar,
+            groupTreeListProxy
         };
     }
 });
@@ -394,27 +221,7 @@ export default defineComponent({
 
 <style lang="scss">
 .cigo-manager {
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: scroll;
-
-    .top-bar {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ccc;
-
-        .btn-icon {
-            margin-right: 5px;
-            width: 15px;
-            height: 15px;
-        }
-    }
-
-    .manager-list {
+    .cigo-data-list {
         .avatar-layer {
             width: 40px;
             height: 40px;
@@ -430,35 +237,6 @@ export default defineComponent({
                 border-radius: 50%;
             }
         }
-
-        .opt-btn {
-            margin-right: 5px;
-        }
-
-        .opt-btn:last-child {
-            margin-right: 0px;
-        }
-
-        .opt-icon {
-            color: #666;
-            padding: 1px;
-        }
-
-        .opt-primary {
-            color: #fff;
-        }
-
-        .opt-icon:hover {
-            color: #1890ff;
-        }
-
-        .opt-primary:hover {
-            color: #fff !important;
-        }
     }
-}
-
-.cigo-manager::-webkit-scrollbar {
-    width: 0;
 }
 </style>

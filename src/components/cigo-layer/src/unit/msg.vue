@@ -70,8 +70,11 @@ export default defineComponent({
     z-index: 10000;
     position: fixed;
     top: 40%;
-    left: 50%;
+    width: 100%;
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    pointer-events: none;
 
     .cigo-layer-msg-content {
         border-radius: 8px;
@@ -81,7 +84,7 @@ export default defineComponent({
 
         span {
             color: #fff;
-            white-space: nowrap;
+            // white-space: nowrap;
         }
     }
 }
