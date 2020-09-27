@@ -192,10 +192,14 @@ export default defineComponent({
         });
 
         const requestList = () => {
-            let params = {
-                page: page,
-                pageSize: 15
-            };
+            let params = {};
+            if (props.showPage) {
+                let pageInfo = {
+                    page: page,
+                    pageSize: 15
+                }
+                Object.assign(params, pageInfo);
+            }
             apiRequest.v1
                 .post(props.dataUrl, params, {
                     headers: apiSign(params)
@@ -284,7 +288,7 @@ export default defineComponent({
                     title: props.viewWinTitle,
                     recordCurr: record,
                     viewFlag: true,
-                    ataListRef: dataListRef,
+                    dataListRef: dataListRef,
                     ...props.attachDataForEdit,
                 }
             });
