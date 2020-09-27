@@ -37,7 +37,6 @@ import {
     reactive,
     toRaw
 } from "vue";
-import cigoLayer from "@/components/cigo-layer";
 import CigoAvatar from "@/components/cigo-ui/unit/form/uploader/cigo-avatar.vue";
 import Edit from "@/components/cigo-admin-core/pages/template/Edit.vue";
 

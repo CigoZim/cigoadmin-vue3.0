@@ -34,6 +34,7 @@ import {
     showAvatar,
     showSex
 } from "@/components/cigo-admin-core/utils/edit";
+
 export default defineComponent({
     name: "CigoUser",
     components: {
