@@ -1,5 +1,5 @@
 <template>
-<list-manager class="cigo-manager" :add-label="'新建管理员'" :dataUrl="'/managerList'" :statusUrl="'/status/Manager'" :columns="columns" :columnsSlots="columnsSlots" :editComponent="EditManager" :editWinW="'700px'" :editWinH="'650px'" :tableScroll="{x: 2000, y: 'max-content'}" :attachDataForEdit="{groupList: groupTreeListProxy}">
+<list-manager class="cigo-manager" :add-label="'新建管理员'" :dataUrl="'/managerList'" :statusUrl="'/status/Manager'" :columns="columns" :columnsSlots="columnsSlots" :editComponent="EditManager" :editWinW="'900px'" :editWinH="'650px'" :tableScroll="{x: 2000, y: 'max-content'}" :attachDataForEdit="{groupList: groupTreeListProxy}">
     <template v-slot:imgTpl="{ record }">
         <div class="avatar-layer" v-if="record.img && record.img_info && record.img_info.signed_url" @click.stop="showAvatar(record.img_info.signed_url)">
             <img class="avatar" :src="record.img_info.signed_url" />

@@ -4,10 +4,10 @@
         <a-form-item label=" " name="img">
             <cigo-avatar :avatarInfo="formDataProxy.img_info" :editable="!layerData.viewFlag" @update:avatarInfo="updateAvatarInfo($event, formDataProxy)"></cigo-avatar>
         </a-form-item>
-        <a-form-item label="用户名：" name="username" v-bind="validateInfos.username">
+        <a-form-item label="用户名" name="username" v-bind="validateInfos.username">
             <a-input v-model:value="formDataProxy.username" placeholder="请输入用户名" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="密码：" name="password" v-bind="validateInfos.password">
+        <a-form-item label="密码" name="password" v-bind="validateInfos.password">
             <a-input v-model:value="formDataProxy.password" type="password" placeholder="请设置密码" :disabled="layerData.viewFlag" />
         </a-form-item>
         <a-form-item label="性别" name="sex">
@@ -17,13 +17,13 @@
                 <a-radio :value="2">女</a-radio>
             </a-radio-group>
         </a-form-item>
-        <a-form-item label="昵称：" name="nickname">
+        <a-form-item label="昵称" name="nickname">
             <a-input v-model:value="formDataProxy.nickname" placeholder="请设置昵称" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="手机号：" name="phone" v-bind="validateInfos.phone">
+        <a-form-item label="手机号" name="phone" v-bind="validateInfos.phone">
             <a-input v-model:value="formDataProxy.phone" placeholder="请输入手机号" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="邮箱：" name="email" v-bind="validateInfos.email">
+        <a-form-item label="邮箱" name="email" v-bind="validateInfos.email">
             <a-input v-model:value="formDataProxy.email" placeholder="请填写邮箱" :disabled="layerData.viewFlag" />
         </a-form-item>
     </template>

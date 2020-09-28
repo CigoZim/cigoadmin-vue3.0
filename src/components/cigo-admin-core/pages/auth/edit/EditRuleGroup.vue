@@ -1,17 +1,17 @@
 <template>
 <edit :treeFlag="true" :addUrl="'/add/Group'" :editUrl="'/edit/Group'" :layerData="layerData" :formData="formData" :formItemRules="formItemRules" :newDataPushFlag="true">
     <template v-slot:content="{formDataProxy, validateInfos}">
-        <a-form-item label="角色名：" name="title" v-bind="validateInfos.title">
+        <a-form-item label="角色名" name="title" v-bind="validateInfos.title">
             <a-input v-model:value="formDataProxy.title" placeholder="请输入角色名" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="角色排序：" name="sort" v-bind="validateInfos.sort">
+        <a-form-item label="角色排序" name="sort" v-bind="validateInfos.sort">
             <a-input v-model:value="formDataProxy.sort" placeholder="请设置排序" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="说明：" name="summary">
+        <a-form-item label="说明" name="summary">
             <a-textarea v-model:value="formDataProxy.summary" :disabled="layerData.viewFlag" />
         </a-form-item>
         <div class="line"></div>
-        <a-form-item label="权限配置：" name="rules">
+        <a-form-item label="权限配置" name="rules">
             <a-tree v-model:checkedKeys="formDataProxy.rules" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="layerData.menuList" :disabled="layerData.viewFlag" />
         </a-form-item>
     </template>

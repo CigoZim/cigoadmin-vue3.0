@@ -2,16 +2,16 @@ import { Menu } from "./types";
 import router from "@/router/index";
 
 /**
- * 
- * @param treeList 将父级树形菜单转化为非树形
- * @param noTreeList 
- * @param level 
+ * 将父级树形数据转化为非树形
+ * @param treeList
+ * @param noTreeList
+ * @param level
  */
 export function convertTreeToNoTree(
 	treeList: any[],
 	noTreeList: any[],
 	level: number
-):void {
+): void {
 	treeList.every((item: any, index: number) => {
 		//去除删除状态数据
 		if (item.status == -1) {
@@ -23,13 +23,36 @@ export function convertTreeToNoTree(
 		noTreeList.push(item);
 		//递归处理子级
 		if (item.subList && item.subList.length) {
-			convertTreeToNoTree(
-				item.subList,
-				noTreeList,
-				level + 1
-			);
+			convertTreeToNoTree(item.subList, noTreeList, level + 1);
 		}
 
+		return true;
+	});
+}
+
+/**
+ * 将树形层级数据转化为Map
+ *
+ * @param treeList
+ * @param mapDesRef
+ * @param key
+ * @param level
+ */
+export function convertTreeToMap(
+	treeList: any[],
+	map: Map<string, any>,
+	key: string,
+	level: number
+) {
+	treeList.every((item: any, index: number) => {
+		item.level = level;
+		let tmpItem: any = {};
+		Object.assign(tmpItem, item);
+		delete tmpItem.subList;
+		map.set(key + "_" + tmpItem[key], tmpItem);
+		if (item.subList && item.subList.length) {
+			convertTreeToMap(item.subList, map, key, level + 1);
+		}
 		return true;
 	});
 }

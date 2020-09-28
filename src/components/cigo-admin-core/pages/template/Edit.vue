@@ -3,23 +3,36 @@
     <div class="title-area">
         <span>{{layerData.title}}</span>
     </div>
-    <div class="content-area">
-        <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
-            <a-form-item v-if="treeFlag" label="父级" name="pid">
-                <a-select v-model:value="formDataProxy.pid" show-search placeholder="请选择父级" not-found-content="当前无数据" :filter-option="filterParentOption" @change="parentChange" :disabled="layerData.viewFlag">
-                    <a-select-option :value="0" :itemData="{id:0, title:'', pid:0, path:'0,', rules:[]}">
-                        <span style="color:#666;font-weight:700;">--设置为根项目--</span>
-                    </a-select-option>
-                    <a-select-option v-for="(item,index) in dataNoTreeListRef" :key="index+1" :value="item.id" :itemData="item" :disabled="layerData.recordCurr && layerData.recordCurr.id == item.id">
-                        <span v-if="item.level">
-                            <span v-for="(tabItem,tabIndex) in item.level" :key="tabIndex">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                            <span>{{item.last ? '└ ':'├ '}}</span>
-                        </span>
-                        {{item.title +(layerData.recordCurr && layerData.recordCurr.id == item.id ? ' (当前)' :'')}}
-                    </a-select-option>
-                </a-select>
-            </a-form-item>
-            <slot name="content" :formDataProxy="formDataProxy" :validateInfos="validateInfos"></slot>
+    <div class="content-layer">
+        <div class="content-top">
+            <div class="area-row">
+                <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol" :validate-trigger="'blur'">
+                    <a-form-item v-if="treeFlag" label="父级" name="pid">
+                        <a-select v-model:value="formDataProxy.pid" show-search placeholder="请选择父级" not-found-content="当前无数据" :filter-option="filterParentOption" @change="parentChange" :disabled="layerData.viewFlag">
+                            <a-select-option :value="0" :itemData="{id:0, title:'', pid:0, path:'0,', rules:[]}">
+                                <span style="color:#666;font-weight:700;">--设置为根项目--</span>
+                            </a-select-option>
+                            <a-select-option v-for="(item,index) in dataNoTreeListRef" :key="index+1" :value="item.id" :itemData="item" :disabled="layerData.recordCurr && layerData.recordCurr.id == item.id">
+                                <span v-if="item.level">
+                                    <span v-for="(tabItem,tabIndex) in item.level" :key="tabIndex">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span>{{item.last ? '└ ':'├ '}}</span>
+                                </span>
+                                {{item.title +(layerData.recordCurr && layerData.recordCurr.id == item.id ? ' (当前)' :'')}}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+                    <slot name="content" :formDataProxy="formDataProxy" :validateInfos="validateInfos"></slot>
+                </a-form>
+                <div v-if="columnFlag" class="divider">
+                    <div class="line"></div>
+                </div>
+                <a-form v-if="columnFlag" class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
+                    <slot name="content-right" :formDataProxy="formDataProxy" :validateInfos="validateInfos">我是右侧区域</slot>
+                </a-form>
+            </div>
+        </div>
+        <a-form v-if="bottomShow" class="content-bottom form-item" :layout="'vertical'">
+            <slot name="content-bottom" :formDataProxy="formDataProxy" :validateInfos="validateInfos">我是底部区域</slot>
         </a-form>
     </div>
     <div class="btn-area">
@@ -32,7 +45,7 @@
 </template>
 
 <script lang="ts">
-//TODO 页面按键监听：回车键、ESC 
+//TODO 页面按键监听：回车键、ESC
 import {
     apiErrorCatch,
     apiRequest,
@@ -91,6 +104,14 @@ export default defineComponent({
         beforeEdit: {
             type: Function,
             default: () => {}
+        },
+        columnFlag: {
+            type: Boolean,
+            default: false
+        },
+        bottomShow: {
+            type: Boolean,
+            default: false
         }
     },
     setup(props, ctx) {
@@ -167,8 +188,11 @@ export default defineComponent({
         const formItemRulesProxy = reactive(props.formItemRules);
         const {
             validate,
-            validateInfos,
-        } = useForm(formDataProxy, formItemRulesProxy);
+            validateInfos
+        } = useForm(
+            formDataProxy,
+            formItemRulesProxy
+        );
 
         /************************** 提交表单及数据处理 *********************************/
 
@@ -288,10 +312,10 @@ export default defineComponent({
 
         return {
             labelCol: {
-                span: 4
+                span: props.columnFlag ? 5 : 4
             },
             wrapperCol: {
-                span: 19
+                span: props.columnFlag ? 18 : 19
             },
             validateInfos,
             formDataProxy,
@@ -324,25 +348,54 @@ export default defineComponent({
         font-size: 16px;
     }
 
-    .content-area {
+    .content-layer {
         display: flex;
         flex-direction: column;
-        align-items: center;
         width: 100%;
         flex: 1;
-        padding: 8px 12px;
         overflow-x: hidden;
         overflow-y: scroll;
 
         .form-item {
-            width: 100%;
-
             .line {
                 width: 90%;
                 height: 1px;
                 background-color: #f0f0f0;
                 margin: 0px auto;
             }
+        }
+
+        .content-top {
+            display: table;
+            padding: 8px 12px;
+            width: 100%;
+
+            .area-row {
+                display: table-row;
+
+                .form-item {
+                    display: table-cell;
+                    vertical-align: top;
+                    width: 49%;
+                }
+
+                .divider {
+                    display: table-cell;
+                    width: 2%;
+
+                    .line {
+                        width: 1px;
+                        height: 100%;
+                        background-color: #f0f0f0;
+                        margin: 0px auto;
+                    }
+                }
+            }
+        }
+
+        .content-bottom.form-item {
+            padding: 8px 12px;
+            width: 100%;
         }
     }
 

@@ -15,10 +15,10 @@
             </div>
 
             <a-form :label-col="labelCol" :wrapper-col="wrapperCol">
-                <a-form-item label="用户名：" v-bind="validateInfos.username">
+                <a-form-item label="用户名" v-bind="validateInfos.username">
                     <a-input v-model:value="username" placeholder="请输入用户名" />
                 </a-form-item>
-                <a-form-item label="密 码：" v-bind="validateInfos.password">
+                <a-form-item label="密 码" v-bind="validateInfos.password">
                     <a-input v-model:value="password" placeholder="请输入密码" />
                 </a-form-item>
                 <a-form-item :wrapper-col="{ span: 22, offset: 6 }">

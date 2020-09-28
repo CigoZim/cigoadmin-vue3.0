@@ -5,7 +5,7 @@
     </div>
     <div class="content-area">
         <a-form class="form-item" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="父级节点：" name="pid">
+            <a-form-item label="父级节点" name="pid">
                 <a-select v-model:value="formDataRef.pid" show-search placeholder="请选择父级节点" not-found-content="当前无父级节点" :filter-option="filterParentMenuOption" @change="handleParentMenuChange" :disabled="layerData.viewFlag">
                     <a-select-option :value="0" :itemData="{}">
                         <span style="color:#666;font-weight:700;">--根菜单--</span>
@@ -20,29 +20,29 @@
                     </a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="菜单名：" name="title" v-bind="validateInfos.title">
+            <a-form-item label="菜单名" name="title" v-bind="validateInfos.title">
                 <a-input v-model:value="formDataRef.title" placeholder="请输入菜单名" :disabled="layerData.viewFlag" />
             </a-form-item>
-            <a-form-item label="组件名：" name="component_name" v-bind="validateInfos.component_name">
+            <a-form-item label="组件名" name="component_name" v-bind="validateInfos.component_name">
                 <a-input v-model:value="formDataRef.component_name" placeholder="请配置唯一组件/节点名" :disabled="layerData.viewFlag" />
             </a-form-item>
-            <a-form-item label="图标：" name="icon">
+            <a-form-item label="图标" name="icon">
                 <a-input v-model:value="formDataRef.icon" placeholder="请设置图标" :disabled="layerData.viewFlag">
                     <template v-slot:suffix>
                         <cigo-icon-font class="btn-icon" :name="formDataRef.icon" :color="'blue'"></cigo-icon-font>
                     </template>
                 </a-input>
             </a-form-item>
-            <a-form-item label="路由：" name="url" v-bind="validateInfos.url">
+            <a-form-item label="路由" name="url" v-bind="validateInfos.url">
                 <a-input v-model:value="formDataRef.url" placeholder="请设置路由" :disabled="layerData.viewFlag" />
             </a-form-item>
-            <a-form-item label="节点排序：" name="sort" v-bind="validateInfos.sort">
+            <a-form-item label="节点排序" name="sort" v-bind="validateInfos.sort">
                 <a-input v-model:value="formDataRef.sort" placeholder="请设置排序" :disabled="layerData.viewFlag" />
             </a-form-item>
-            <a-form-item label="菜单分组：" name="group">
+            <a-form-item label="菜单分组" name="group">
                 <a-input v-model:value="formDataRef.group" placeholder="请设置分组" :disabled="layerData.viewFlag" />
             </a-form-item>
-            <a-form-item label="分组排序：" name="group_sort" v-bind="validateInfos.group_sort">
+            <a-form-item label="分组排序" name="group_sort" v-bind="validateInfos.group_sort">
                 <a-input v-model:value="formDataRef.group_sort" placeholder="请设置分组排序" :disabled="layerData.viewFlag" />
             </a-form-item>
         </a-form>
@@ -80,7 +80,7 @@
                     <a-radio :value="'_blank'">新页</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item label="说明：" name="summary">
+            <a-form-item label="说明" name="summary">
                 <a-textarea v-model:value="formDataRef.summary" :disabled="layerData.viewFlag" />
             </a-form-item>
         </a-form>

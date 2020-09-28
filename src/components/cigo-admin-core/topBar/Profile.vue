@@ -14,20 +14,20 @@
                     <a-radio :value="4">超级管理员</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item label="用户名：">
+            <a-form-item label="用户名">
                 <span>{{formDataRef.username}}</span>
             </a-form-item>
-            <a-form-item label="密码：" name="password" v-bind="validateInfos.password">
+            <a-form-item label="密码" name="password" v-bind="validateInfos.password">
                 <a-input v-model:value="formDataRef.password" type="password" placeholder="请设置密码" />
             </a-form-item>
-            <a-form-item label="昵称：" name="nickname">
+            <a-form-item label="昵称" name="nickname">
                 <a-input v-model:value="formDataRef.nickname" type="nickname" placeholder="请设置昵称" />
             </a-form-item>
-            <a-form-item label="邮箱：" name="email" v-bind="validateInfos.email">
+            <a-form-item label="邮箱" name="email" v-bind="validateInfos.email">
                 <a-input v-model:value="formDataRef.email" placeholder="请填写邮箱" />
             </a-form-item>
             <div class="line"></div>
-            <a-form-item label="角色配置：" name="auth_group">
+            <a-form-item label="角色配置" name="auth_group">
                 <a-tree v-model:checkedKeys="formDataRef.auth_group" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="groupList" />
             </a-form-item>
         </a-form>

@@ -1,5 +1,5 @@
 <template>
-<edit :addUrl="'/add/Manager'" :editUrl="'/edit/Manager'" :layerData="layerData" :formData="formData" :formItemRules="formItemRules" :beforeEdit="beforeEdit">
+<edit :addUrl="'/add/Manager'" :editUrl="'/edit/Manager'" :layerData="layerData" :formData="formData" :formItemRules="formItemRules" :beforeEdit="beforeEdit" :columnFlag="true">
     <template v-slot:content="{formDataProxy, validateInfos}">
         <a-form-item label=" " name="img">
             <!-- //Tips_Flag 观察属性函数如何补充参数 -->
@@ -11,20 +11,23 @@
                 <a-radio :value="4">超级管理员</a-radio>
             </a-radio-group>
         </a-form-item>
-        <a-form-item label="用户名：" name="username" v-bind="validateInfos.username">
+        <a-form-item label="用户名" name="username" v-bind="validateInfos.username">
             <a-input v-model:value="formDataProxy.username" placeholder="请输入用户名" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="密码：" name="password" v-bind="validateInfos.password">
+        <a-form-item label="密码" name="password" v-bind="validateInfos.password">
             <a-input v-model:value="formDataProxy.password" type="password" placeholder="请设置密码" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="昵称：" name="nickname">
+        <a-form-item label="昵称" name="nickname">
             <a-input v-model:value="formDataProxy.nickname" placeholder="请设置昵称" :disabled="layerData.viewFlag" />
         </a-form-item>
-        <a-form-item label="邮箱：" name="email" v-bind="validateInfos.email">
+        <a-form-item label="邮箱" name="email" v-bind="validateInfos.email">
             <a-input v-model:value="formDataProxy.email" placeholder="请填写邮箱" :disabled="layerData.viewFlag" />
         </a-form-item>
+    </template>
+    <template v-slot:content-right="{formDataProxy}">
+        <div class="">角色配置</div>
         <div class="line"></div>
-        <a-form-item label="角色配置：" name="auth_group">
+        <a-form-item label="" name="auth_group">
             <a-tree v-model:checkedKeys="formDataProxy.auth_group" :replaceFields="{children: 'subList', key: 'id'}" checkable :auto-expand-parent="true" :defaultExpandAll="true" :tree-data="layerData.groupList" :disabled="layerData.viewFlag" />
         </a-form-item>
     </template>

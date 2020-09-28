@@ -36,7 +36,7 @@ export default defineComponent({
             {
                 title: "排序",
                 dataIndex: "sort",
-                width: "90px"
+                width: "80px"
             },
             {
                 title: "说明",
