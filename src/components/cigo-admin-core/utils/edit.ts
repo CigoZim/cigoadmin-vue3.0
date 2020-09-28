@@ -2,18 +2,18 @@ import CigoPreviewImg from "@/components/cigo-ui/unit/form/uploader/cigo-preview
 import cigoLayer from "@/components/cigo-layer";
 import { User } from "./types";
 import { apiErrorCatch, apiRequest, apiSign } from "@/common/http";
-import { convertTreeToMap } from "./common";
+import { convertTreeToMap, convertTreeToNoTree } from "./common";
 
 /**
  * 显示头像
  * @param url
  */
 export function showAvatar(url: string): void {
-	cigoLayer.window({
+	cigoLayer.component({
 		component: CigoPreviewImg,
 		backgroundColor: "#00000000",
 		maskClose: true,
-		windowSize: "max",
+		componentSize: "max",
 		showCtrlBar: false,
 		canDragFlag: false,
 		layerData: {
@@ -53,10 +53,10 @@ export function showSex(record: User): string {
 
 /**
  * 显示内容分栏
- * 
- * @param key 
- * @param id 
- * @param groupsMap 
+ *
+ * @param key
+ * @param id
+ * @param groupsMap
  */
 export function showContentGroups(
 	key: string,
@@ -68,13 +68,30 @@ export function showContentGroups(
 		: "";
 }
 
+
+/**
+ * 检索下拉选项
+ * @param inputVal 
+ * @param option 
+ */
+export function filterOption (inputVal: string, option: any):boolean {
+	return (
+		option.props.itemData &&
+		option.props.itemData.title.indexOf(inputVal) != -1
+	);
+}
+
 /**
  * 从层级数据转换Map
  *
  * @param mapDesRef
  * @param key
  */
-export function prepareGroupsDataList(mapDesRef: any, key: string) {
+export function prepareGroupsDataList(
+	noTreeListRef: any,
+	mapDesRef: any,
+	key: string
+) {
 	let params = {
 		status: "1",
 	};
@@ -84,12 +101,15 @@ export function prepareGroupsDataList(mapDesRef: any, key: string) {
 		})
 		.then((response) => {
 			let map = new Map();
+			let list: any[] = [];
 			//获取层级数据
 			let treeList = [...response.data.data];
 			// 转换无层级数据
 			convertTreeToMap(treeList, map, key, 0);
+			convertTreeToNoTree(treeList, list, 0);
 			//赋值
 			mapDesRef.value = map;
+			noTreeListRef.value = list;
 		})
 		.catch(apiErrorCatch.v1);
 }

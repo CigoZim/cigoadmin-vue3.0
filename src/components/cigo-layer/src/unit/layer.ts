@@ -4,7 +4,8 @@ import Antd from "ant-design-vue";
 
 import Confirm from "./confirm.vue";
 import Msg from "./msg.vue";
-import PopWindow from "./pop-window.vue";
+import Component from "./component.vue";
+import Prompt from "./prompt.vue";
 
 import "ant-design-vue/dist/antd.css";
 import "../css/layer.css";
@@ -100,12 +101,38 @@ class CigoLayer {
 	/**
 	 * 动态组件窗体
 	 */
-	public window(options: any) {
+	public component(options: any) {
 		if (!options.component) {
 			cigoLayer.msg("请配置弹窗组件");
 			return;
 		}
-		this.open(PopWindow, options);
+		this.open(Component, options);
+	}
+
+	/**
+	 * 输入弹框
+	 * @param options
+	 */
+	public prompt(options: any) {
+		delete options.component;
+		delete options.notify;
+		!options.width ? (options.width = "400px") : false;
+		!options.height ? (options.height = "200px") : false;
+		options.showCtrlBar = false;
+		cigoLayer.component({
+			...options,
+			component: Prompt,
+			notify: (flag: string, resolve: any, reject: any, val?: any) => {
+				switch (flag) {
+					case "ok":
+						options.ok && options.ok(val) ? reject() : resolve(); //Tips_Flag 模拟类似Click事件的冒泡处理
+						break;
+					case "cancel":
+						options.cancel && options.cancel() ? reject() : resolve();
+						break;
+				}
+			},
+		});
 	}
 }
 

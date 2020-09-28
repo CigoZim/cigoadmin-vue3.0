@@ -212,11 +212,11 @@ export default defineComponent({
         };
 
         const showPreview = () => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: CigoPreviewImg,
                 backgroundColor: "#00000000",
                 maskClose: true,
-                windowSize: "max",
+                componentSize: "max",
                 showCtrlBar: false,
                 canDragFlag: false,
                 layerData: {

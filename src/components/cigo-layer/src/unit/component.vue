@@ -1,13 +1,13 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-pop-window" :class="[windowSizeRef=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
-    <cigo-mask :id="'pop-window-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
-    <div :id="'pop-window-content-'+layerIndex" class="cigo-pop-window-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
-        <component v-if="windowSizeRef !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="notifyClose" />
-        <div v-if="showCtrlBar" class="pop-window-bar">
-            <cigo-icon-font v-if="windowSizeRef !== 'min'" class="pop-window-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSizeRef !== 'common'" class="pop-window-bar-icon" @click.stop="changeWinSie('common')" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
-            <cigo-icon-font v-if="windowSizeRef !== 'max'" class="pop-window-bar-icon" @click.stop="changeWinSie('max')" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
-            <cigo-icon-font class="pop-window-bar-icon" @click.stop="clickClose" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
+<div :id="'pop-win-'+layerIndex" class="cigo-component" :class="[componentSizeRef=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
+    <cigo-mask :id="'component-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
+    <div :id="'component-content-'+layerIndex" class="cigo-component-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
+        <component v-if="componentSizeRef !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="notifyClose" />
+        <div v-if="showCtrlBar" class="component-bar">
+            <cigo-icon-font v-if="componentSizeRef !== 'min'" class="component-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
+            <cigo-icon-font v-if="componentSizeRef !== 'common'" class="component-bar-icon" @click.stop="changeWinSie('common')" :name="'cigoadmin-icon-window-common'"></cigo-icon-font>
+            <cigo-icon-font v-if="componentSizeRef !== 'max'" class="component-bar-icon" @click.stop="changeWinSie('max')" :name="'cigoadmin-icon-window-max'"></cigo-icon-font>
+            <cigo-icon-font class="component-bar-icon" @click.stop="clickClose" :name="'cigoadmin-icon-window-close'"></cigo-icon-font>
         </div>
     </div>
 </div>
@@ -32,7 +32,7 @@ import {
 } from "gsap";
 
 export default defineComponent({
-    name: "CigoPopWindow",
+    name: "CigoComponent",
     props: {
         layerIndex: {
             type: Number,
@@ -50,7 +50,7 @@ export default defineComponent({
             type: String,
             default: "400px"
         },
-        windowSize: {
+        componentSize: {
             type: String,
             default: "common"
         },
@@ -90,13 +90,13 @@ export default defineComponent({
         onMounted(() => {
             winResize();
         });
-        let windowSizeRef = ref(props.windowSize);
+        let componentSizeRef = ref(props.componentSize);
         const changeWinSie = (size: string) => {
             if (dragFlag == 0) {
-                windowSizeRef.value = size;
+                componentSizeRef.value = size;
             }
         };
-        watch(windowSizeRef, () => {
+        watch(componentSizeRef, () => {
             moveX.value = 0;
             moveY.value = 0;
             dragedX = 0;
@@ -108,7 +108,7 @@ export default defineComponent({
             let contentOpacity = 1;
             let contentWidth = props.width;
             let contentHeight = props.height;
-            switch (windowSizeRef.value) {
+            switch (componentSizeRef.value) {
                 case 'max':
                     contentWidth = '100%';
                     contentHeight = '100%';
@@ -135,8 +135,8 @@ export default defineComponent({
             };
         });
         const winResize = () => {
-            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, showOptions.value.mask);
-            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, showOptions.value.content);
+            TweenMax.to("#component-mask-" + props.layerIndex, 0.5, showOptions.value.mask);
+            TweenMax.to("#component-content-" + props.layerIndex, 0.5, showOptions.value.content);
         };
 
         const notifyClose = () => {
@@ -149,10 +149,10 @@ export default defineComponent({
             delayClose();
         };
         const delayClose = () => {
-            TweenMax.to("#pop-window-mask-" + props.layerIndex, 0.5, {
+            TweenMax.to("#component-mask-" + props.layerIndex, 0.5, {
                 opacity: 0
             });
-            TweenMax.to("#pop-window-content-" + props.layerIndex, 0.5, {
+            TweenMax.to("#component-content-" + props.layerIndex, 0.5, {
                 opacity: 0,
                 width: "0px",
                 height: "0px",
@@ -224,7 +224,7 @@ export default defineComponent({
         return {
             componentRaw,
             changeWinSie,
-            windowSizeRef,
+            componentSizeRef,
             clickMask,
             notifyClose,
             clickClose,
@@ -240,7 +240,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.cigo-pop-window {
+.cigo-component {
     width: 100vw;
     height: 100vh;
     opacity: 1;
@@ -253,7 +253,7 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
 
-    .cigo-pop-window-content {
+    .cigo-component-content {
         position: relative;
         width: 0px;
         height: 0px;
@@ -267,7 +267,7 @@ export default defineComponent({
         cursor: -webkit-grab;
         cursor: -moz-grab;
 
-        .pop-window-bar {
+        .component-bar {
             position: absolute;
             top: 0px;
             right: 0px;
@@ -275,7 +275,7 @@ export default defineComponent({
             flex-direction: row;
             padding-right: 5px;
 
-            .pop-window-bar-icon {
+            .component-bar-icon {
                 width: 25px;
                 height: 33px;
                 padding: 9px 5px;
@@ -286,21 +286,21 @@ export default defineComponent({
 
     }
 
-    .cigo-pop-window-content.grabbing {
+    .cigo-component-content.grabbing {
         cursor: grabbing;
         cursor: -webkit-grabbing;
         cursor: -moz-grabbing;
     }
 }
 
-.cigo-pop-window.min {
+.cigo-component.min {
     pointer-events: none;
 
     .cigo-layer-mask {
         display: none;
     }
 
-    .pop-window-bar {
+    .component-bar {
         background-color: #f0f0f0;
         border: 1px solid #e0e0e0;
         border-radius: 5px;
@@ -309,10 +309,10 @@ export default defineComponent({
     }
 }
 
-.cigo-pop-window.min.dragging {
+.cigo-component.min.dragging {
     pointer-events: auto;
 
-    .cigo-pop-window-content>.pop-window-bar>.pop-window-bar-icon {
+    .cigo-component-content>.component-bar>.component-bar-icon {
         cursor: grabbing;
         cursor: -webkit-grabbing;
         cursor: -moz-grabbing;

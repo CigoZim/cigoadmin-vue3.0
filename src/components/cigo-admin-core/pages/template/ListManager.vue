@@ -279,7 +279,7 @@ export default defineComponent({
         };
 
         const ctrlView = (record: any) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: props.editComponent,
                 width: props.editWinW,
                 height: props.editWinH,
@@ -303,7 +303,7 @@ export default defineComponent({
         };
 
         const ctrlNew = () => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: props.editComponent,
                 width: props.editWinW,
                 height: props.editWinH,
@@ -317,7 +317,7 @@ export default defineComponent({
             });
         };
         const ctrlAddSub = (record: any) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: props.editComponent,
                 width: props.editWinW,
                 height: props.editWinH,
@@ -333,7 +333,7 @@ export default defineComponent({
         };
 
         const ctrlEdit = (record: any) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: props.editComponent,
                 width: props.editWinW,
                 height: props.editWinH,

@@ -233,7 +233,7 @@ export default defineComponent({
         };
 
         const ctrlAddSub = (menu: Menu) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: EditRule,
                 width: "800px",
                 height: "600px",
@@ -247,7 +247,7 @@ export default defineComponent({
             });
         };
         const ctrlView = (menu: Menu) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: EditRule,
                 width: "800px",
                 height: "600px",
@@ -261,7 +261,7 @@ export default defineComponent({
         };
 
         const ctrlNew = () => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: EditRule,
                 width: "800px",
                 height: "600px",
@@ -275,7 +275,7 @@ export default defineComponent({
         };
 
         const ctrlEdit = (menu: Menu) => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: EditRule,
                 width: "800px",
                 height: "600px",

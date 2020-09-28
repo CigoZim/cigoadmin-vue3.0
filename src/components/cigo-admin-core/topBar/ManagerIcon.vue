@@ -43,7 +43,7 @@ export default defineComponent({
     },
     setup() {
         const profile = () => {
-            cigoLayer.window({
+            cigoLayer.component({
                 component: Profile,
                 width: "800px",
                 height: "600px",
