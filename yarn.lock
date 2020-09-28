@@ -901,10 +901,15 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@ckeditor/ckeditor5-build-classic@^22.0.0":
+"@ckeditor/ckeditor5-build-decoupled-document@^22.0.0":
   version "22.0.0"
-  resolved "https://registry.npm.taobao.org/@ckeditor/ckeditor5-build-classic/download/@ckeditor/ckeditor5-build-classic-22.0.0.tgz#24e4a32a4d68211c58b4ea49e794217bd61bf0b7"
-  integrity sha1-JOSjKk1oIRxYtOpJ55Qhe9Yb8Lc=
+  resolved "https://registry.npm.taobao.org/@ckeditor/ckeditor5-build-decoupled-document/download/@ckeditor/ckeditor5-build-decoupled-document-22.0.0.tgz#769a99cbad093f86d86c147fdda5085082bef01b"
+  integrity sha1-dpqZy60JP4bYbBR/3aUIUIK+8Bs=
+
+"@ckeditor/ckeditor5-vue@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npm.taobao.org/@ckeditor/ckeditor5-vue/download/@ckeditor/ckeditor5-vue-1.0.3.tgz#b73babe217e222614f0567bf858de8152c2071b2"
+  integrity sha1-tzur4hfiImFPBWe/hY3oFSwgcbI=
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
