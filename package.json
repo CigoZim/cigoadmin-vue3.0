@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design-vue/use": "^0.0.1-alpha.1",
+    "@ckeditor/ckeditor5-build-classic": "^22.0.0",
     "@types/echarts": "^4.6.5",
     "@types/gsap": "^1.20.2",
     "@types/locutus": "^0.0.6",
