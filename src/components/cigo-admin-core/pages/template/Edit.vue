@@ -31,9 +31,11 @@
                 </a-form>
             </div>
         </div>
+        <slot v-if="custom1Show" name="content-custom1" :formDataProxy="formDataProxy" :validateInfos="validateInfos">我是自由发挥1区域</slot>
         <a-form v-if="bottomShow" class="content-bottom form-item" :layout="'vertical'">
             <slot name="content-bottom" :formDataProxy="formDataProxy" :validateInfos="validateInfos">我是底部区域</slot>
         </a-form>
+        <slot v-if="custom2Show" name="content-custom2" :formDataProxy="formDataProxy" :validateInfos="validateInfos">我是自由发挥2区域</slot>
     </div>
     <div class="btn-area">
         <a-button-group>
@@ -110,6 +112,14 @@ export default defineComponent({
             default: false
         },
         bottomShow: {
+            type: Boolean,
+            default: false
+        },
+        custom1Show: {
+            type: Boolean,
+            default: false
+        },
+        custom2Show: {
             type: Boolean,
             default: false
         }
@@ -361,7 +371,7 @@ export default defineComponent({
                 width: 90%;
                 height: 1px;
                 background-color: #f0f0f0;
-                margin: 0px auto;
+                margin: 10px auto;
             }
         }
 
@@ -387,7 +397,7 @@ export default defineComponent({
                         width: 1px;
                         height: 100%;
                         background-color: #f0f0f0;
-                        margin: 0px auto;
+                        margin: 10px auto;
                     }
                 }
             }

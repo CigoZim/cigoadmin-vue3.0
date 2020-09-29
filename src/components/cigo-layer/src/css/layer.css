@@ -17,6 +17,10 @@ p {
 	z-index: 10000;
 }
 
+.ant-calendar-picker-container {
+	z-index: 11000;
+}
+
 .ant-select-dropdown {
 	z-index: 11000;
 }

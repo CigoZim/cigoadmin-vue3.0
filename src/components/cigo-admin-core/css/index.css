@@ -1,3 +1,11 @@
 .ant-form-item-label > label::after{
     content: '';
 }
+
+.ant-calendar-picker-container {
+	z-index: 11000;
+}
+
+.ant-select-dropdown {
+	z-index: 11000;
+}

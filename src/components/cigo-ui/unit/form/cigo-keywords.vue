@@ -91,11 +91,10 @@ export default defineComponent({
     }
 
     .add-icon {
-        width: 60px;
+        width: 40px;
         height: 32px;
-        padding: 5px 10px;
-        color: #454545;
-        border: 1px solid #f0f0f0;
+        padding: 7px 0px;
+        color: #666;
         line-height: 30px;
     }
 }

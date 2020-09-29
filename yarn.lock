@@ -7298,7 +7298,7 @@ mkdirp@^1.0.4:
   resolved "https://registry.npm.taobao.org/mkdirp/download/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha1-PrXtYmInVteaXw4qIh3+utdcL34=
 
-moment@^2.27.0:
+moment@^2.27.0, moment@^2.29.0:
   version "2.29.0"
   resolved "https://registry.npm.taobao.org/moment/download/moment-2.29.0.tgz?cache=0&sync_timestamp=1600761879223&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmoment%2Fdownload%2Fmoment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha1-/L75VYRNkd61VDhhPdzsVuhqNCU=
