@@ -1,5 +1,5 @@
 <template>
-<div class="cigo-thermometer-one" :class="{'grabbing': dragging}" @mousemove="mouseMoving" @mouseUp="stopDrag">
+<div class="cigo-thermometer-one" :class="{'grabbing': dragging}">
     <div class="upper-container" :style="{'--bgColor': bgColor}">
         <h2 class="temperature-text">{{round(currentTemperature)}}</h2>
         <div class="temperature-graduation">
@@ -14,7 +14,7 @@
             <svg>
                 <path d="M74.3132 0C47.0043 2.44032e-05 50.175 30 7.9179 30H144.27C99.4571 30 101.622 -2.44032e-05 74.3132 0Z" transform="translate(-7.38794 0.5)" fill="#12132C" />
             </svg>
-            <div class="slider-button" :class="{'grabbing': dragging}" @mouseDown="startDrag">
+            <div class="slider-button" :class="{'grabbing': dragging}" @mouseDown.stop="startDrag">
                 <i class="fas fa-thermometer-empty slider-icon"></i>
             </div>
         </div>
@@ -61,9 +61,20 @@ export default defineComponent({
             initialMouseX = e.pageX;
             initialSliderX = sliderX.value;
 
+            window.addEventListener('mousemove', mouseMoving);
+            window.addEventListener('touchmove', mouseMoving);
+            window.addEventListener('mouseup', stopDrag);
+            window.addEventListener('touchend', stopDrag);
+            window.addEventListener('contextmenu', stopDrag);
         };
         const stopDrag = () => {
             dragging.value = false;
+
+            window.removeEventListener('mousemove', mouseMoving);
+            window.removeEventListener('touchmove', mouseMoving);
+            window.removeEventListener('mouseup', stopDrag);
+            window.removeEventListener('touchend', stopDrag);
+            window.removeEventListener('contextmenu', stopDrag);
         };
         const mouseMoving = (e: any) => {
             if (dragging.value) {
@@ -121,9 +132,7 @@ export default defineComponent({
             bgColor,
             tempElementStyle,
             sliderStyle,
-            mouseMoving,
             startDrag,
-            stopDrag,
             dragging,
         };
     }

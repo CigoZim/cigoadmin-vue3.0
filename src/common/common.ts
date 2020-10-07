@@ -16,3 +16,12 @@ export function fileSizeFormat(fileSize: number): string {
 		return temp.toFixed(1) + "GB";
 	}
 }
+
+
+/**
+ * 跳转页面
+ * @param url
+ */
+export function jumpTo(url: string){
+	window.open(url, "_blank");
+};

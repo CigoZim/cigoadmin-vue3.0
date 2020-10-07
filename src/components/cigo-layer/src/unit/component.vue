@@ -1,7 +1,7 @@
 <template>
-<div :id="'pop-win-'+layerIndex" class="cigo-component" :class="[componentSizeRef=='min' ? 'min' : '', dragging ? 'dragging' : '']" @mousemove="mouseMoving" @mouseUp="stopDrag">
+<div :id="'pop-win-'+layerIndex" class="cigo-component" :class="[componentSizeRef=='min' ? 'min' : '', dragging ? 'dragging' : '']" :style="{'--componentDisplay': showX===null || showY===null ? 'flex' : 'block'}">
     <cigo-mask :id="'component-mask-'+layerIndex" class="cigo-layer-mask" @clickMask="clickMask"></cigo-mask>
-    <div :id="'component-content-'+layerIndex" class="cigo-component-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown="startDrag">
+    <div :id="'component-content-'+layerIndex" class="cigo-component-content" :class="[dragging ? 'grabbing': '']" :style="{'--backgroundColor': backgroundColor,'--left': targetPos.targetX, '--top': targetPos.targetY}" @mouseDown.stop="startDrag">
         <component v-if="componentSizeRef !== 'min'" :is="componentRaw" :layerData="layerData" @notify="notify" @close="notifyClose" />
         <div v-if="showCtrlBar" class="component-bar">
             <cigo-icon-font v-if="componentSizeRef !== 'min'" class="component-bar-icon" @click.stop="changeWinSie('min')" :name="'cigoadmin-icon-window-min'"></cigo-icon-font>
@@ -50,6 +50,14 @@ export default defineComponent({
             type: String,
             default: "400px"
         },
+        showX: {
+            type: Number,
+            default: null
+        },
+        showY: {
+            type: Number,
+            default: null
+        },
         componentSize: {
             type: String,
             default: "common"
@@ -64,9 +72,13 @@ export default defineComponent({
         },
         backgroundColor: {
             type: String,
-            default: '#fff'
+            default: "#fff"
         },
         maskClose: {
+            type: Boolean,
+            default: true
+        },
+        showMask: {
             type: Boolean,
             default: true
         },
@@ -97,29 +109,31 @@ export default defineComponent({
             }
         };
         watch(componentSizeRef, () => {
-            moveX.value = 0;
-            moveY.value = 0;
+            moveX.value =
+                props.showX === null || props.showY === null ? 0 : props.showX;
+            moveY.value =
+                props.showX === null || props.showY === null ? 0 : props.showY;
             dragedX = 0;
             dragedY = 0;
             winResize();
         });
         let showOptions = computed(() => {
-            let maskOpacity = 0.6;
+            let maskOpacity = props.showMask ? 0.6 : 0;
             let contentOpacity = 1;
             let contentWidth = props.width;
             let contentHeight = props.height;
             switch (componentSizeRef.value) {
-                case 'max':
-                    contentWidth = '100%';
-                    contentHeight = '100%';
+                case "max":
+                    contentWidth = "100%";
+                    contentHeight = "100%";
                     break;
-                case 'min':
+                case "min":
                     maskOpacity = 0;
                     contentOpacity = 1;
-                    contentWidth = '0px';
-                    contentHeight = '0px';
+                    contentWidth = "0px";
+                    contentHeight = "0px";
                     break;
-                case 'common':
+                case "common":
                 default:
                     break;
             }
@@ -135,8 +149,16 @@ export default defineComponent({
             };
         });
         const winResize = () => {
-            TweenMax.to("#component-mask-" + props.layerIndex, 0.5, showOptions.value.mask);
-            TweenMax.to("#component-content-" + props.layerIndex, 0.5, showOptions.value.content);
+            TweenMax.to(
+                "#component-mask-" + props.layerIndex,
+                0.5,
+                showOptions.value.mask
+            );
+            TweenMax.to(
+                "#component-content-" + props.layerIndex,
+                0.5,
+                showOptions.value.content
+            );
         };
 
         const notifyClose = () => {
@@ -166,8 +188,12 @@ export default defineComponent({
         };
 
         let dragFlag = 0;
-        let moveX = ref(0);
-        let moveY = ref(0);
+        let moveX = ref(
+            props.showX === null || props.showY === null ? 0 : props.showX
+        );
+        let moveY = ref(
+            props.showX === null || props.showY === null ? 0 : props.showY
+        );
         let dragedX = 0;
         let dragedY = 0;
         let dragStarted = false;
@@ -184,6 +210,12 @@ export default defineComponent({
             startY = e.pageY;
             dragedX = moveX.value;
             dragedY = moveY.value;
+
+            window.addEventListener('mousemove', mouseMoving);
+            window.addEventListener('touchmove', mouseMoving);
+            window.addEventListener('mouseup', stopDrag);
+            window.addEventListener('touchend', stopDrag);
+            window.addEventListener('contextmenu', stopDrag);
         };
         const mouseMoving = (e: any) => {
             if (!props.canDragFlag) {
@@ -206,9 +238,9 @@ export default defineComponent({
         };
         let targetPos = computed(() => {
             return {
-                targetX: Math.round(moveX.value) + 'px',
-                targetY: Math.round(moveY.value) + 'px',
-            }
+                targetX: Math.round(moveX.value) + "px",
+                targetY: Math.round(moveY.value) + "px"
+            };
         });
         const stopDrag = () => {
             if (!props.canDragFlag) {
@@ -219,8 +251,13 @@ export default defineComponent({
             }
             dragStarted = false;
             dragging.value = false;
-        };
 
+            window.removeEventListener('mousemove', mouseMoving);
+            window.removeEventListener('touchmove', mouseMoving);
+            window.removeEventListener('mouseup', stopDrag);
+            window.removeEventListener('touchend', stopDrag);
+            window.removeEventListener('contextmenu', stopDrag);
+        };
         return {
             componentRaw,
             changeWinSie,
@@ -232,8 +269,6 @@ export default defineComponent({
             targetPos,
             startDrag,
             dragging,
-            stopDrag,
-            mouseMoving
         };
     }
 });
@@ -248,7 +283,7 @@ export default defineComponent({
     position: fixed;
     top: 0px;
     left: 0px;
-    display: flex;
+    display: var(--componentDisplay);
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -283,7 +318,6 @@ export default defineComponent({
                 cursor: pointer;
             }
         }
-
     }
 
     .cigo-component-content.grabbing {

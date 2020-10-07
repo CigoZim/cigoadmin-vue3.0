@@ -40,7 +40,7 @@ class CigoLayer {
 		//记录节点
 		this.layerInstances.set(this.countFlag, newInstance);
 		//记录标识递增
-		this.countFlag++;
+		return this.countFlag++;
 	}
 
 	/**
@@ -54,6 +54,9 @@ class CigoLayer {
 	 * 关闭指定layer
 	 */
 	public close(layerIndex: number) {
+		if (layerIndex < 0) {
+			return;
+		}
 		//解绑vue
 		this.layerInstances.get(layerIndex).unmount();
 		this.layerInstances.delete(layerIndex);
@@ -84,7 +87,7 @@ class CigoLayer {
 		if (isString(options)) {
 			options = { msg: options };
 		}
-		this.open(Confirm, options);
+		return this.open(Confirm, options);
 	}
 	/**
 	 * 消息
@@ -96,7 +99,7 @@ class CigoLayer {
 		let options: any = {};
 		options.msg = msg;
 		if (timeout) options.timeout = timeout;
-		this.open(Msg, options);
+		return this.open(Msg, options);
 	}
 	/**
 	 * 动态组件窗体
@@ -104,9 +107,9 @@ class CigoLayer {
 	public component(options: any) {
 		if (!options.component) {
 			cigoLayer.msg("请配置弹窗组件");
-			return;
+			return -1;
 		}
-		this.open(Component, options);
+		return this.open(Component, options);
 	}
 
 	/**
@@ -119,7 +122,7 @@ class CigoLayer {
 		!options.width ? (options.width = "400px") : false;
 		!options.height ? (options.height = "200px") : false;
 		options.showCtrlBar = false;
-		cigoLayer.component({
+		return cigoLayer.component({
 			...options,
 			component: Prompt,
 			notify: (flag: string, resolve: any, reject: any, val?: any) => {

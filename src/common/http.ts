@@ -6,6 +6,7 @@ import cigoLayer from "@/components/cigo-layer/index";
  * 相关域名
  */
 export const apiDomain = process.env.VUE_APP_API_DOMAIN;
+export const openCDN= process.env.VUE_APP_OPEN_CDN;
 export enum bucket {
 	open = "cigoadmin-open",
 	img = "cigoadmin-img",

@@ -90,6 +90,12 @@ export function checkAuth(guard: any, router: Router) {
 		}
 		return;
 	}
+
+	//检查是否Home页
+	if(guard.fullPath.indexOf('/home/') >= 0){
+		return;
+	}
+
 	//检查登录状态
 	let continueFlag: boolean = authInstance.init(guard).checkLogin(router);
 	if (!continueFlag) {
