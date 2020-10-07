@@ -2,7 +2,7 @@
 <div class="cigo-dashboard">
     <h1>数据中心面板</h1>
     <br />
-    <h3>即将跳转到温度计页面：{{delayTime}}s后跳转...</h3>
+    <h3>即将跳转到"基因分析"页面：{{delayTime}}s后跳转...</h3>
 </div>
 </template>
 
@@ -28,7 +28,7 @@ export default defineComponent({
                     delayJump();
                     return;
                 }
-                router.push("/frame/animation/thermometer/one");
+                router.push("/frame/echarts/demo/gens");
             }, 1000);
         };
 
